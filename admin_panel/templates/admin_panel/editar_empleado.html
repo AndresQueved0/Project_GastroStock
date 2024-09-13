@@ -1,0 +1,14 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Editar Empleado</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="current_section" value="">
+        <button type="submit" class="btn btn-primary">Actualizar Empleado</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+:root {
+    --success: #39A900;
+}
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    gap: 30px;
+    background-color:white;
+}
+.btn-success{
+    color: white;
+    background-color: var(--success);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-success:hover{
+    background-color: white;
+    color: var(--success);
+}
+
+
+
+
+.ms-6{
+    margin-left: 100px;
+}
+
+.btn{
+    width: 70%;
+}
+
+.btn:hover{
+    background-color: white;
+    color: var(--success);
+}
+
+.inputBox{
+    position: relative;
+}
+
+.inputBox input{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    outline: none;
+    color: black;
+    font-size: 1em;
+    transition: 0.5s;
+}
+
+.inputBox label{
+    position: absolute;
+    left: 0;
+    padding: 10px;
+    margin-top: -45px;
+    pointer-events: none;
+    color: black;
+    transition: 0.5s;
+}
+
+
+.inputBox input:valid ~ label,
+.inputBox input:focus ~ label{
+    color: #39A900;
+    transform: translateX(10px) translateY(-7px);
+    font-size: 0.80em;
+    padding: 0  10px;
+    background: white;
+    border-left: 1px solid var(--success);
+    border-right: 1px solid var(--success);
+    letter-spacing: 0.2em;
+}
+
+.inputBox input:valid,
+.inputBox input:focus{
+    border: 1px solid var(--success);
+}
+
+.imglog{
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: -50px;
+}
+
+h1{
+    margin-left: 20px;
+}
