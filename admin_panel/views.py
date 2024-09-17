@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .models import Inventario, Categoria, Empleados
-from .forms import InventarioForm, CustomLoginForm, EmpleadoForm
+from .models import Inventario, Categoria, Empleados, Mesa
+from .forms import InventarioForm, CustomLoginForm, EmpleadoForm, MesaForm
 from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -150,11 +150,8 @@ def admin_login(request):
 
 @login_required
 def meseros_dashboard(request):
-    productos = Inventario.objects.filter(cantidad__gt=0)
-    context = {
-        'productos': productos,
-    }
-    return render(request, 'admin_panel/meseros_dashboard.html', context)
+    mesas = Mesa.objects.all()
+    return render(request, 'admin_panel/meseros_dashboard.html', {'mesas': mesas})
 
 #Listar datos de la base de datos - Panel cocina
 
@@ -176,3 +173,18 @@ def caja_dashboard(request):
     }
     return render(request, 'admin_panel/caja_dashboard.html', context)
 
+#Listar mesas de la base de datos - Panel meseros
+
+
+#Registrar mesas - Panel meseros
+@login_required
+def registro_mesas(request):
+    if request.method == 'POST':
+        form = MesaForm(request.POST)
+        if form.is_valid():
+            form.save()
+        messages.success(request, 'Mesa registrada con éxito.', extra_tags='mesa_success')
+        return redirect('meseros_dashboard')
+    else:
+        form = MesaForm()
+    return render(request, 'admin_panel/registro_mesas.html', {'form': form})

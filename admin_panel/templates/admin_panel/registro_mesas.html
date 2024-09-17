@@ -1,0 +1,13 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Registrar Nueva Mesa</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="current_section" value="">
+        <button type="submit" class="btn btn-primary">Registrar Mesa</button>
+    </form>
+</div>
+{% endblock %}  

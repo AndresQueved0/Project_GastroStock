@@ -110,3 +110,8 @@ hr {
     background-color: white;
 }
 
+@media (width >= 600px) {
+    #sidebar{
+        display: none;
+    }
+  }

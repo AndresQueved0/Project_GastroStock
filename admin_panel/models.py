@@ -81,3 +81,31 @@ class Empleados(models.Model):
 
     def __str__(self):
         return f'{self.nombre} {self.apellido} - {self.puesto}'
+    
+class Ubicacion(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.nombre
+      
+class Mesa(models.Model):
+    ESTADO_CHOICES = [
+        ('disponible', 'Disponible'),
+        ('ocupada', 'Ocupada'),
+    ]
+    
+    nombre = models.CharField(max_length=50, unique=True)
+    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='disponible')
+    ubicacion = models.ForeignKey(Ubicacion, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.nombre} - {self.get_estado_display()}"
+
+    def ocupar(self):
+        self.estado = 'ocupada'
+        self.save()
+
+    def liberar(self):
+        self.estado = 'disponible'
+        self.save()
+

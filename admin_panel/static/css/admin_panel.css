@@ -68,3 +68,9 @@ h1{
     margin-left: 20px;
 }
 
+@media (width >= 600px) {
+
+    #sidebar{
+        display: none;
+    }
+  }

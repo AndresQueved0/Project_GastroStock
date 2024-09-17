@@ -1,9 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from .models import CustomUser
-from .models import Inventario
+from .models import CustomUser, Inventario, Empleados, Mesa
 from django.utils import timezone
-from .models import Empleados
 
 # Formulario de autenticación personalizado
 
@@ -63,3 +61,13 @@ class EmpleadoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['fecha_contratacion'].initial = timezone.now().date()
+
+class MesaForm(forms.ModelForm):
+    class Meta:
+        model = Mesa
+        fields = ['nombre', 'estado', 'ubicacion']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'estado': forms.TextInput(attrs={'class': 'form-control'}),
+            'ubicacion': forms.Select(attrs={'class': 'form-control'}),
+        }
