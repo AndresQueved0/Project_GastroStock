@@ -47,3 +47,71 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const ubicacionSelect = document.getElementById('ubicacion-select');
+    ubicacionSelect.addEventListener('change', function() {
+        const selectedUbicacion = this.value;
+        window.location.href = `?ubicacion=${selectedUbicacion}`;
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const pedidoModal = document.getElementById('pedidoModal');
+    const listaPedidos = document.getElementById('lista-pedidos');
+    const totalPagar = document.getElementById('total-pagar');
+    let pedidoActual = [];
+
+    pedidoModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const mesaNombre = button.getAttribute('data-mesa-nombre');
+        const mesaUbicacion = button.getAttribute('data-mesa-ubicacion');
+        
+        document.getElementById('mesa-numero').textContent = mesaNombre;
+        document.getElementById('mesa-ubicacion').textContent = mesaUbicacion;
+        
+        // Reiniciar el pedido actual
+        pedidoActual = [];
+        actualizarPedidoUI();
+    });
+
+    pedidoModal.addEventListener('click', function(e) {
+        if (e.target.classList.contains('agregar-item')) {
+            const id = e.target.getAttribute('data-id');
+            const nombre = e.target.getAttribute('data-nombre');
+            const precio = parseFloat(e.target.getAttribute('data-precio'));
+
+            agregarItemAlPedido(id, nombre, precio);
+        }
+    });
+
+    function agregarItemAlPedido(id, nombre, precio) {
+        const itemExistente = pedidoActual.find(item => item.id === id);
+        if (itemExistente) {
+            itemExistente.cantidad++;
+        } else {
+            pedidoActual.push({ id, nombre, precio, cantidad: 1 });
+        }
+        actualizarPedidoUI();
+    }
+
+    function actualizarPedidoUI() {
+        listaPedidos.innerHTML = '';
+        let total = 0;
+        pedidoActual.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = `${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}`;
+            listaPedidos.appendChild(li);
+            total += item.precio * item.cantidad;
+        });
+        totalPagar.textContent = total.toFixed(2);
+    }
+
+    document.getElementById('generar-ticket').addEventListener('click', function() {
+        // Aquí iría la lógica para generar el ticket
+        console.log('Generando ticket para:', pedidoActual);
+        // Limpiamos el pedido actual después de generar el ticket
+        pedidoActual = [];
+        actualizarPedidoUI();
+    });
+});

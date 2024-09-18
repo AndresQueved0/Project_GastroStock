@@ -110,8 +110,6 @@ hr {
     background-color: white;
 }
 
-@media (width >= 600px) {
-    #sidebar{
-        display: none;
-    }
-  }
+.position-absolute.start-100 {
+    left: 88% !important;  /* Cambia el valor predeterminado */
+}

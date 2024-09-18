@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .models import Inventario, Categoria, Empleados, Mesa
+from .models import Inventario, Categoria, Empleados, Mesa, Ubicacion, MenuItem, CategoriaMenu
 from .forms import InventarioForm, CustomLoginForm, EmpleadoForm, MesaForm
 from django.urls import reverse
 from django.http import JsonResponse
@@ -15,11 +15,21 @@ from django.views.decorators.http import require_http_methods
 def admin_dashboard(request):
     productos = Inventario.objects.all()
     empleados = Empleados.objects.all()
+    ubicaciones = Ubicacion.objects.all()
+    ubicacion_id = request.GET.get('ubicacion')
     initial_section = request.GET.get('section', 'inventario')
+    
+    if ubicacion_id:
+        mesas = Mesa.objects.filter(ubicacion_id=ubicacion_id)
+    else:
+        mesas = Mesa.objects.all()
     
     context = {
         'productos': productos,
         'empleados': empleados,
+        'mesas': mesas,
+        'ubicaciones': ubicaciones,
+        'ubicacion_seleccionada': ubicacion_id,
         'initial_section': initial_section,
     }
     return render(request, 'admin_panel/admin_dashboard.html', context)
@@ -151,7 +161,22 @@ def admin_login(request):
 @login_required
 def meseros_dashboard(request):
     mesas = Mesa.objects.all()
-    return render(request, 'admin_panel/meseros_dashboard.html', {'mesas': mesas})
+    ubicaciones = Ubicacion.objects.all()
+    ubicacion_id = request.GET.get('ubicacion')
+    
+    if ubicacion_id:
+        mesas = mesas.filter(ubicacion_id=ubicacion_id)
+    
+    categorias = CategoriaMenu.objects.prefetch_related('items').all()
+    
+    context = {
+        'mesas': mesas,
+        'ubicaciones': ubicaciones,
+        'ubicacion_seleccionada': ubicacion_id,
+        'categorias': categorias,
+    }
+    
+    return render(request, 'admin_panel/meseros_dashboard.html', context)
 
 #Listar datos de la base de datos - Panel cocina
 
@@ -184,7 +209,7 @@ def registro_mesas(request):
         if form.is_valid():
             form.save()
         messages.success(request, 'Mesa registrada con éxito.', extra_tags='mesa_success')
-        return redirect('meseros_dashboard')
+        return redirect('admin_dashboard')
     else:
         form = MesaForm()
     return render(request, 'admin_panel/registro_mesas.html', {'form': form})

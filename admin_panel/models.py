@@ -87,7 +87,7 @@ class Ubicacion(models.Model):
 
     def __str__(self):
         return self.nombre
-      
+    
 class Mesa(models.Model):
     ESTADO_CHOICES = [
         ('disponible', 'Disponible'),
@@ -109,3 +109,20 @@ class Mesa(models.Model):
         self.estado = 'disponible'
         self.save()
 
+#Menu 
+
+class CategoriaMenu(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nombre
+
+class MenuItem(models.Model):
+    nombre = models.CharField(max_length=200)
+    descripcion = models.TextField(blank=True)
+    precio = models.DecimalField(max_digits=6, decimal_places=2)
+    categoria = models.ForeignKey(CategoriaMenu, on_delete=models.CASCADE, related_name='items')
+    imagen = models.ImageField(upload_to='menu_items/', blank=True, null=True)
+
+    def __str__(self):
+        return self.nombre

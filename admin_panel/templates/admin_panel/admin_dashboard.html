@@ -49,8 +49,14 @@
                             <span class="fw-bold fs-5">Empleados</span>
                         </a>
                     </div>
-            </div>
-
+                    <hr>
+                    <div class="d-flex align-items-center hv">
+                        <a data-content="mesas" id="myLink" class="btn d-flex flex-column align-items-center mb-2 ms-3">
+                            <img src="{% static 'img/mesa-de-comedor.png' %}" alt="" class="responsive-img">
+                            <span class="fw-bold fs-5">Mesas</span>
+                        </a>
+                    </div>
+                </div>
 
         <div class="col-md-10 mt-5 ms-5" style="margin: 0;">
 
@@ -184,6 +190,60 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <section id="mesas">
+                <div class="d-flex">
+                    <h2 class="mt-5 mb-3">Mesas - Panel de Administración</h2>
+                    <div class="mt-4 position-absolute top-10 start-100">
+                        <a href="{% url 'registro_mesas' %}" class="btn btn-success mb-3 mt-4">Registrar mesa</a>
+                    </div>
+                </div>
+                
+                <!-- Selector de ubicaciones -->
+                <div class="mb-3">
+                    <label for="ubicacion-select" class="form-label">Filtrar por ubicación:</label>
+                    <select id="ubicacion-select" class="form-select" style="width: 20%;">
+                        <option value="">Todas las ubicaciones</option>
+                        {% for ubicacion in ubicaciones %}
+                            <option value="{{ ubicacion.id }}" {% if ubicacion.id|stringformat:"s" == ubicacion_seleccionada %}selected{% endif %}>
+                                {{ ubicacion.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.extra_tags == 'mesa_success' %}
+                            <div class="alert alert-success">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                
+                <div id="alertPlaceholderMesa"></div>
+                <div class="row" id="mesasContainer">
+                    {% for mesa in mesas %}
+                    <div class="col-md-4 mb-4 mt-4">
+                        <div class="card" style="width: 13rem;" data-mesa-id="{{ mesa.id }}">
+                            <div class="d-flex justify-content-center align-items-center" style="height: 100px;">
+                                <img src="{% static 'img/mesa-de-comedor.png' %}" class="img-fluid" alt="Foto por defecto">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ mesa.nombre }}</h5>
+                                <p class="card-text"><strong>Ubicación:</strong> {{ mesa.ubicacion }}</p>
+                            </div>
+                            <div class="card-footer border-none text-center">
+                                <p class="card-text"><strong>Estado:</strong> {{ mesa.get_estado_display }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <p>No hay mesas registradas para esta ubicación.</p>
+                    </div>
+                    {% endfor %}
                 </div>
             </section>
     </div>

@@ -206,3 +206,14 @@ document.addEventListener('DOMContentLoaded', function() {
             messageContainer.style.display = 'none';
         }
     }, 3000);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const ubicacionSelect = document.getElementById('ubicacion-select');
+        ubicacionSelect.addEventListener('change', function() {
+            const selectedUbicacion = this.value;
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('ubicacion', selectedUbicacion);
+            currentUrl.searchParams.set('section', 'mesas');
+            window.location.href = currentUrl.toString();
+        });
+    });
