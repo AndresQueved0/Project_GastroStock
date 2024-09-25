@@ -142,10 +142,20 @@ USE_TZ = True
 
 # settings.py
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'admin_panel/static'),
+    os.path.join(BASE_DIR, 'admin_panel', 'static'),
 ]
+
+# Usar el almacenamiento de archivos estáticos predeterminado en desarrollo
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+# Deshabilitar la caché de archivos estáticos en desarrollo
+if DEBUG:
+    STATICFILES_FINDERS = [
+        'django.contrib.staticfiles.finders.FileSystemFinder',
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    ]
+    STATIC_ROOT = None 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -159,8 +169,3 @@ AUTH_USER_MODEL = 'admin_panel.CustomUser'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-if DEBUG:
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')

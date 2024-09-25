@@ -217,3 +217,94 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = currentUrl.toString();
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.delete-menuitem');
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteMenuitemConfirmModal'));
+        let menuitemIdToDelete = null;
+    
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                menuitemIdToDelete = this.getAttribute('data-id');
+                deleteModal.show();
+            });
+        });
+    
+        document.getElementById('confirmDeleteMenuitem').addEventListener('click', function() {
+            if (menuitemIdToDelete) {
+                deleteMenuitem(menuitemIdToDelete);
+            }
+        });
+    
+        function deleteMenuitem(menuitemId) {
+            fetch(`/admin-panel/borrar-menuitem/${menuitemId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Eliminar la card del DOM
+                    const card = document.querySelector(`.card[data-id="${menuitemId}"]`);
+                    if (card) {
+                        const columnElement = card.closest('.col-md-4');
+                        if (columnElement) {
+                            columnElement.remove();
+                        }
+                    }
+                    showAlert('success', 'Plato eliminado con éxito', 'Éxito');
+                } else {
+                    console.error('Error al eliminar el Plato:', data.message);
+                    showAlert('danger', data.message || 'Error al eliminar el plato', 'Error');
+                }
+            })
+            .catch(error => {
+                console.error('Error al procesar la solicitud:', error);
+                showAlert('danger', 'Error al procesar la solicitud de eliminación.', 'Error');
+            })
+            .finally(() => {
+                // Cerrar el modal después de procesar la respuesta
+                deleteModal.hide();
+                // Resetear el ID del item a eliminar
+                menuitemIdToDelete = null;
+            });
+        }
+    
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    
+        function showAlert(type, message, title) {
+            const alertPlaceholder = document.getElementById('alertPlaceholderMenu');
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = [
+                `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+                `   <strong>${title}:</strong> ${message}`,
+                '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                '</div>'
+            ].join('');
+    
+            alertPlaceholder.append(wrapper);
+    
+            // Automatically remove the alert after 5 seconds
+            setTimeout(() => {
+                const alert = bootstrap.Alert.getOrCreateInstance(wrapper.firstChild);
+                alert.close();
+            }, 5000);
+        }
+    });

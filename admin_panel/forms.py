@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
-from .models import CustomUser, Inventario, Empleados, Mesa
+from .models import CustomUser, Inventario, Empleados, Mesa, MenuItem
 from django.utils import timezone
 
 # Formulario de autenticación personalizado
@@ -70,4 +70,16 @@ class MesaForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'estado': forms.TextInput(attrs={'class': 'form-control'}),
             'ubicacion': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+class MenuItemForm(forms.ModelForm):
+    class Meta:
+        model = MenuItem
+        fields = ['nombre', 'descripcion', 'precio', 'categoria', 'imagen']
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+            'precio': forms.NumberInput(attrs={'step': '0.01', 'class': 'form-control'}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'categoria': forms.Select(attrs={'class': 'form-control'}),
+            'imagen': forms.FileInput(attrs={'class': 'form-control'}),
         }

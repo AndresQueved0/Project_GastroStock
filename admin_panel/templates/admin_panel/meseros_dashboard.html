@@ -53,7 +53,7 @@
         <div class="col-md-10 mt-5">
             <section id="mesas">
                 <div class="d-flex mt-3">
-                    <h2 class="mt-5 mb-3">Mesas - Panel de Meseros</h2>
+                    <h2 class=" mb-3">Mesas - Panel de Meseros</h2>
                 </div>
                 
                 <div class="mb-3">
@@ -80,9 +80,9 @@
                 <div class="row" id="mesasContainer">
                     {% for mesa in mesas %}
                     <div class="col-md-4 mb-4 mt-3">
-                        <div class="card" style="width: 13rem; cursor: pointer;" data-mesa-id="{{ mesa.id }}" data-bs-toggle="modal" data-bs-target="#pedidoModal" data-mesa-nombre="{{ mesa.nombre }}" data-mesa-ubicacion="{{ mesa.ubicacion }}">
-                            <div class="d-flex justify-content-center align-items-center" style="height: 100px;">
-                                <img src="{% static 'img/mesa-de-comedor.png' %}" class="img-fluid" alt="Foto por defecto">
+                        <div class="card" style="width: 13rem; cursor: pointer;" data-mesa-id="{{ mesa.id }}" data-bs-toggle="modal" data-bs-target="#pedidoModal" data-mesa-nombre="{{ mesa.nombre }}" data-mesa-ubicacion="{{ mesa.ubicacion }}" onclick="actualizarInfoMesa('{{ mesa.id }}', '{{ mesa.nombre }}', '{{ mesa.ubicacion }}')">
+                            <div class="d-flex justify-content-center align-items-center" style="height: 150px; overflow: hidden;">
+                                <img src="{% static 'img/mesa-de-comedor.png' %}" class="img-fluid" alt="Foto por defecto" style="width: 100%; object-fit: cover;">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title text-center">{{ mesa.nombre }}</h5>
@@ -100,7 +100,48 @@
                     {% endfor %}
                 </div>
             </section>
+
+            <section id="pedidos">
+                <div class="d-flex mt-3">
+                    <h2 class="mb-3">Pedidos -  Panel de meseros</h2>
+                </div>
+
+                <div class="row" id="pedidosContainer">
+                    {% for pedido in pedidos %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-header {% if pedido.estado == 'activo' %}bg-primary{% else %}bg-success{% endif %} text-white">
+                                <h5 class="card-title mb-0">Pedido #{{ pedido.id }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Mesa:</strong> {{ pedido.mesa.nombre }}</p>
+                                <p><strong>Ubicación:</strong> {{ pedido.mesa.ubicacion }}</p>
+                                <p><strong>Fecha:</strong> {{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
+                                <p><strong>Item:</strong> {{ pedido.item_menu.nombre }}</p>
+                                <p><strong>Cantidad:</strong> {{ pedido.cantidad }}</p>
+                                <p><strong>Precio Unitario:</strong> ${{ pedido.precio_unitario }}</p>
+                                <p><strong>Total:</strong> ${{ pedido.precio_total }}</p>
+                                <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
+                            </div>
+                            {% if pedido.estado == 'activo' %}
+                            <div class="card-footer">
+                                <button class="btn btn-success btn-sm marcar-pagado" data-pedido-id="{{ pedido.id }}">Marcar como Pagado</button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <p>No hay pedidos registrados en este momento.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
         </div>
+
+        
+
     </div>
 
     <!-- Modal para toma de pedidos -->
@@ -116,7 +157,7 @@
                         <div class="col-md-8">
                             <h3>MENÚ</h3>
                             <ul class="nav nav-tabs" id="menuTabs" role="tablist">
-                                {% for categoria in categorias %}
+                                {% for categoria in categorias_menu %}
                                 <li class="nav-item" role="presentation">
                                     <button class="nav-link {% if forloop.first %}active{% endif %}" id="tab-{{ categoria.id }}" data-bs-toggle="tab" data-bs-target="#categoria-{{ categoria.id }}" type="button" role="tab">
                                         {{ categoria.nombre }}
@@ -125,19 +166,21 @@
                                 {% endfor %}
                             </ul>
                             <div class="tab-content mt-3" id="menuTabContent">
-                                {% for categoria in categorias %}
+                                {% for categoria in categorias_menu %}
                                 <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="categoria-{{ categoria.id }}" role="tabpanel">
                                     <div class="row">
                                         {% for item in categoria.items.all %}
                                         <div class="col-md-6 mb-3">
-                                            <div class="card">
+                                            <div class="card" style="width: 14rem;">
+                                                <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 150px; overflow: hidden;">
                                                 {% if item.imagen %}
-                                                <img src="{{ item.imagen.url }}" class="card-img-top" alt="{{ item.nombre }}">
+                                                <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
                                                 {% endif %}
+                                            </div>
                                                 <div class="card-body">
                                                     <h5 class="card-title">{{ item.nombre }}</h5>
-                                                    <p class="card-text"><strong>${{ item.precio }}</strong></p>
-                                                    <button class="btn btn-primary btn-sm agregar-item" data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}">Agregar</button>
+                                                    <p class="card-text m-0"><strong>{{ item.precio_formateado }}</strong></p>
+                                                    <button class="btn btn-primary btn-sm agregar-item m-0" data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}">Agregar</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -150,7 +193,7 @@
                         <div class="col-md-4">
                             <h3>PEDIDO ACTUAL</h3>
                             <div id="pedido-actual">
-                                <p>Mesa <span id="mesa-numero"></span> - <span id="mesa-ubicacion"></span></p>
+                                <p><span id="mesa-numero"></span> - <span id="mesa-ubicacion"></span></p>
                                 <ul id="lista-pedidos">
                                     <!-- Aquí se agregarán los items del pedido -->
                                 </ul>
@@ -167,3 +210,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="{% static 'js/meseros.js' %}"></script>
+</body>
+</html>

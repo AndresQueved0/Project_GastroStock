@@ -57,61 +57,121 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    const pedidoModal = document.getElementById('pedidoModal');
-    const listaPedidos = document.getElementById('lista-pedidos');
-    const totalPagar = document.getElementById('total-pagar');
     let pedidoActual = [];
+    let totalPedido = 0;
+    let mesaSeleccionada = null;
 
-    pedidoModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const mesaNombre = button.getAttribute('data-mesa-nombre');
-        const mesaUbicacion = button.getAttribute('data-mesa-ubicacion');
-        
-        document.getElementById('mesa-numero').textContent = mesaNombre;
-        document.getElementById('mesa-ubicacion').textContent = mesaUbicacion;
-        
-        // Reiniciar el pedido actual
-        pedidoActual = [];
-        actualizarPedidoUI();
+    const listaPedidos = document.getElementById('lista-pedidos');
+    const totalPagarSpan = document.getElementById('total-pagar');
+    const generarTicketBtn = document.getElementById('generar-ticket');
+    const mesaNumeroSpan = document.getElementById('mesa-numero');
+    const mesaUbicacionSpan = document.getElementById('mesa-ubicacion');
+
+    // Función para actualizar la información de la mesa en el modal
+    window.actualizarInfoMesa = function(id, nombre, ubicacion) {
+        mesaSeleccionada = { id, nombre, ubicacion };
+        mesaNumeroSpan.textContent = nombre;
+        mesaUbicacionSpan.textContent = ubicacion;
+    };
+
+    // Agregar item al pedido
+    document.querySelectorAll('.agregar-item').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const nombre = this.dataset.nombre;
+            const precio = parseFloat(this.dataset.precio);
+
+            let itemExistente = pedidoActual.find(item => item.id === id);
+            if (itemExistente) {
+                itemExistente.cantidad += 1;
+            } else {
+                pedidoActual.push({ id, nombre, precio, cantidad: 1 });
+            }
+
+            actualizarPedidoUI();
+        });
     });
-
-    pedidoModal.addEventListener('click', function(e) {
-        if (e.target.classList.contains('agregar-item')) {
-            const id = e.target.getAttribute('data-id');
-            const nombre = e.target.getAttribute('data-nombre');
-            const precio = parseFloat(e.target.getAttribute('data-precio'));
-
-            agregarItemAlPedido(id, nombre, precio);
-        }
-    });
-
-    function agregarItemAlPedido(id, nombre, precio) {
-        const itemExistente = pedidoActual.find(item => item.id === id);
-        if (itemExistente) {
-            itemExistente.cantidad++;
-        } else {
-            pedidoActual.push({ id, nombre, precio, cantidad: 1 });
-        }
-        actualizarPedidoUI();
-    }
 
     function actualizarPedidoUI() {
         listaPedidos.innerHTML = '';
-        let total = 0;
+        totalPedido = 0;
+
         pedidoActual.forEach(item => {
             const li = document.createElement('li');
             li.textContent = `${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}`;
             listaPedidos.appendChild(li);
-            total += item.precio * item.cantidad;
+            totalPedido += item.precio * item.cantidad;
         });
-        totalPagar.textContent = total.toFixed(2);
+
+        totalPagarSpan.textContent = totalPedido.toFixed(2);
     }
 
-    document.getElementById('generar-ticket').addEventListener('click', function() {
-        // Aquí iría la lógica para generar el ticket
-        console.log('Generando ticket para:', pedidoActual);
-        // Limpiamos el pedido actual después de generar el ticket
+    // Manejar el envío del pedido
+    generarTicketBtn.addEventListener('click', function() {
+        if (pedidoActual.length === 0) {
+            alert('Por favor, agregue items al pedido antes de generar el ticket.');
+            return;
+        }
+
+        if (!mesaSeleccionada) {
+            alert('Error: No se ha seleccionado una mesa.');
+            return;
+        }
+
+        // Preparar los datos del pedido
+        const datosPedido = {
+            mesa_id: mesaSeleccionada.id,
+            items_pedido: JSON.stringify(pedidoActual),
+            total_pedido: totalPedido.toFixed(2)
+        };
+
+        // Enviar el pedido al servidor
+        fetch('{% url "registrar_pedido" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(datosPedido)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Pedido registrado correctamente');
+                // Limpiar el pedido actual
+                pedidoActual = [];
+                actualizarPedidoUI();
+                $('#pedidoModal').modal('hide');
+            } else {
+                alert('Error al registrar el pedido: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al procesar la solicitud');
+        });
+    });
+
+    // Función para obtener el token CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Limpiar el pedido cuando se cierra el modal
+    $('#pedidoModal').on('hidden.bs.modal', function () {
         pedidoActual = [];
         actualizarPedidoUI();
+        mesaSeleccionada = null;
     });
 });

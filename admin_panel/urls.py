@@ -15,4 +15,7 @@ urlpatterns = [
     path('borrar-empleado/<int:empleado_id>/', views.borrar_empleado, name='borrar_empleado'),
     path('editar-empleado/<int:empleado_id>/', views.editar_empleado, name='editar_empleado'),
     path('registro-mesas/', views.registro_mesas, name='registro_mesas'),
+    path('registrar-producto-menu/', views.registrar_producto_menu, name='registrar_producto_menu'),
+    path('borrar-menuitem/<int:menuitem_id>/', views.borrar_menuitem, name='borrar_menuitem'),
+    path('marcar_pedido_pagado/<int:pedido_id>/', marcar_pedido_pagado, name='marcar_pedido_pagado'),
 ]

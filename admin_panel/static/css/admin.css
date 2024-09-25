@@ -1,0 +1,125 @@
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+:root {
+    --success: #39A900;
+}
+
+.colorg {
+    color: var(--success);
+}
+
+
+
+.navbar::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    border-bottom: #39A900 3px solid;
+}
+
+hr {
+    width: 100%;
+    margin-top: 0;
+    position: relative;
+    margin-left: 20px;
+    height: 3px; /* Ajusta este valor al grosor deseado */
+    background-color: var(--success); /* Asegúrate de que el color coincida con tu diseño */
+    border: none;
+    opacity: 1;
+}
+
+.btn{
+    border: none;
+}
+
+.sidebar {
+    width: 200px;
+    padding: 10px;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    margin-left: 5px;
+}
+
+.sidebar .btn img {
+    margin-bottom: 5px;
+}
+
+.hv a:hover {
+    background-color: #39A900;
+    color: white;
+}
+
+/* Estilo para el enlace con la clase 'hover' */
+.sidebar a.hover {
+    background-color: #39A900;
+    color: white;
+    opacity: 0.5; /* Ajusta este valor para hacer el hover más transparente */
+}
+
+.sidebar {
+    width: 250px; /* Ajusta el ancho del sidebar según tus necesidades */
+    padding: 10px; /* Espaciado interno opcional */
+}
+
+.responsive-icon {
+    width: 80%;
+    max-width: 50px;
+}
+
+.iconos{
+    margin-left: 17px;
+}
+
+.responsive-img{
+    width: 100%;
+    max-width: 100px;
+}
+
+.responsive-card{
+    width: 100%;
+    max-width: 500px;
+}
+
+@media (max-width: 414px) {
+    .responsive-card{
+        width: 100%;
+        max-width: 50px;
+    }
+}
+
+.btn-success{
+    color: white;
+    background-color: var(--success);
+}
+
+
+.bg-white {
+    background-color: white;
+}
+
+.position-absolute.start-100 {
+    left: 88% !important;  /* Cambia el valor predeterminado */
+}
+
+@media (max-width: 768px){
+    #sidebar {
+        display: none;
+    }
+
+    #container-main{
+        margin-inline-start: 0 !important;
+    }
+}

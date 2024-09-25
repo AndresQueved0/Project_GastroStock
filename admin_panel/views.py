@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .models import Inventario, Categoria, Empleados, Mesa, Ubicacion, MenuItem, CategoriaMenu
-from .forms import InventarioForm, CustomLoginForm, EmpleadoForm, MesaForm
+from .models import Inventario, Categoria, Empleados, Mesa, Ubicacion, MenuItem, CategoriaMenu, Pedido
+from .forms import InventarioForm, CustomLoginForm, EmpleadoForm, MesaForm, MenuItemForm
 from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+import json
 
 
 #Listar datos de base de datos - Admin dashboard
@@ -15,20 +17,30 @@ from django.views.decorators.http import require_http_methods
 def admin_dashboard(request):
     productos = Inventario.objects.all()
     empleados = Empleados.objects.all()
+    mesas = Mesa.objects.all()
     ubicaciones = Ubicacion.objects.all()
+    categorias_menu = CategoriaMenu.objects.all()
+    menu_items = MenuItem.objects.all()
+    
+    if request.method == 'POST':
+        form = MenuItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_dashboard')
+    else:
+        form = MenuItemForm()
+
     ubicacion_id = request.GET.get('ubicacion')
     initial_section = request.GET.get('section', 'inventario')
-    
-    if ubicacion_id:
-        mesas = Mesa.objects.filter(ubicacion_id=ubicacion_id)
-    else:
-        mesas = Mesa.objects.all()
     
     context = {
         'productos': productos,
         'empleados': empleados,
         'mesas': mesas,
         'ubicaciones': ubicaciones,
+        'categorias_menu': categorias_menu,
+        'menu_items': menu_items,
+        'form': form,
         'ubicacion_seleccionada': ubicacion_id,
         'initial_section': initial_section,
     }
@@ -163,20 +175,44 @@ def meseros_dashboard(request):
     mesas = Mesa.objects.all()
     ubicaciones = Ubicacion.objects.all()
     ubicacion_id = request.GET.get('ubicacion')
-    
+    categorias_menu = CategoriaMenu.objects.prefetch_related('items').all()
+    pedidos = Pedido.objects.filter(estado='activo').order_by('-fecha_pedido')
+
+
     if ubicacion_id:
         mesas = mesas.filter(ubicacion_id=ubicacion_id)
     
-    categorias = CategoriaMenu.objects.prefetch_related('items').all()
+    
     
     context = {
         'mesas': mesas,
         'ubicaciones': ubicaciones,
         'ubicacion_seleccionada': ubicacion_id,
-        'categorias': categorias,
+        'categorias_menu': categorias_menu,
+        'pedidos': pedidos,
     }
     
     return render(request, 'admin_panel/meseros_dashboard.html', context)
+
+#Eliminar plato del menu
+
+def borrar_menuitem(request, menuitem_id):
+    try:
+        menuitem = get_object_or_404(MenuItem, id=menuitem_id)
+        nombre_menuitem = f"{menuitem.nombre}"  # Asumiendo que tienes campos 'nombre' y 'apellido'
+        menuitem.delete()
+        return JsonResponse({
+            'success': True,
+            'message': f'El plato "{nombre_menuitem}" ha sido eliminado exitosamente.',
+            'type': 'success'
+        })
+    except Exception as e:
+        print(f"Error al eliminar plato: {str(e)}")  # Log del error
+        return JsonResponse({
+            'success': False,
+            'message': f'Error al eliminar el plato: {str(e)}',
+            'type': 'error'
+        }, status=500)
 
 #Listar datos de la base de datos - Panel cocina
 
@@ -202,6 +238,7 @@ def caja_dashboard(request):
 
 
 #Registrar mesas - Panel meseros
+
 @login_required
 def registro_mesas(request):
     if request.method == 'POST':
@@ -213,3 +250,57 @@ def registro_mesas(request):
     else:
         form = MesaForm()
     return render(request, 'admin_panel/registro_mesas.html', {'form': form})
+
+@login_required
+def registrar_producto_menu(request):
+    if request.method == 'POST':
+        form = MenuItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Producto registrado exitosamente.')
+            return redirect('admin_dashboard')
+    else:
+        form = MenuItemForm()
+    
+    return render(request, 'admin_panel/registrar_producto_menu.html', {'form': form})
+
+
+def registrar_pedido(request):
+    data = json.loads(request.body)
+    mesa_id = data.get('mesa_id')
+    items_pedido = json.loads(data.get('items_pedido'))
+    total_pedido = data.get('total_pedido')
+
+    try:
+        mesa = Mesa.objects.get(id=mesa_id)
+    except Mesa.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Mesa no encontrada'})
+
+    try:
+        for item in items_pedido:
+            menu_item = MenuItem.objects.get(id=item['id'])
+            Pedido.objects.create(
+                mesa=mesa,
+                item_menu=menu_item,
+                cantidad=item['cantidad'],
+                precio_unitario=item['precio'],
+                precio_total=item['precio'] * item['cantidad']
+            )
+
+        mesa.ocupar()  # Asumiendo que tienes este método en tu modelo Mesa
+        return JsonResponse({'status': 'success', 'message': 'Pedido registrado correctamente'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
+
+@require_POST
+@login_required
+def marcar_pedido_pagado(request, pedido_id):
+    try:
+        pedido = Pedido.objects.get(id=pedido_id, estado='activo')
+        pedido.estado = 'pagado'
+        pedido.save()
+        return JsonResponse({'status': 'success', 'message': 'Pedido marcado como pagado'})
+    except Pedido.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Pedido no encontrado o ya pagado'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
