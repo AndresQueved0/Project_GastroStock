@@ -13,7 +13,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6">
-            <div class="ms-6">
+            <div class="ms-6 card border-0">
                 <img src="{% static 'img/logo.png' %}" class="imglog" alt="" width="200px">
                 <h1 class="fw-bold">GastroStock</h1>
             </div>
@@ -24,10 +24,6 @@
                     <form method="post">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <div class="mb-3 text-center">
-                            <label for="{{ form.user_type.id_for_label }}">Tipo de Usuario</label>
-                            {{ form.user_type }}
-                        </div>
                             {{ form.username }}
                             <label for="{{ form.username.id_for_label }}">Usuario</label>
                         </div>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 from .models import Inventario, Categoria, Empleados, Mesa, Ubicacion, MenuItem, CategoriaMenu, Pedido
 from .forms import InventarioForm, CustomLoginForm, EmpleadoForm, MesaForm, MenuItemForm
@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 import json
+from datetime import datetime
 
 
 #Listar datos de base de datos - Admin dashboard
@@ -44,7 +45,7 @@ def admin_dashboard(request):
         'ubicacion_seleccionada': ubicacion_id,
         'initial_section': initial_section,
     }
-    return render(request, 'admin_panel/admin_dashboard.html', context)
+    return render(request, 'admin_dashboard.html', context)
 
 #Registrar empleados - Admin dashboard
 
@@ -141,28 +142,26 @@ def borrar_producto(request, producto_id):
 
 #Tipo de usuarios - Login
 
-def admin_login(request):
+def login_view(request):
     if request.method == 'POST':
         form = CustomLoginForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user_type = form.cleaned_data.get('user_type')
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                if user.user_type == user_type:
-                    login(request, user)
-                    if user_type == 'admin':
+                    auth_login(request, user)
+                    if user.user_type == 'admin':
                         return redirect('admin_dashboard')
-                    elif user_type == 'meseros':
+                    elif user.user_type == 'meseros':
                         return redirect('meseros_dashboard')
-                    elif user_type == 'cocina':
+                    elif user.user_type == 'cocina':
                         return redirect('cocina_dashboard')
-                    elif user_type == 'caja':
+                    elif user.user_type == 'caja':
                         return redirect('caja_dashboard')
-                else:
-                    messages.error(request, "Tipo de usuario incorrecto para estas credenciales.", extra_tags='login_error')
             else:
+                    messages.error(request, "Tipo de usuario incorrecto para estas credenciales.", extra_tags='login_error')
+        else:
                 messages.error(request, "Usuario o contraseña incorrectos.", extra_tags='login_error')
     else:
         form = CustomLoginForm()
@@ -190,9 +189,10 @@ def meseros_dashboard(request):
         'ubicacion_seleccionada': ubicacion_id,
         'categorias_menu': categorias_menu,
         'pedidos': pedidos,
+        'time': datetime.now().timestamp()
     }
     
-    return render(request, 'admin_panel/meseros_dashboard.html', context)
+    return render(request, 'meseros_dashboard.html', context)
 
 #Eliminar plato del menu
 
@@ -222,7 +222,7 @@ def cocina_dashboard(request):
     context = {
         'productos': productos,
     }
-    return render(request, 'admin_panel/cocina_dashboard.html', context)
+    return render(request, 'cocina_dashboard.html', context)
 
 #Listar datos de la base de datos - Panel caja
 
@@ -232,7 +232,7 @@ def caja_dashboard(request):
     context = {
         'productos': productos,
     }
-    return render(request, 'admin_panel/caja_dashboard.html', context)
+    return render(request, 'caja_dashboard.html', context)
 
 #Listar mesas de la base de datos - Panel meseros
 
@@ -263,7 +263,6 @@ def registrar_producto_menu(request):
         form = MenuItemForm()
     
     return render(request, 'admin_panel/registrar_producto_menu.html', {'form': form})
-
 
 def registrar_pedido(request):
     data = json.loads(request.body)

@@ -16,7 +16,7 @@
             <a class="navbar-brand" href="#">
         <div class="ms-3">
             <img src="{% static 'img/logo.png' %}" alt="" class="responsive-icon">
-            <span class="fw-bold">CajaGastro</span>
+            <span class="fw-bold">CocinaGastro</span>
         </div>
     </a>
         <div class="dropdown iconos">
@@ -28,7 +28,7 @@
             </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="#">Perfil</a></li>
-                    <li><a class="dropdown-item" href="{% url 'admin_login' %}">Cerrar sesion</a></li>
+                    <li><a class="dropdown-item" href="{% url 'login' %}">Cerrar sesion</a></li>
                 </ul>
         </div>
         </div>
@@ -39,8 +39,8 @@
         <div class="sidebar">
             <div class="d-flex align-items-center hv">
                 <a data-content="inventario" id="myLink" class="btn d-flex flex-column align-items-center mb-2">
-                    <img src="{% static 'img/inventario.png' %}"  alt="" class="responsive-img">
-                    <span class="fw-bold fs-5">Inventario</span>
+                    <img src="{% static 'img/pedido-en-linea.png' %}"  alt="" class="responsive-img">
+                    <span class="fw-bold fs-5">Pedidos</span>
                 </a>
             </div>
             <hr>
@@ -54,50 +54,10 @@
 
         
         <div class="container-fluid">
-<section id="inventario">
-    <h2 class="mt-4 mb-3">Inventario de Productos</h2>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <a href="{% url 'agregar_producto' %}" class="btn btn-primary">Agregar Producto</a>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Cantidad</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Categoría</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for producto in productos %}
-        <tr>
-            <td>{{ producto.nombre_producto }}</td>
-            <td>{{ producto.cantidad }}</td>
-            <td>{{ producto.descripcion }}</td>
-            <td>{{ producto.precio_unitario }}</td>
-            <td>{{ producto.categoria }}</td>
-            <td>
-                <a href="{% url 'borrar_producto' producto.id %}" class="btn btn-danger btn-sm">Borrar</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-            
-        </table>
-        
-    </div>
-</section>
-<section id="empleados">
-    <h2 class="mt-4 mb-3">Empleados</h2>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <a href="" class="btn btn-primary">Agregar Empleado</a>
-</section>
-
-</div>
+            <section id="Pedidos">
+                
+            </section>
+        </div>
 
 <script src="{% static 'js/admin_panel.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

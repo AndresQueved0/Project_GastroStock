@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Meseros</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/stock.css' %}">
+    <link rel="stylesheet" href="{% static 'css/stock.css' %} ? {% now "U" %}">
     <link rel="icon" href="{% static 'img/logo.png'%}">
 </head>
 <body>
@@ -27,7 +27,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="#">Perfil</a></li>
-                    <li><a class="dropdown-item" href="{% url 'admin_login' %}">Cerrar sesion</a></li>
+                    <li><a class="dropdown-item" href="{% url 'login' %}">Cerrar sesion</a></li>
                 </ul>
             </div>
         </div>
@@ -119,8 +119,8 @@
                                 <p><strong>Fecha:</strong> {{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
                                 <p><strong>Item:</strong> {{ pedido.item_menu.nombre }}</p>
                                 <p><strong>Cantidad:</strong> {{ pedido.cantidad }}</p>
-                                <p><strong>Precio Unitario:</strong> ${{ pedido.precio_unitario }}</p>
-                                <p><strong>Total:</strong> ${{ pedido.precio_total }}</p>
+                                <p><strong>Precio Unitario:</strong> {{ pedido.item_menu.precio_formateado }} </p>
+                                <p><strong>Total:</strong> {{ pedido.precio_total_formateado }} </p>
                                 <p><strong>Estado:</strong> {{ pedido.get_estado_display }}</p>
                             </div>
                             {% if pedido.estado == 'activo' %}
@@ -140,13 +140,11 @@
 
         </div>
 
-        
-
     </div>
 
     <!-- Modal para toma de pedidos -->
     <div class="modal fade" id="pedidoModal" tabindex="-1" aria-labelledby="pedidoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="pedidoModalLabel">Tomar Pedido</h5>
@@ -199,7 +197,10 @@
                                 </ul>
                                 <p>Total a pagar: $<span id="total-pagar">0.00</span></p>
                             </div>
-                            <button id="generar-ticket" class="btn btn-primary">Generar ticket</button>
+                            <button id="generar-ticket" class="btn btn-primary" data-url-registrar-pedido="{% url 'registrar_pedido' %}">
+                                Generar ticket
+                            </button>
+                            
                         </div>
                     </div>
                 </div>
@@ -209,6 +210,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="{% static 'js/meseros.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const urlRegistrarPedido = "{% url 'registrar_pedido' %}";
+    </script>
+    <script src="{% static 'js/meseros.js' %}?v={{ time }}"></script>
+
 </body>
 </html>

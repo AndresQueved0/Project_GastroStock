@@ -125,8 +125,10 @@ document.addEventListener('DOMContentLoaded', function() {
             total_pedido: totalPedido.toFixed(2)
         };
 
+        console.log("Enviando datos del pedido:", datosPedido);
+
         // Enviar el pedido al servidor
-        fetch('{% url "registrar_pedido" %}', {
+        fetch(urlRegistrarPedido, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -136,6 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log("Datos recibidos:", data);
             if (data.status === 'success') {
                 alert('Pedido registrado correctamente');
                 // Limpiar el pedido actual
@@ -147,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error al procesar la solicitud:', error);
             alert('Error al procesar la solicitud');
         });
     });

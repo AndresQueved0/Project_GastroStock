@@ -6,16 +6,9 @@ from django.utils import timezone
 # Formulario de autenticación personalizado
 
 class CustomLoginForm(AuthenticationForm):
-    user_type = forms.ChoiceField(
-        choices=CustomUser.USER_TYPE_CHOICES, 
-        required=True, 
-        label='Tipo de Usuario',
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
-
     class Meta:
         model = CustomUser
-        fields = ['username', 'password', 'user_type']
+        fields = ['username', 'password']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

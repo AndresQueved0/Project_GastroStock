@@ -113,3 +113,13 @@ hr {
 .position-absolute.start-100 {
     left: 88% !important;  /* Cambia el valor predeterminado */
 }
+
+@media (max-width: 768px){
+    #sidebar {
+        display: none;
+    }
+
+    #container-main{
+        margin-inline-start: 0 !important;
+    }
+}

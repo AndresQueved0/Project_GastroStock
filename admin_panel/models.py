@@ -148,6 +148,11 @@ class Pedido(models.Model):
     precio_total = models.DecimalField(max_digits=10, decimal_places=2)
     estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='activo')
 
+    def precio_total_formateado(self):
+        precio_entero = int(self.precio_total)  # Convierte el precio a entero, eliminando los decimales
+        precio_str = f"{precio_entero:,}".replace(",", ".")  # Formatea con puntos como separadores de miles
+        return f"${precio_str}"
+
     def save(self, *args, **kwargs):
         # Calcula el precio total antes de guardar
         self.precio_total = self.cantidad * self.precio_unitario
