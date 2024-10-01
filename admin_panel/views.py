@@ -3,13 +3,14 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
-from .models import Inventario, Categoria, Empleados, Mesa, Ubicacion, MenuItem, CategoriaMenu, Pedido
+from .models import Inventario, Categoria, Empleados, Mesa, Ubicacion, MenuItem, CategoriaMenu, Pedido, PedidoItem
 from .forms import InventarioForm, CustomLoginForm, EmpleadoForm, MesaForm, MenuItemForm
 from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 import json
 from datetime import datetime
+from django.db import transaction
 
 
 #Listar datos de base de datos - Admin dashboard
@@ -20,6 +21,7 @@ def admin_dashboard(request):
     empleados = Empleados.objects.all()
     mesas = Mesa.objects.all()
     ubicaciones = Ubicacion.objects.all()
+    ubicacion_id = request.GET.get('ubicacion')
     categorias_menu = CategoriaMenu.objects.all()
     menu_items = MenuItem.objects.all()
     
@@ -30,6 +32,9 @@ def admin_dashboard(request):
             return redirect('admin_dashboard')
     else:
         form = MenuItemForm()
+
+    if ubicacion_id:
+        mesas = mesas.filter(ubicacion_id=ubicacion_id)
 
     ubicacion_id = request.GET.get('ubicacion')
     initial_section = request.GET.get('section', 'inventario')
@@ -175,7 +180,10 @@ def meseros_dashboard(request):
     ubicaciones = Ubicacion.objects.all()
     ubicacion_id = request.GET.get('ubicacion')
     categorias_menu = CategoriaMenu.objects.prefetch_related('items').all()
-    pedidos = Pedido.objects.filter(estado='activo').order_by('-fecha_pedido')
+    pedidos_preparados = Pedido.objects.filter(estado='Preparado').order_by('fecha_pedido')
+    pedidos_realizados = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
+
+
 
 
     if ubicacion_id:
@@ -188,7 +196,8 @@ def meseros_dashboard(request):
         'ubicaciones': ubicaciones,
         'ubicacion_seleccionada': ubicacion_id,
         'categorias_menu': categorias_menu,
-        'pedidos': pedidos,
+        'pedidos_preparados': pedidos_preparados,
+        'pedidos_realizados': pedidos_realizados,
         'time': datetime.now().timestamp()
     }
     
@@ -219,8 +228,11 @@ def borrar_menuitem(request, menuitem_id):
 @login_required
 def cocina_dashboard(request):
     productos = Inventario.objects.all()
+    pedidos = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
+
     context = {
         'productos': productos,
+        'pedidos': pedidos,
     }
     return render(request, 'cocina_dashboard.html', context)
 
@@ -229,8 +241,11 @@ def cocina_dashboard(request):
 @login_required
 def caja_dashboard(request):
     productos = Inventario.objects.all()
+    pedidos_en_mesa = Pedido.objects.filter(estado='En mesa').order_by('fecha_pedido')
+
     context = {
         'productos': productos,
+        'pedidos_en_mesa': pedidos_en_mesa,
     }
     return render(request, 'caja_dashboard.html', context)
 
@@ -264,42 +279,61 @@ def registrar_producto_menu(request):
     
     return render(request, 'admin_panel/registrar_producto_menu.html', {'form': form})
 
+@transaction.atomic
 def registrar_pedido(request):
     data = json.loads(request.body)
     mesa_id = data.get('mesa_id')
     items_pedido = json.loads(data.get('items_pedido'))
-    total_pedido = data.get('total_pedido')
 
     try:
         mesa = Mesa.objects.get(id=mesa_id)
-    except Mesa.DoesNotExist:
-        return JsonResponse({'status': 'error', 'message': 'Mesa no encontrada'})
+        
+        mesa.estado = 'ocupada'
+        mesa.save()
 
-    try:
+        pedido = Pedido.objects.create(mesa=mesa)
+
+        items_detalle = []
         for item in items_pedido:
             menu_item = MenuItem.objects.get(id=item['id'])
-            Pedido.objects.create(
-                mesa=mesa,
+            pedido_item = PedidoItem.objects.create(
+                pedido=pedido,
                 item_menu=menu_item,
                 cantidad=item['cantidad'],
-                precio_unitario=item['precio'],
-                precio_total=item['precio'] * item['cantidad']
+                precio_unitario=menu_item.precio
             )
+            items_detalle.append({
+                'nombre': menu_item.nombre,
+                'cantidad': item['cantidad'],
+                'precio_unitario': pedido_item.precio_unitario_formateado(),
+                'precio_total': pedido_item.precio_total_formateado()
+            })
 
-        mesa.ocupar()  # Asumiendo que tienes este método en tu modelo Mesa
-        return JsonResponse({'status': 'success', 'message': 'Pedido registrado correctamente'})
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Pedido registrado correctamente',
+            'pedido_id': pedido.id,
+            'mesa': pedido.mesa.nombre,
+            'fecha_pedido': pedido.fecha_pedido.strftime("%d/%m/%Y %H:%M:%S"),
+            'estado': pedido.get_estado_display(),
+            'items': items_detalle,
+            'total_pedido': pedido.precio_total_formateado()
+        })
     except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)})
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=400)
 
-@require_POST
 @login_required
-def marcar_pedido_pagado(request, pedido_id):
-    try:
-        pedido = Pedido.objects.get(id=pedido_id, estado='activo')
-        pedido.estado = 'pagado'
+@require_POST
+def cambiar_estado_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id)
+    nuevo_estado = request.POST.get('nuevo_estado')
+    
+    if nuevo_estado in dict(Pedido.ESTADO_CHOICES):
+        pedido.estado = nuevo_estado
         pedido.save()
-        return JsonResponse({'status': 'success', 'message': 'Pedido marcado como pagado'})
-    except Pedido.DoesNotExist:
-        return JsonResponse({'status': 'error', 'message': 'Pedido no encontrado o ya pagado'}, status=404)
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+        return JsonResponse({'status': 'success', 'nuevo_estado': nuevo_estado})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Estado inválido'}, status=400)

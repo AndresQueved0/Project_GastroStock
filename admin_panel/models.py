@@ -133,33 +133,54 @@ class MenuItem(models.Model):
     
 
 #pedidos
+
 class Pedido(models.Model):
     ESTADO_CHOICES = [
-        ('activo', 'Activo'),
-        ('pagado', 'Pagado'),
+        ('Pedido realizado', 'Pedido realizado'),
+        ('Preparado', 'Preparado'),
+        ('En mesa', 'En mesa'),
+        ('Pagado', 'Pagado'),
     ]
-
+    
     id = models.AutoField(primary_key=True)
     mesa = models.ForeignKey('Mesa', on_delete=models.CASCADE)
-    item_menu = models.ForeignKey('MenuItem', on_delete=models.CASCADE)
-    cantidad = models.PositiveIntegerField()
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     fecha_pedido = models.DateTimeField(default=timezone.now)
-    precio_total = models.DecimalField(max_digits=10, decimal_places=2)
-    estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='activo')
+    estado = models.CharField(max_length=16, choices=ESTADO_CHOICES, default='Pedido realizado')
+
+    @property
+    def precio_total(self):
+        return sum(item.precio_total for item in self.items.all())
 
     def precio_total_formateado(self):
-        precio_entero = int(self.precio_total)  # Convierte el precio a entero, eliminando los decimales
+        return self.formatear_precio(self.precio_total)
+
+    @staticmethod
+    def formatear_precio(precio):
+        precio_entero = int(precio)  # Convierte el precio a entero, eliminando los decimales
         precio_str = f"{precio_entero:,}".replace(",", ".")  # Formatea con puntos como separadores de miles
         return f"${precio_str}"
 
-    def save(self, *args, **kwargs):
-        # Calcula el precio total antes de guardar
-        self.precio_total = self.cantidad * self.precio_unitario
-        super().save(*args, **kwargs)
-
     def __str__(self):
-        return f"Pedido {self.id} - Mesa {self.mesa.nombre} - {self.item_menu.nombre}"
+        return f"Pedido {self.id} - Mesa {self.mesa.nombre}"
 
     class Meta:
         ordering = ['-fecha_pedido']
+
+class PedidoItem(models.Model):
+    pedido = models.ForeignKey(Pedido, related_name='items', on_delete=models.CASCADE)
+    item_menu = models.ForeignKey('MenuItem', on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+
+    @property
+    def precio_total(self):
+        return self.cantidad * self.precio_unitario
+
+    def precio_unitario_formateado(self):
+        return Pedido.formatear_precio(self.precio_unitario)
+
+    def precio_total_formateado(self):
+        return Pedido.formatear_precio(self.precio_total)
+
+    def __str__(self):
+        return f"{self.cantidad} x {self.item_menu.nombre}"

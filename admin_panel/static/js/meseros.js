@@ -112,21 +112,20 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Por favor, agregue items al pedido antes de generar el ticket.');
             return;
         }
-
+    
         if (!mesaSeleccionada) {
             alert('Error: No se ha seleccionado una mesa.');
             return;
         }
-
+    
         // Preparar los datos del pedido
         const datosPedido = {
             mesa_id: mesaSeleccionada.id,
-            items_pedido: JSON.stringify(pedidoActual),
-            total_pedido: totalPedido.toFixed(2)
+            items_pedido: JSON.stringify(pedidoActual)
         };
-
+    
         console.log("Enviando datos del pedido:", datosPedido);
-
+    
         // Enviar el pedido al servidor
         fetch(urlRegistrarPedido, {
             method: 'POST',
@@ -178,3 +177,50 @@ document.addEventListener('DOMContentLoaded', function() {
         mesaSeleccionada = null;
     });
 });
+
+document.querySelectorAll('.cambiar-estado-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const pedidoId = this.getAttribute('data-pedido-id');
+        console.log(pedidoId);  // Verifica si el pedidoId es correcto
+        const nuevoEstado = this.getAttribute('data-nuevo-estado');
+        
+        fetch(`cambiar-estado-pedido/${pedidoId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: `nuevo_estado=${nuevoEstado}`
+        })
+        .then(response => response.text())
+        .then(data => {
+            if (data.status === 'success') {
+                // Mover el pedido al final de la lista
+                const pedidoCard = document.querySelector(`.pedido-card[data-pedido-id="${pedidoId}"]`);
+                pedidoCard.style.order = '1';
+                
+                // Actualizar el texto del botón
+                this.textContent = `${data.nuevo_estado} - En mesa`;
+                this.classList.remove('btn-success');
+                this.classList.add('btn-secondary');
+                this.disabled = true;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}

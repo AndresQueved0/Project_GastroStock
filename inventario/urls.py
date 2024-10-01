@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('admin-panel/', include('admin_panel.urls')),
     path('login/', admin_panel_views.login_view, name='login'),
+    path('cambiar-estado-pedido/', include('admin_panel.urls')),
 
 ]
 

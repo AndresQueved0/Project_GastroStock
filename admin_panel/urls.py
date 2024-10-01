@@ -16,6 +16,7 @@ urlpatterns = [
     path('registro-mesas/', views.registro_mesas, name='registro_mesas'),
     path('registrar-producto-menu/', views.registrar_producto_menu, name='registrar_producto_menu'),
     path('borrar-menuitem/<int:menuitem_id>/', views.borrar_menuitem, name='borrar_menuitem'),
-    path('marcar_pedido_pagado/<int:pedido_id>/', views.marcar_pedido_pagado, name='marcar_pedido_pagado'),
     path('registrar-pedido/', views.registrar_pedido, name='registrar_pedido'),
+    path('cocina/cambiar-estado-pedido/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
+    path('meseros/cambiar-estado-pedido/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
 ]
