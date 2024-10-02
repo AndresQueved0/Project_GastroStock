@@ -291,7 +291,8 @@ def registrar_pedido(request):
         mesa.estado = 'ocupada'
         mesa.save()
 
-        pedido = Pedido.objects.create(mesa=mesa)
+        pedido = Pedido.objects.create(mesa=mesa, estado='Realizado')
+        pedido.save()
 
         items_detalle = []
         for item in items_pedido:
@@ -337,3 +338,18 @@ def cambiar_estado_pedido(request, pedido_id):
         return JsonResponse({'status': 'success', 'nuevo_estado': nuevo_estado})
     else:
         return JsonResponse({'status': 'error', 'message': 'Estado inválido'}, status=400)
+    
+def obtener_actualizaciones_meseros(request):
+    if request.method == 'GET':
+        pedidos_preparados = Pedido.objects.filter(estado='Preparado')
+        pedidos_realizados = Pedido.objects.filter(estado='Realizado')
+
+    # Debugging: imprimir las propiedades de los pedidos
+    for pedido in pedidos_realizados:
+        print(f"Pedido ID: {pedido.id}, Mesa: {pedido.mesa.nombre if pedido.mesa else 'Sin mesa'}")
+
+    return JsonResponse({
+        'pedidos_preparados': list(pedidos_preparados.values()),
+        'pedidos_realizados': list(pedidos_realizados.values()),
+    })
+

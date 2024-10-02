@@ -50,7 +50,8 @@
             </div>
         </div>
         
-        <div class="col-md-12 mt-5">
+        <div class="col-md-10 mt-5">
+
             <section id="mesas">
                 <div class="d-flex mt-3">
                     <h2 class=" mb-3">Mesas - Panel de Meseros</h2>
@@ -102,10 +103,10 @@
             </section>
 
             <section id="pedidos">
-                <div class="row g-4 mt-1" id="pedidosContainer">
+                <div class="row g-4 mt-1" id="pedidosContainerPreparados">
                     <h4>Pedidos preparados</h4>
                     {% for pedido in pedidos_preparados %}
-                    <div class="col-md-6 col-lg-3">
+                    <div class="col-md-6 col-lg-4">
                         <div class="card-container position-relative">
                             <div class="check-circle position-absolute">
                                 <span class="check-text">{{pedido.id}}</span>
@@ -136,11 +137,11 @@
                     </div>
                     {% endfor %}
                 </div>
-
-                <div class="row g-4 mt-5 mb-5" id="pedidosContainer">
-                    <h4>Pedidos realizados</h2>
+            
+                <div class="row g-4 mt-5 mb-5" id="pedidosContainerRealizados">
+                    <h4>Pedidos realizados</h4>
                     {% for pedido in pedidos_realizados %}
-                    <div class="col-md-6 col-lg-3">
+                    <div class="col-md-6 col-lg-4">
                         <div class="card-container position-relative">
                             <div class="check-circle position-absolute">
                                 <span class="check-text">{{pedido.id}}</span>
