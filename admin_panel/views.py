@@ -180,12 +180,14 @@ def login_view(request):
 def meseros_dashboard(request):
 
     verificar_mesas_disponibles()
+    obtener_pedidos(request)
 
     mesas = Mesa.objects.all()
     ubicaciones = Ubicacion.objects.all()
     categorias_menu = CategoriaMenu.objects.prefetch_related('items').all()
     pedidos_preparados = Pedido.objects.filter(estado='Preparado').order_by('fecha_pedido')
     pedidos_realizados = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
+
 
     ubicacion_id = request.GET.get('ubicacion')
     if ubicacion_id:
@@ -215,6 +217,22 @@ def verificar_mesas_disponibles():
         if not pedidos_realizados.exists():
             mesa.estado = 'disponible'
             mesa.save()
+
+def obtener_pedidos(request):
+    pedidos_preparados = Pedido.objects.filter(estado='Preparado').order_by('fecha_pedido')
+    pedidos_realizados = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
+    return render(request, 'meseros_dashboard.html', {
+        'pedidos_preparados': pedidos_preparados,
+        'pedidos_realizados': pedidos_realizados
+    })
+
+def obtener_estado_mesa(request, mesa_id):
+    try:
+        mesa = Mesa.objects.get(id=mesa_id)
+        estado = 'ocupada' if mesa.ocupada else 'Disponible'
+        return JsonResponse({'estado': estado})
+    except Mesa.DoesNotExist:
+        return JsonResponse({'error': 'Mesa no encontrada'}, status=404)
 
 #Eliminar plato del menu
 

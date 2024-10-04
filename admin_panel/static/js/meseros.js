@@ -1,3 +1,5 @@
+const urlObtenerPedidos = 'obtener-pedidos/';
+
 document.addEventListener('DOMContentLoaded', function() {
     // Manejo de la selección de secciones
     const links = document.querySelectorAll('#myLink');
@@ -118,19 +120,85 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('Pedido registrado correctamente');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pedido registrado',
+                    text: 'El pedido se registró correctamente',
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                    // Llamar a las funciones para actualizar la UI después de que la alerta se cierre
+                    actualizarEstadoMesa(datosPedido.mesaId); // Pasar el mesaId a la función
+                    actualizarListaPedidos();
+                });
                 pedidoActual = [];
                 actualizarPedidoUI();
                 $('#pedidoModal').modal('hide');
             } else {
-                alert('Error al registrar el pedido: ' + data.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al registrar el pedido: ' + data.message,
+                });
             }
-        })
-        .catch(error => {
-            console.error('Error al procesar la solicitud:', error);
-            alert('Error al procesar la solicitud');
         });
     });
+
+    window.actualizarEstadoMesa = function(mesaId) {
+        // Hacer una solicitud para obtener el estado actualizado de la mesa
+        fetch(`obtener-estado-mesa/${mesaId}/`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                    return;
+                }
+
+                // Actualizar el estado de la mesa en la UI
+                const mesaElement = document.querySelector(`[data-mesa-id="${mesaId}"]`);
+                if (mesaElement) {
+                    mesaElement.classList.remove('ocupada', 'libre'); // Remover clases anteriores
+                    mesaElement.classList.add(data.estado); // Añadir la nueva clase
+                    mesaElement.querySelector('.card-text').textContent = data.estado.charAt(0).toUpperCase() + data.estado.slice(1); // Actualiza el texto o cualquier otro elemento de la mesa
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    };
+    
+    function actualizarListaPedidos() {
+        // Recargar la parte de la página que contiene los pedidos
+        fetch('obtener-pedidos/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Reemplazar el contenido del contenedor de pedidos con el nuevo HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const nuevosPedidosPreparados = doc.getElementById('pedidosPreparadosContainer');
+                const nuevosPedidosRealizados = doc.getElementById('pedidosRealizadosContainer');
+    
+                if (nuevosPedidosPreparados && nuevosPedidosRealizados) {
+                    document.getElementById('pedidosPreparadosContainer').innerHTML = nuevosPedidosPreparados.innerHTML;
+                    document.getElementById('pedidosRealizadosContainer').innerHTML = nuevosPedidosRealizados.innerHTML;
+                } else {
+                    console.error('No se encontraron los nuevos contenedores de pedidos.');
+                }
+            })
+            .catch(error => {
+                console.error('Hubo un problema con la solicitud Fetch:', error);
+            });
+    }
 
     document.querySelectorAll('.cambiar-estado-btn').forEach(button => {
         button.addEventListener('click', function() {

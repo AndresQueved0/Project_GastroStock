@@ -184,3 +184,4 @@ class PedidoItem(models.Model):
 
     def __str__(self):
         return f"{self.cantidad} x {self.item_menu.nombre}"
+    
