@@ -50,8 +50,7 @@
             </div>
         </div>
         
-        <div class="col-md-10 mt-5">
-
+        <div class="col-md-12 mt-5">
             <section id="mesas">
                 <div class="d-flex mt-3">
                     <h2 class=" mb-3">Mesas - Panel de Meseros</h2>
@@ -103,10 +102,10 @@
             </section>
 
             <section id="pedidos">
-                <div class="row g-4 mt-1" id="pedidosContainerPreparados">
+                <div class="row g-4 mt-1" id="pedidosContainer">
                     <h4>Pedidos preparados</h4>
                     {% for pedido in pedidos_preparados %}
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-md-6 col-lg-3">
                         <div class="card-container position-relative">
                             <div class="check-circle position-absolute">
                                 <span class="check-text">{{pedido.id}}</span>
@@ -137,11 +136,11 @@
                     </div>
                     {% endfor %}
                 </div>
-            
-                <div class="row g-4 mt-5 mb-5" id="pedidosContainerRealizados">
-                    <h4>Pedidos realizados</h4>
+
+                <div class="row g-4 mt-5 mb-5" id="pedidosContainer">
+                    <h4>Pedidos realizados</h2>
                     {% for pedido in pedidos_realizados %}
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-md-6 col-lg-3">
                         <div class="card-container position-relative">
                             <div class="check-circle position-absolute">
                                 <span class="check-text">{{pedido.id}}</span>
@@ -191,7 +190,7 @@
                             <ul class="nav nav-tabs" id="menuTabs" role="tablist">
                                 {% for categoria in categorias_menu %}
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link {% if forloop.first %}active{% endif %}" id="tab-{{ categoria.id }}" data-bs-toggle="tab" data-bs-target="#categoria-{{ categoria.id }}" type="button" role="tab">
+                                    <button class="nav-link colorg {% if forloop.first %}active{% endif %}" id="tab-{{ categoria.id }}" data-bs-toggle="tab" data-bs-target="#categoria-{{ categoria.id }}" type="button" role="tab">
                                         {{ categoria.nombre }}
                                     </button>
                                 </li>
@@ -202,8 +201,8 @@
                                 <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="categoria-{{ categoria.id }}" role="tabpanel">
                                     <div class="row">
                                         {% for item in categoria.items.all %}
-                                        <div class="col-md-6 mb-3">
-                                            <div class="card" style="width: 14rem;">
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="card border-dark" style="width: 15rem; height: 250px; ">
                                                 <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 150px; overflow: hidden;">
                                                 {% if item.imagen %}
                                                 <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -212,7 +211,7 @@
                                                 <div class="card-body">
                                                     <h5 class="card-title">{{ item.nombre }}</h5>
                                                     <p class="card-text m-0"><strong>{{ item.precio_formateado }}</strong></p>
-                                                    <button class="btn btn-primary btn-sm agregar-item m-0" data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}">Agregar</button>
+                                                    <button class="btn btn-success btn-sm agregar-item m-0" data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}">Agregar</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -231,7 +230,7 @@
                                 </ul>
                                 <p>Total a pagar: $<span id="total-pagar">0</span></p>
                             </div>
-                            <button id="generar-ticket" class="btn btn-primary" data-url-registrar-pedido="{% url 'registrar_pedido' %}">
+                            <button id="generar-ticket" class="btn btn-success" data-url-registrar-pedido="{% url 'registrar_pedido' %}">
                                 Generar ticket
                             </button>
                             

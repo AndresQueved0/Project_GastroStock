@@ -19,5 +19,4 @@ urlpatterns = [
     path('registrar-pedido/', views.registrar_pedido, name='registrar_pedido'),
     path('cocina/cambiar-estado-pedido/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
     path('meseros/cambiar-estado-pedido/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
-    path('meseros/obtener-actualizaciones-meseros/', views.obtener_actualizaciones_meseros, name='obtener_actualizaciones_meseros'),
 ]

@@ -15,6 +15,7 @@ body {
     background-color: var(--success) !important;
 }
 
+
 .navbar::after {
     content: "";
     position: absolute;

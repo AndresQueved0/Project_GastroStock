@@ -5,26 +5,31 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib import messages
 from .models import Inventario, Categoria, Empleados, Mesa, Ubicacion, MenuItem, CategoriaMenu, Pedido, PedidoItem
 from .forms import InventarioForm, CustomLoginForm, EmpleadoForm, MesaForm, MenuItemForm
+
 from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 import json
 from datetime import datetime
 from django.db import transaction
+from django.db.models import Q
 
 
 #Listar datos de base de datos - Admin dashboard
 
+@login_required
 @login_required
 def admin_dashboard(request):
     productos = Inventario.objects.all()
     empleados = Empleados.objects.all()
     mesas = Mesa.objects.all()
     ubicaciones = Ubicacion.objects.all()
-    ubicacion_id = request.GET.get('ubicacion')
     categorias_menu = CategoriaMenu.objects.all()
     menu_items = MenuItem.objects.all()
-    
+
+    ubicacion_id = request.GET.get('ubicacion')
+    initial_section = request.GET.get('section', 'inventario')
+
     if request.method == 'POST':
         form = MenuItemForm(request.POST, request.FILES)
         if form.is_valid():
@@ -36,9 +41,6 @@ def admin_dashboard(request):
     if ubicacion_id:
         mesas = mesas.filter(ubicacion_id=ubicacion_id)
 
-    ubicacion_id = request.GET.get('ubicacion')
-    initial_section = request.GET.get('section', 'inventario')
-    
     context = {
         'productos': productos,
         'empleados': empleados,
@@ -176,32 +178,43 @@ def login_view(request):
 
 @login_required
 def meseros_dashboard(request):
+
+    verificar_mesas_disponibles()
+
     mesas = Mesa.objects.all()
     ubicaciones = Ubicacion.objects.all()
-    ubicacion_id = request.GET.get('ubicacion')
     categorias_menu = CategoriaMenu.objects.prefetch_related('items').all()
     pedidos_preparados = Pedido.objects.filter(estado='Preparado').order_by('fecha_pedido')
     pedidos_realizados = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
 
-
-
-
+    ubicacion_id = request.GET.get('ubicacion')
     if ubicacion_id:
         mesas = mesas.filter(ubicacion_id=ubicacion_id)
-    
-    
-    
+
     context = {
         'mesas': mesas,
         'ubicaciones': ubicaciones,
-        'ubicacion_seleccionada': ubicacion_id,
         'categorias_menu': categorias_menu,
         'pedidos_preparados': pedidos_preparados,
         'pedidos_realizados': pedidos_realizados,
         'time': datetime.now().timestamp()
     }
-    
     return render(request, 'meseros_dashboard.html', context)
+
+def verificar_mesas_disponibles():
+    # Obtener todas las mesas
+    mesas = Mesa.objects.all()
+
+    # Verificar si hay pedidos activos para cada mesa
+    for mesa in mesas:
+        pedidos_realizados = Pedido.objects.filter(mesa=mesa).filter(
+            Q(estado='Preparado') | Q(estado='Pedido realizado')
+        )
+
+        # Si no hay pedidos activos, cambiar el estado de la mesa a "disponible"
+        if not pedidos_realizados.exists():
+            mesa.estado = 'disponible'
+            mesa.save()
 
 #Eliminar plato del menu
 
@@ -222,37 +235,6 @@ def borrar_menuitem(request, menuitem_id):
             'message': f'Error al eliminar el plato: {str(e)}',
             'type': 'error'
         }, status=500)
-
-#Listar datos de la base de datos - Panel cocina
-
-@login_required
-def cocina_dashboard(request):
-    productos = Inventario.objects.all()
-    pedidos = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
-
-    context = {
-        'productos': productos,
-        'pedidos': pedidos,
-    }
-    return render(request, 'cocina_dashboard.html', context)
-
-#Listar datos de la base de datos - Panel caja
-
-@login_required
-def caja_dashboard(request):
-    productos = Inventario.objects.all()
-    pedidos_en_mesa = Pedido.objects.filter(estado='En mesa').order_by('fecha_pedido')
-
-    context = {
-        'productos': productos,
-        'pedidos_en_mesa': pedidos_en_mesa,
-    }
-    return render(request, 'caja_dashboard.html', context)
-
-#Listar mesas de la base de datos - Panel meseros
-
-
-#Registrar mesas - Panel meseros
 
 @login_required
 def registro_mesas(request):
@@ -291,8 +273,7 @@ def registrar_pedido(request):
         mesa.estado = 'ocupada'
         mesa.save()
 
-        pedido = Pedido.objects.create(mesa=mesa, estado='Realizado')
-        pedido.save()
+        pedido = Pedido.objects.create(mesa=mesa)
 
         items_detalle = []
         for item in items_pedido:
@@ -328,6 +309,8 @@ def registrar_pedido(request):
 
 @login_required
 @require_POST
+@login_required
+@require_POST
 def cambiar_estado_pedido(request, pedido_id):
     pedido = get_object_or_404(Pedido, id=pedido_id)
     nuevo_estado = request.POST.get('nuevo_estado')
@@ -335,21 +318,35 @@ def cambiar_estado_pedido(request, pedido_id):
     if nuevo_estado in dict(Pedido.ESTADO_CHOICES):
         pedido.estado = nuevo_estado
         pedido.save()
+
+        # Verificar mesas sin pedidos activos y marcarlas como disponibles
+        verificar_mesas_disponibles()
+
         return JsonResponse({'status': 'success', 'nuevo_estado': nuevo_estado})
     else:
         return JsonResponse({'status': 'error', 'message': 'Estado inválido'}, status=400)
+
     
-def obtener_actualizaciones_meseros(request):
-    if request.method == 'GET':
-        pedidos_preparados = Pedido.objects.filter(estado='Preparado')
-        pedidos_realizados = Pedido.objects.filter(estado='Realizado')
+@login_required
+def cocina_dashboard(request):
+    productos = Inventario.objects.all()
+    pedidos = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
 
-    # Debugging: imprimir las propiedades de los pedidos
-    for pedido in pedidos_realizados:
-        print(f"Pedido ID: {pedido.id}, Mesa: {pedido.mesa.nombre if pedido.mesa else 'Sin mesa'}")
+    context = {
+        'productos': productos,
+        'pedidos': pedidos,
+    }
+    return render(request, 'cocina_dashboard.html', context)
 
-    return JsonResponse({
-        'pedidos_preparados': list(pedidos_preparados.values()),
-        'pedidos_realizados': list(pedidos_realizados.values()),
-    })
+#Listar datos de la base de datos - Panel caja
 
+@login_required
+def caja_dashboard(request):
+    productos = Inventario.objects.all()
+    pedidos_en_mesa = Pedido.objects.filter(estado='En mesa').order_by('fecha_pedido')
+
+    context = {
+        'productos': productos,
+        'pedidos_en_mesa': pedidos_en_mesa,
+    }
+    return render(request, 'caja_dashboard.html', context)
