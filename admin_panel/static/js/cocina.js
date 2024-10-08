@@ -96,3 +96,53 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById("sidebar");
+    const content = document.querySelector(".content");
+    const toggleBtn = document.querySelector('.navbar-toggler');
+
+    function toggleSidebar() {
+        if (!sidebar || !content) {
+            console.error("No se encontraron los elementos #sidebar o .content en el DOM.");
+            return;
+        }
+
+        sidebar.classList.toggle("active");
+        content.classList.toggle("sidebar-active");
+
+        if (sidebar.classList.contains("active")) {
+            toggleBtn.innerHTML = "✕";
+            content.style.marginLeft = sidebar.offsetWidth + "px";
+        } else {
+            toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
+            content.style.marginLeft = "0";
+        }
+    }
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', toggleSidebar);
+    } else {
+        console.error("No se encontró el botón de alternar con la clase .navbar-toggler en el DOM.");
+    }
+
+    // Cerrar el sidebar cuando se hace clic en un enlace (en móviles y tablets)
+    document.querySelectorAll('#sidebar a').forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        });
+    });
+
+    // Ajustar el sidebar y el contenido al cambiar el tamaño de la ventana
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove("active");
+            content.classList.remove("sidebar-active");
+            content.style.marginLeft = "250px"; // Ajustar el margen del contenido en pantallas grandes
+        } else {
+            content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "0";
+        }
+    });
+});
