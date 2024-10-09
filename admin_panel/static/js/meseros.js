@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
             content.style.marginLeft = sidebar.offsetWidth + "px";
         } else {
             toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
-            content.style.marginLeft = "0";
+            content.style.marginLeft = "40px";
         }
     }
 
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth > 768) {
             sidebar.classList.remove("active");
             content.classList.remove("sidebar-active");
-            content.style.marginLeft = "250px"; // Ajustar el margen del contenido en pantallas grandes
+            content.style.marginLeft = "0"; // Ajustar el margen del contenido en pantallas grandes
         } else {
             content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "0";
         }

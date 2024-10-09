@@ -90,30 +90,6 @@ hr {
     left: 88% !important;  /* Cambia el valor predeterminado */
 }
 
-.check-text {
-    color: white;
-    font-size: 24px;
-    line-height: 1;
-    font-weight: bold;
-}
-
-.check-circle {
-    width: 60px;
-    height: 60px;
-    background-color: var(--success);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    left: 15;
-    top: -10px;
-    z-index: 1;
-}
-
-.check-circle i {
-    color: white;
-    font-size: 24px;
-}
 
 .card {
     border-color: var(--success);
