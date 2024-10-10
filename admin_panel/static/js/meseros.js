@@ -247,7 +247,7 @@ function getCookie(name) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById("sidebar");
-    const content = document.querySelector(".content");
+    const content = document.querySelector(".content-meseros");
     const toggleBtn = document.querySelector('.navbar-toggler');
 
     function toggleSidebar() {
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
             content.style.marginLeft = sidebar.offsetWidth + "px";
         } else {
             toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
-            content.style.marginLeft = "40px";
+            content.style.marginLeft = "0";
         }
     }
 

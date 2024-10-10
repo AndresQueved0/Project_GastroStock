@@ -9,6 +9,9 @@
     .navbar-toggler{
         display: none;
     }
+    .iconos{
+        margin-left: 17px;
+    }
     .check-text {
         color: white;
         font-size: 24px;
@@ -73,6 +76,9 @@
         height: 100%;
         overflow-x: hidden; /* Evita el desbordamiento horizontal */
     }
+    .iconos{
+        margin-left: 17px;
+    }
     .navbar-toggler{
         display: none;
     }
@@ -133,6 +139,9 @@
 
     .navbar-toggler.sidebar-active {
         left: 260px;
+    }
+    .iconos{
+        margin-left: 17px;
     }
     .content {
         transition: margin-left 0.5s;
@@ -197,7 +206,7 @@
     }
 }
 
-@media (max-width: 425px) {
+@media (max-width: 500px) {
     body, html {
         margin: 0;
         padding: 0;
@@ -209,36 +218,49 @@
         margin-top: 45px !important;
         margin-left: -30px;
     }
+    .iconos{
+        margin: 0;
+        margin-left: -50px;
+    }
+    hr{
+        width: 80%;
+    }
     #sidebar {
         top: 0;
         left: -250px;
-        height: 100vh;
-        width: 80px;
+        width: 140px;
+        margin-left: -10px;
+        padding-top: 15px !important;
         background-color: #ffffff;
         z-index: 1000;
+        transition: left 0.5s, width 0.5s; /* Añade transición para el ancho */
     }
-
     #sidebar.active {
         top:0;
         left:0;
-        width: 100px;
-        margin-left: 20px;
-        margin-top: 100px;
+        width: 140px;
+        margin-left: -10px;
+        padding-top: 15px !important;
         transition: left 0.5s;
         background-color: #ffffff !important;
+        border: 3px solid var(--success);
     }
 
     .navbar-toggler.sidebar-active {
         left: 270px;
     }
-    .content{
-        margin-top: 40px !important;
+    .content-meseros{
+        transition: margin-left 0.5s;
+        margin-top: 0px !important;
+        margin-left: 35px !important;
     }
-    .content .title-mesa{
+    .title-mesa{
+        margin-top: 45px !important;
         font-size: 20px;
-        margin-left: 40px;
+        margin-left: 80px;
     }
-    .content .title-pedido{
+    .title-pedido{
+        margin-top: 45px !important;
         font-size: 20px;
         margin-left: 130px !important;
     }
@@ -295,8 +317,5 @@
     .check-circle i {
         color: white;
         font-size: 24px;
-    }
-    .title-pedido{
-        margin-left: 110px !important;
     }
 }
