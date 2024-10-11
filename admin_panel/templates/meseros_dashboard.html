@@ -60,13 +60,13 @@
 
         <div class="col-md-12 mt-5 content-meseros">
             <section id="mesas">
-                <div class="d-flex mt-3">
-                    <h2 class="title-mesa mb-3">Mesas - Panel de Meseros</h2>
+                <div class="d-flex mt-3 sticky-title">
+                    <h2 class="title-mesa mb-3">Mesas</h2>
                 </div>
                 
                 <div class="mb-3 inputBox">
                     <select id="ubicacion-select" class="form-select" required>
-                        <option value="">Todas las ubicaciones</option>
+                        <option value="todas">Todas las ubicaciones</option>
                         {% for ubicacion in ubicaciones %}
                             <option value="{{ ubicacion.id }}" {% if ubicacion.id|stringformat:"s" == ubicacion_seleccionada %}selected{% endif %}>
                                 {{ ubicacion.nombre }}
@@ -110,11 +110,18 @@
             </section>
 
             <section id="pedidos">
+                <div class="d-flex mt-3 sticky-title2">
+                        <h2 class="title-pedido mb-3">Pedidos</h2>
+                    </div>
                 <div class="row g-4 mt-1" id="pedidosPreparadosContainer">
-                    <h4>Pedidos preparados</h4>
+                    
+
+                    <div class="d-flex mt-3">
+                        <h2 class="title-pedidos mb-3">Pedidos preparados</h2>
+                    </div>
                     {% for pedido in pedidos_preparados %}
                     <div class="col-md-6 col-lg-3">
-                        <div class="card-container position-relative">
+                        <div class="card-pedido position-relative">
                             <div class="check-circle position-absolute">
                                 <span class="check-text">{{pedido.id}}</span>
                             </div>
@@ -139,23 +146,25 @@
                         </div>
                     </div>
                     {% empty %}
-                    <div class="col-12">
+                    <div class="col-12 boxPedido">
                         <p>No hay pedidos registrados en este momento.</p>
                     </div>
                     {% endfor %}
                 </div>
 
                 <div class="row g-4 mt-5 mb-5" id="pedidosRealizadosContainer">
-                    <h4>Pedidos realizados</h2>
+                    <div class="d-flex mt-3">
+                        <h2 class="title-pedidos mb-3">Pedidos realizados</h2>
+                    </div>
                     {% for pedido in pedidos_realizados %}
-                    <div class="col-md-6 col-lg-3">
-                        <div class="card-container position-relative">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card-pedido position-relative">
                             <div class="check-circle position-absolute">
                                 <span class="check-text">{{pedido.id}}</span>
                             </div>
-                            <div class="card border-success ms-4">
+                            <div class="card border-success">
                                 <div class="card-header">
-                                    <h5 class="card-title text-center m-2"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
+                                    <h5 class="card-title text-center m-0"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-unstyled ms-4">
@@ -185,43 +194,45 @@
 
     <!-- Modal para toma de pedidos -->
     <div class="modal fade" id="pedidoModal" tabindex="-1" aria-labelledby="pedidoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-xl mt-5">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="pedidoModalLabel">Tomar Pedido</h5>
+                    <h5 id="pedidoModalLabel">Tomar Pedido</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-8">
-                            <h3>MENÚ</h3>
-                            <ul class="nav nav-tabs" id="menuTabs" role="tablist">
+                            <h3 class="titleMenu">Menú</h3>
+                            <!-- Select para las categorías -->
+                            <select class="form-select" id="categoriaSelect" aria-label="Seleccionar categoría">
                                 {% for categoria in categorias_menu %}
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link colorg {% if forloop.first %}active{% endif %}" id="tab-{{ categoria.id }}" data-bs-toggle="tab" data-bs-target="#categoria-{{ categoria.id }}" type="button" role="tab">
+                                    <option value="categoria-{{ categoria.id }}" {% if forloop.first %}selected{% endif %}>
                                         {{ categoria.nombre }}
-                                    </button>
-                                </li>
+                                    </option>
                                 {% endfor %}
-                            </ul>
+                            </select>
+    
+                            <!-- Contenido de las categorías -->
                             <div class="tab-content mt-3" id="menuTabContent">
                                 {% for categoria in categorias_menu %}
                                 <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="categoria-{{ categoria.id }}" role="tabpanel">
                                     <div class="row">
                                         {% for item in categoria.items.all %}
-                                        <div class="col-md-6 col-lg-4 mb-3">
-                                            <div class="card border-dark" style="width: 15rem; height: 250px; ">
-                                                <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 150px; overflow: hidden;">
-                                                {% if item.imagen %}
-                                                <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
-                                                {% endif %}
-                                            </div>
+                                        <div class="col-6 col-md-4 col-lg-4 mb-3">
+                                            <div class="card tomaPedido border-dark agregar-item" data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}">
+                                                <div class="card-img-top d-flex align-items-center justify-content-center">
+                                                    {% if item.imagen %}
+                                                    <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" class="imgMenu" style="width: 100%; height: 100%; object-fit: cover;">
+                                                    {% endif %}
+                                                </div>
                                                 <div class="card-body">
-                                                    <h5 class="card-title">{{ item.nombre }}</h5>
+                                                    <h5 class="card-title m-0">{{ item.nombre }}</h5>
                                                     <p class="card-text m-0"><strong>{{ item.precio_formateado }}</strong></p>
-                                                    <button class="btn btn-success btn-sm agregar-item m-0" data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}">Agregar</button>
+                                                    <!-- El botón "Agregar" ha sido removido -->
                                                 </div>
                                             </div>
+                                            
                                         </div>
                                         {% endfor %}
                                     </div>
@@ -230,24 +241,24 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <h3>PEDIDO ACTUAL</h3>
+                            <h3 class="titleMenu">Pedido actual</h3>
                             <div id="pedido-actual">
-                                <p><span id="mesa-numero"></span> - <span id="mesa-ubicacion"></span></p>
+                                <p> <strong> <span id="mesa-numero"></span> - <span id="mesa-ubicacion"></span></strong></p>
                                 <ul id="lista-pedidos">
                                     <!-- Aquí se agregarán los items del pedido -->
                                 </ul>
-                                <p>Total a pagar: $<span id="total-pagar">0</span></p>
+                                <p> <strong> Total a pagar: $<span id="total-pagar">0</span></strong></p>
                             </div>
                             <button id="generar-ticket" class="btn btn-success" data-url-registrar-pedido="{% url 'registrar_pedido' %}">
                                 Generar ticket
                             </button>
-                            
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
 
     <script src="{% static 'js/meseros.js' %}?{% now 'U' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

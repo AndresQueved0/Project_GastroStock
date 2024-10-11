@@ -19,7 +19,6 @@ body {
     background-color: #ffffff;
 }
 
-
 .navbar::after {
     content: "";
     position: absolute;
@@ -45,13 +44,12 @@ hr {
     font-size: 15px;
     position: fixed;
     left: 10px;
-    top: 80px;
-    padding: 10px 15px;
+    top: 75px;
+    padding: 12px 40px 25px 20px;
     border: none;
     cursor: pointer;
     outline: none;
     transition: left 1s;
-    z-index: 1050;
 }
 .navbar-toggler:focus {
     outline: none; /* Elimina el borde de enfoque cuando el botón está enfocado */

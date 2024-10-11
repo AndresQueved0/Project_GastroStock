@@ -54,9 +54,6 @@
         object-fit: contain; 
         object-position: center;
     }
-    .card-container {
-        width: 20rem;
-    }
     .content{
         margin-right: 60px !important;
     
@@ -82,6 +79,30 @@
     .navbar-toggler{
         display: none;
     }
+    .check-text {
+        color: white;
+        font-size: 25px;
+        line-height: 1;
+        font-weight: bold;
+    }
+    
+    .check-circle {
+        width: 60px;
+        height: 60px;
+        background-color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 35px !important;
+        top: -10px;
+        z-index: 1;
+    }
+    
+    .check-circle i {
+        color: white;
+        font-size: 24px;
+    }
     .card-mesa{
         width: 13rem; 
         cursor: pointer;
@@ -96,17 +117,9 @@
         object-fit: contain; 
         object-position: center;
     }
-    .card-container {
-        width: 20rem;
-    }
     .card-pedido {
         width: 20rem;
-        margin: 0;
-    }
-    .card-pedido {
-        width: 15rem;
-        margin: 0;
-        margin-top: 10px !important;
+        margin-right: 80px !important;
     }
 }
 
@@ -143,7 +156,7 @@
     .iconos{
         margin-left: 17px;
     }
-    .content {
+    .content-meseros {
         transition: margin-left 0.5s;
         margin-left: 40px;
     }
@@ -207,19 +220,30 @@
 }
 
 @media (max-width: 500px) {
+    /* CONFIGURACION GLOBAL */
     body, html {
         margin: 0;
         padding: 0;
         width: 100%;
         height: 100%;
-        overflow-x: hidden; /* Evita el desbordamiento horizontal */
+        overflow-x: hidden;
+    }
+    .sticky-title {
+        position: sticky;
+        top: 0;
+        background-color: white !important;
+        z-index: 1000; /* Asegura que el título esté por encima de otros elementos */
+        padding-top: 50px; /* Ajusta el padding según sea necesario */
+    }
+    .sticky-title2 {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 1000; /* Asegura que el título esté por encima de otros elementos */
+        padding-top: 50px; /* Ajusta el padding según sea necesario */
     }
     .btn-icon{
         padding: 0 !important;
-    }
-    .content-pedido{
-        margin-top: 45px !important;
-        margin-left: -30px;
     }
     .iconos{
         margin: 0;
@@ -227,9 +251,6 @@
     }
     hr{
         width: 80%;
-    }
-    .content-meseros#sidebar.active{
-        margin-left: 50px;
     }
     #sidebar {
         top: 0;
@@ -251,40 +272,122 @@
         background-color: #ffffff !important;
         border: 3px solid var(--success);
     }
-
-    .navbar-toggler.sidebar-active {
-        left: 270px;
+    .navbar-toggler {
+        background-color: #ffffff;
+        font-size: 15px;
+        position: fixed;
+        left: 10px;
+        top: 75px;
+        padding: 12px 40px 25px 20px;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        transition: left 1s;
+        z-index: 1001;
     }
+    .navbar-toggler.sidebar-active {
+        left: 10px;
+        background-color: transparent !important;
+    }
+    .check-text {
+        color: white;
+        font-size: 24px;
+        line-height: 1;
+        font-weight: bold;
+    }
+    
+    .check-circle {
+        width: 60px;
+        height: 60px;
+        background-color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: -19px;
+        top: -10px;
+        z-index: 1;
+    }
+    
+    .check-circle i {
+        color: white;
+        font-size: 24px;
+    }
+
+    /*CONFIGURACION PANEL MESEROS*/
     .content-meseros{
         transition: margin-left 0.5s;
         margin-top: 0px !important;
         margin-left: 0;
-        padding-left: 40px;
+        padding-left: 35px;
     }
+    
     .content-meseros.sidebar-active {
         padding-left: 55px;
+    }
+
+    .inputBox {
+        margin-left: 20px;
+        margin-top: 20px;
     }
     .inputBox.sidebar-active {
         transition: margin-left 0.5s;
         margin-left: -25px;;
     }
-    .title-mesa.sidebar-active {
-        margin-left: -25px !important;
-    }
+
     .title-mesa{
         margin-top: 45px !important;
-        font-size: 20px;
-        margin-left: 60px;
+        font-size: 30px;
+        margin-left: 130px;
     }
-    .title-pedido{
-        margin-top: 45px !important;
+
+    .title-mesa.sidebar-active {
+        margin-left: 10px !important;
+        background-color: #ffffff;
+        padding: 10px 20px 20px 20px;
+    }
+
+    .title-pedidos{
+        margin-top: 2px !important;
         font-size: 20px;
-        margin-left: 130px !important;
+        margin-left: 90px !important;
+    }
+
+    .title-pedidos.sidebar-active {
+        margin-left: -40px !important;
+    }
+
+    .title-pedido{
+        background-color: #ffffff;
+        font-size: 30px;
+        margin-left: 120px !important;
+        margin-top: 45px;
+    }
+
+    .title-pedido.sidebar-active {
+        margin-left: -40px !important;
+    }
+
+    .boxPedido{
+        margin-left: 5px;
+    }
+
+    .boxPedido.sidebar-active{
+        margin-left: -40px;
     }
     .card-mesa{
         width: 10rem; 
+        margin-left: 0px;
         cursor: pointer;
     }
+    
+    .card-pedido{
+        width: 22rem;
+        margin: 0;
+        margin-left: 0;
+        margin-top: 10px !important;
+    }
+
     .card-icon{
         margin: 20px;
         margin-bottom: 0;
@@ -302,37 +405,25 @@
     .card-text{
         font-size: 15px;
     }
-    .card-pedido {
-        width: 13rem;
-        margin: 0;
-        margin-top: 10px !important;
-    }
     .card-body-pedido{
         font-size: 10px;
     }
-    
-    .check-text {
-        color: white;
-        font-size: 24px;
-        line-height: 1;
-        font-weight: bold;
+    .card-img-top{
+        overflow: hidden;
+        height: 19vw;
     }
-    
-    .check-circle {
-        width: 45px;
-        height: 45px;
-        background-color: var(--success);
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        left: 15;
-        top: -10px;
-        z-index: 1;
+    .imgMenu{
+        object-fit: cover;
     }
-    
-    .check-circle i {
-        color: white;
-        font-size: 24px;
+    .titleMenu{
+        text-align: center;
+    }
+    #menuTabContent{
+        height: 300px; /* Altura fija para el contenedor del menú */
+        overflow-y: auto;
+    }
+    .tomaPedido{
+        margin-left: 5px;
+        width: 10rem;
     }
 }

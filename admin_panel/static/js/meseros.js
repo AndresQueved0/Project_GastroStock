@@ -39,87 +39,124 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Manejo del selector de ubicación
-    const ubicacionSelect = document.getElementById('ubicacion-select');
-    ubicacionSelect.addEventListener('change', function() {
-        const selectedUbicacion = this.value;
-        const baseUrl = window.location.pathname; // Obtiene la URL actual sin parámetros
-    
-        // Redirigir a la misma página con el parámetro correspondiente
-        if (selectedUbicacion) {
-            // Redirige si hay una ubicación seleccionada
-            window.location.href = `${baseUrl}?ubicacion=${selectedUbicacion}`;
-        } else {
-            // Redirige a la misma página sin el parámetro si no hay selección
-            window.location.href = baseUrl; 
+
+const ubicacionSelect = document.getElementById('ubicacion-select');
+ubicacionSelect.addEventListener('change', function() {
+    const selectedUbicacion = this.value;
+    const baseUrl = window.location.pathname; // Obtiene la URL actual sin parámetros
+
+    fetch(`${baseUrl}?ubicacion=${selectedUbicacion}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'  // Indica que es una petición AJAX
         }
-    });
-    
+    })
+        .then(response => response.text())
+        .then(data => {
+            // Actualiza el contenedor de mesas con la nueva data
+            document.getElementById('mesasContainer').innerHTML = data;
+        })
+        .catch(error => console.error('Error al cargar mesas:', error));
+});
+
+
 
 
     // Manejo de pedidos en la vista del mesero
     let pedidoActual = [];
     let totalPedido = 0;
     let mesaSeleccionada = null;
-
+    
     const listaPedidos = document.getElementById('lista-pedidos');
     const totalPagarSpan = document.getElementById('total-pagar');
     const generarTicketBtn = document.getElementById('generar-ticket');
     const mesaNumeroSpan = document.getElementById('mesa-numero');
     const mesaUbicacionSpan = document.getElementById('mesa-ubicacion');
-
+    const urlRegistrarPedido = generarTicketBtn.getAttribute('data-url-registrar-pedido');
+    
     window.actualizarInfoMesa = function(id, nombre, ubicacion) {
         mesaSeleccionada = { id, nombre, ubicacion };
         mesaNumeroSpan.textContent = nombre;
         mesaUbicacionSpan.textContent = ubicacion;
     };
-
-    document.querySelectorAll('.agregar-item').forEach(button => {
-        button.addEventListener('click', function() {
+    
+    document.querySelectorAll('.agregar-item').forEach(card => {
+        card.addEventListener('click', function() {
             const id = this.dataset.id;
             const nombre = this.dataset.nombre;
             const precio = parseFloat(this.dataset.precio);
-
+    
             let itemExistente = pedidoActual.find(item => item.id === id);
             if (itemExistente) {
                 itemExistente.cantidad += 1;
             } else {
                 pedidoActual.push({ id, nombre, precio, cantidad: 1 });
             }
-
+    
             actualizarPedidoUI();
         });
     });
-
+    
     function actualizarPedidoUI() {
-        listaPedidos.innerHTML = '';
+        listaPedidos.innerHTML = ''; // Limpiar la lista antes de actualizarla
         totalPedido = 0;
-
-        pedidoActual.forEach(item => {
+    
+        pedidoActual.forEach((item, index) => {
+            // Crear un elemento de lista para cada producto
             const li = document.createElement('li');
-            li.textContent = `${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}`;
-            listaPedidos.appendChild(li);
+            li.classList.add('mb-2');
+            li.style.listStyleType = 'disc'; // Asegurar que los símbolos de lista se muestren
+            li.style.paddingLeft = '0'; // Para alinear el texto después del símbolo de lista
+    
+            // Crear un contenedor para el contenido del flexbox
+            const itemContent = document.createElement('div');
+            itemContent.classList.add('d-flex', 'justify-content-between', 'align-items-center');
+            itemContent.innerHTML = `
+                <span>${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}</span>
+                <button class="btn btn-danger border-danger btn-sm eliminar-item" data-index="${index}">X</button>
+            `;
+    
+            li.appendChild(itemContent); // Añadir el contenido flexbox dentro del <li>
+            listaPedidos.appendChild(li); // Añadir el <li> a la lista
+    
+            // Calcular el total
             totalPedido += item.precio * item.cantidad;
         });
-
+    
+        // Actualizar el total a pagar
         totalPagarSpan.textContent = totalPedido.toFixed(2);
+    
+        // Agregar evento a los botones "X" para eliminar productos
+        document.querySelectorAll('.eliminar-item').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = this.dataset.index;
+                eliminarItemDelPedido(index);
+            });
+        });
     }
-
+    
+    function eliminarItemDelPedido(index) {
+        // Eliminar el producto de la lista del pedido
+        pedidoActual.splice(index, 1);
+        actualizarPedidoUI();  // Volver a actualizar la interfaz
+    }
+    
     generarTicketBtn.addEventListener('click', function() {
         if (pedidoActual.length === 0) {
             alert('Por favor, agregue items al pedido antes de generar el ticket.');
             return;
         }
-
+    
         if (!mesaSeleccionada) {
             alert('Error: No se ha seleccionado una mesa.');
             return;
         }
-
+    
         const datosPedido = {
             mesa_id: mesaSeleccionada.id,
             items_pedido: JSON.stringify(pedidoActual)
         };
-
+    
         fetch(urlRegistrarPedido, {
             method: 'POST',
             headers: {
@@ -139,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     timer: 2000
                 }).then(() => {
                     // Llamar a las funciones para actualizar la UI después de que la alerta se cierre
-                    actualizarEstadoMesa(datosPedido.mesaId); // Pasar el mesaId a la función
+                    actualizarEstadoMesa(datosPedido.mesa_id); // Cambiar de mesaId a mesa_id
                     actualizarListaPedidos();
                 });
                 pedidoActual = [];
@@ -152,8 +189,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     text: 'Error al registrar el pedido: ' + data.message,
                 });
             }
+        })
+        .catch(error => {
+            console.error('Error al registrar el pedido:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error en la conexión al servidor.',
+            });
         });
     });
+    
 
     window.actualizarEstadoMesa = function(mesaId) {
         // Hacer una solicitud para obtener el estado actualizado de la mesa
@@ -169,19 +215,39 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error(data.error);
                     return;
                 }
-
+    
                 // Actualizar el estado de la mesa en la UI
                 const mesaElement = document.querySelector(`[data-mesa-id="${mesaId}"]`);
                 if (mesaElement) {
-                    mesaElement.classList.remove('ocupada', 'libre'); // Remover clases anteriores
-                    mesaElement.classList.add(data.estado); // Añadir la nueva clase
-                    mesaElement.querySelector('.card-text').textContent = data.estado.charAt(0).toUpperCase() + data.estado.slice(1); // Actualiza el texto o cualquier otro elemento de la mesa
+                    // Remover las clases de estado anteriores
+                    mesaElement.classList.remove('ocupada', 'libre');
+                    
+                    // Añadir la nueva clase de estado
+                    mesaElement.classList.add(data.estado);
+                    
+                    // Actualizar la clase del footer de la tarjeta
+                    const footer = mesaElement.querySelector('.card-footer');
+                    if (footer) {
+                        footer.classList.remove('bg-success', 'bg-danger');
+                        footer.classList.add(data.estado === 'disponible' ? 'bg-success' : 'bg-danger');
+                    }
+    
+                    // Cambiar el borde de la tarjeta según el estado
+                    if (data.estado === 'ocupada') {
+                        mesaElement.classList.add('border-danger'); // Añadir borde rojo
+                    } else {
+                        mesaElement.classList.remove('border-danger'); // Remover borde rojo
+                    }
+    
+                    mesaElement.querySelector('.card-text').textContent = data.estado.charAt(0).toUpperCase() + data.estado.slice(1); // Actualiza el texto
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     };
+    
+    
     
     function actualizarListaPedidos() {
         // Recargar la parte de la página que contiene los pedidos
@@ -261,7 +327,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const content = document.querySelector(".content-meseros");
     const toggleBtn = document.querySelector('.navbar-toggler');
     const titleMesa = document.querySelector('.title-mesa');
-    const inputBox = document.querySelector('.inputBox'); // Selecciona el inputBox
+    const titlePedidos = document.querySelector('.title-pedidos');
+    const titlePedido = document.querySelector('.title-pedido');
+    const boxPedido = document.querySelector('.boxPedido');
+    const inputBox = document.querySelector('.inputBox');
 
     function toggleSidebar() {
         if (!sidebar || !content || !titleMesa || !inputBox) {
@@ -271,8 +340,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         sidebar.classList.toggle("active");
         content.classList.toggle("sidebar-active");
+        toggleBtn.classList.toggle("sidebar-active");
         titleMesa.classList.toggle("sidebar-active");
-        inputBox.classList.toggle("sidebar-active");  // Alterna la visibilidad del inputBox
+        titlePedidos.classList.toggle("sidebar-active");
+        titlePedido.classList.toggle("sidebar-active");
+        boxPedido.classList.toggle("sidebar-active");
+        inputBox.classList.toggle("sidebar-active");
 
         if (sidebar.classList.contains("active")) {
             toggleBtn.innerHTML = "✕";
@@ -305,7 +378,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth > 768) {
             sidebar.classList.remove("active");
             content.classList.remove("sidebar-active");
+            toggleBtn.classList.remove("sidebar-active");
             titleMesa.classList.remove("sidebar-active");
+            titlePedidos.classList.remove("sidebar-active");
+            titlePedido.classList.remove("sidebar-active");
+            boxPedido.classList.remove("sidebar-active");
             inputBox.classList.remove("active");  // Asegurarse de ocultar el inputBox
             content.style.marginLeft = "0"; // Ajustar el margen del contenido en pantallas grandes
         } else {

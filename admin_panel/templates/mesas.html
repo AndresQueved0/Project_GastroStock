@@ -1,0 +1,22 @@
+{% load static %}
+<div class="row" id="mesasContainer">
+    {% for mesa in mesas %}
+    <div class="col-4 col-md-3 col-lg-2 mb-4 mt-3 me-5 ">
+        <div class="card card-mesa{% if mesa.estado == 'ocupada' %} border-danger {% endif %}" data-mesa-id="{{ mesa.id }}" data-bs-toggle="modal" data-bs-target="#pedidoModal" data-mesa-nombre="{{ mesa.nombre }}" data-mesa-ubicacion="{{ mesa.ubicacion }}" onclick="actualizarInfoMesa('{{ mesa.id }}', '{{ mesa.nombre }}', '{{ mesa.ubicacion }}'); actualizarEstadoMesa('{{ mesa.id }}');">
+            <div class="card-icon d-flex justify-content-center align-items-center">
+                <img src="{% static 'img/mesa-de-comedor.png' %}" class="img-fluid" alt="Foto por defecto">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title text-center m-0">{{ mesa.nombre }} - <span class="mesa-ubicacion">{{ mesa.ubicacion }}</span></h5>
+            </div>
+            <div class="card-footer text-center m-0 {% if mesa.estado == 'disponible' %}bg-success{% else %}bg-danger{% endif %}">
+                <p class="card-text text-white"><strong>{{ mesa.get_estado_display }}</strong></p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>No hay mesas registradas para esta ubicación.</p>
+    </div>
+    {% endfor %}
+</div>

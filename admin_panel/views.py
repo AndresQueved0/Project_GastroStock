@@ -178,20 +178,25 @@ def login_view(request):
 
 @login_required
 def meseros_dashboard(request):
+    verificar_mesas_disponibles()  # Asegúrate de que esta función está definida
+    obtener_pedidos(request)  # Asegúrate de que esta función está definida
 
-    verificar_mesas_disponibles()
-    obtener_pedidos(request)
-
+    # Obtener todas las mesas
     mesas = Mesa.objects.all()
     ubicaciones = Ubicacion.objects.all()
     categorias_menu = CategoriaMenu.objects.prefetch_related('items').all()
     pedidos_preparados = Pedido.objects.filter(estado='Preparado').order_by('fecha_pedido')
     pedidos_realizados = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
 
-
-    ubicacion_id = request.GET.get('ubicacion')
-    if ubicacion_id:
+    # Filtrar mesas por ubicación si se proporciona
+    ubicacion_id = request.GET.get('ubicacion', 'todas')  # Establecer 'todas' como valor predeterminado
+    if ubicacion_id != 'todas' and ubicacion_id:
         mesas = mesas.filter(ubicacion_id=ubicacion_id)
+
+    # Verifica si la solicitud es AJAX usando la cabecera HTTP
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # Renderiza la plantilla parcial solo con mesas
+        return render(request, 'mesas.html', {'mesas': mesas})
 
     context = {
         'mesas': mesas,
@@ -201,6 +206,7 @@ def meseros_dashboard(request):
         'pedidos_realizados': pedidos_realizados,
         'time': datetime.now().timestamp()
     }
+
     return render(request, 'meseros_dashboard.html', context)
 
 def verificar_mesas_disponibles():
@@ -229,7 +235,7 @@ def obtener_pedidos(request):
 def obtener_estado_mesa(request, mesa_id):
     try:
         mesa = Mesa.objects.get(id=mesa_id)
-        estado = 'ocupada' if mesa.ocupada else 'Disponible'
+        estado = mesa.estado  # Esto devuelve 'disponible' o 'ocupada'
         return JsonResponse({'estado': estado})
     except Mesa.DoesNotExist:
         return JsonResponse({'error': 'Mesa no encontrada'}, status=404)
