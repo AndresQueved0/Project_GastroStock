@@ -214,16 +214,22 @@
         height: 100%;
         overflow-x: hidden; /* Evita el desbordamiento horizontal */
     }
+    .btn-icon{
+        padding: 0 !important;
+    }
     .content-pedido{
         margin-top: 45px !important;
         margin-left: -30px;
     }
     .iconos{
         margin: 0;
-        margin-left: -50px;
+        margin-left: -20px;
     }
     hr{
         width: 80%;
+    }
+    .content-meseros#sidebar.active{
+        margin-left: 50px;
     }
     #sidebar {
         top: 0;
@@ -252,12 +258,23 @@
     .content-meseros{
         transition: margin-left 0.5s;
         margin-top: 0px !important;
-        margin-left: 35px !important;
+        margin-left: 0;
+        padding-left: 40px;
+    }
+    .content-meseros.sidebar-active {
+        padding-left: 55px;
+    }
+    .inputBox.sidebar-active {
+        transition: margin-left 0.5s;
+        margin-left: -25px;;
+    }
+    .title-mesa.sidebar-active {
+        margin-left: -25px !important;
     }
     .title-mesa{
         margin-top: 45px !important;
         font-size: 20px;
-        margin-left: 80px;
+        margin-left: 60px;
     }
     .title-pedido{
         margin-top: 45px !important;

@@ -42,8 +42,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const ubicacionSelect = document.getElementById('ubicacion-select');
     ubicacionSelect.addEventListener('change', function() {
         const selectedUbicacion = this.value;
-        window.location.href = `?ubicacion=${selectedUbicacion}`;
+        const baseUrl = window.location.pathname; // Obtiene la URL actual sin parámetros
+    
+        // Redirigir a la misma página con el parámetro correspondiente
+        if (selectedUbicacion) {
+            // Redirige si hay una ubicación seleccionada
+            window.location.href = `${baseUrl}?ubicacion=${selectedUbicacion}`;
+        } else {
+            // Redirige a la misma página sin el parámetro si no hay selección
+            window.location.href = baseUrl; 
+        }
     });
+    
+
 
     // Manejo de pedidos en la vista del mesero
     let pedidoActual = [];
@@ -249,21 +260,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById("sidebar");
     const content = document.querySelector(".content-meseros");
     const toggleBtn = document.querySelector('.navbar-toggler');
+    const titleMesa = document.querySelector('.title-mesa');
+    const inputBox = document.querySelector('.inputBox'); // Selecciona el inputBox
 
     function toggleSidebar() {
-        if (!sidebar || !content) {
-            console.error("No se encontraron los elementos #sidebar o .content en el DOM.");
+        if (!sidebar || !content || !titleMesa || !inputBox) {
+            console.error("No se encontraron los elementos #sidebar, .content-meseros, .title-mesa o #inputBox en el DOM.");
             return;
         }
 
         sidebar.classList.toggle("active");
         content.classList.toggle("sidebar-active");
+        titleMesa.classList.toggle("sidebar-active");
+        inputBox.classList.toggle("sidebar-active");  // Alterna la visibilidad del inputBox
 
         if (sidebar.classList.contains("active")) {
             toggleBtn.innerHTML = "✕";
+            toggleBtn.style.fontSize = "25px"; // Aquí ajustas el tamaño de la "✕"
             content.style.marginLeft = sidebar.offsetWidth + "px";
         } else {
             toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
+            toggleBtn.style.fontSize = "";  // Restablece el tamaño al valor por defecto
             content.style.marginLeft = "0";
         }
     }
@@ -288,6 +305,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth > 768) {
             sidebar.classList.remove("active");
             content.classList.remove("sidebar-active");
+            titleMesa.classList.remove("sidebar-active");
+            inputBox.classList.remove("active");  // Asegurarse de ocultar el inputBox
             content.style.marginLeft = "0"; // Ajustar el margen del contenido en pantallas grandes
         } else {
             content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "0";
