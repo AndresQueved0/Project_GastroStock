@@ -129,103 +129,6 @@
         padding: 0;
         width: 100%;
         height: 100%;
-        overflow-x: hidden; /* Evita el desbordamiento horizontal */
-    }
-    #sidebar {
-        position: fixed;
-        top: 100;
-        left: -200px;
-        height: 100vh;
-        width: 160px;
-        background-color: #ffffff;
-        z-index: 1000;
-    }
-    #sidebar .hr {
-        width: 10%;
-    }
-    #sidebar.active {
-        left:0;
-        margin-left: 5px;
-        margin-top: 70px !important;
-        transition: left 0.5s;
-    }
-
-    .navbar-toggler.sidebar-active {
-        left: 260px;
-    }
-    .iconos{
-        margin-left: 17px;
-    }
-    .content-meseros {
-        transition: margin-left 0.5s;
-        margin-left: 40px;
-    }
-
-    .content .title-pedido{
-        font-size: 30px;
-        margin-left: 240px !important;
-    }
-    .card-body-pedido{
-        font-size: 14px;
-    }
-    .card-pedido {
-        width: 21rem;
-        margin: 2;
-        padding: 10px !important;
-        margin-top: 10px !important;
-        margin-left: 20px;
-    }
-    .card-mesa{
-        width: 12rem; 
-        cursor: pointer;
-    }
-    .card-icon{
-        margin: 20px;
-        margin-bottom: 0;
-        height: 50px;
-        overflow: hidden;
-    }
-    .card-icon.img{
-        width: 50px;
-        object-fit: contain; 
-        object-position: center;
-    }
-    .check-text {
-        color: white;
-        font-size: 18px;
-        line-height: 1;
-        font-weight: bold;
-    }
-    
-    .check-circle {
-        width: 40px;
-        height: 40px;
-        background-color: var(--success);
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        left: 10 !important;
-        top: -10px;
-        z-index: 1;
-    }
-    
-    .check-circle i {
-        color: white;
-        font-size: 24px;
-    }
-    .card-title{
-        font-size: 20px;
-    }
-}
-
-@media (max-width: 450px) {
-    /* CONFIGURACION GLOBAL */
-    body, html {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
         overflow-x: hidden;
     }
     .sticky-title {
@@ -241,7 +144,8 @@
         top: 0;
         background-color: white;
         z-index: 1000; /* Asegura que el título esté por encima de otros elementos */
-        padding-top: 50px; /* Ajusta el padding según sea necesario */
+        padding-top: 50px;
+        margin-left: -40px !important; /* Ajusta el padding según sea necesario */
     }
     .btn-icon{
         padding: 0 !important;
@@ -257,25 +161,28 @@
         top: 0;
         left: -250px;
         width: 140px;
-        margin-left: -10px;
-        padding-top: 15px !important;
+        margin-left: -140px;
+        padding-top: 40px !important;
         background-color: #ffffff;
+        border: 3px solid var(--success);
         z-index: 1000;
-        transition: left 0.5s, width 0.5s; /* Añade transición para el ancho */
+        transition: left 0.5s; /* Añade transición para el ancho */
     }
     #sidebar.active {
         top:0;
         left:0;
-        width: 140px;
+        width: 180px;
         margin-left: -10px;
-        padding-top: 15px !important;
+        margin-top: -0px !important;
+        padding-top: 70px !important;
+        padding-left: 10px;
+
         transition: left 0.5s;
         background-color: #ffffff !important;
         border: 3px solid var(--success);
         z-index: 1000;
     }
     .navbar-toggler {
-       background-color: #ffffff;
         font-size: 15px;
         position: fixed;
         left: 10px;
@@ -321,9 +228,9 @@
 
     /*CONFIGURACION PANEL MESEROS*/
     .content-meseros{
-        transition: padding-left 0.5s;
+        transition: margin-left 0.5s;
         margin-top: 0px !important;
-        padding-left: 0px !important;
+        margin-left: 0px !important;
     }
     
     .content-meseros.sidebar-active {
@@ -341,40 +248,290 @@
 
     .title-mesa{
         margin-top: 50px !important;
-        font-size: 30px;
-        margin-left: 130px;
+        font-size: 50px;
+        margin-left: 300px;
         padding-top: 10px;
     }
 
     .title-mesa.sidebar-active {
-        margin-left: -30px !important;
+        margin-left: -20px !important;
         background-color: #ffffff;
         width: 100%;
-        padding-left: 110px;
+        padding-left: 250px;
+        transition: all 0.5s;
     }
 
-    .title-pedidos{
+    .title-pedidos1{
         margin-top: 2px !important;
         font-size: 18px;
-        margin-left: 90px !important;
+        margin-left: 105px !important;
+    }
+    .title-pedidos2{
+        margin-top: -20px !important;
+        margin-bottom: -30px !important;
+        font-size: 18px;
+        margin-left: 105px !important;
     }
 
-    .title-pedidos.sidebar-active {
-        margin-left: -40px !important;
-    }
+    .title-pedidos1.sidebar-active {
+        margin-left: -50px !important;
+        transition: margin-left 0.5s;
 
+    }
+    .title-pedidos2.sidebar-active {
+        margin-left: -50px !important;
+        transition: margin-left 0.5s;
+    }
     .title-pedido{
+        padding-top: 5px !important;
         background-color: #ffffff;
         font-size: 30px;
-        margin-left: 120px !important;
-        margin-top: 45px;
+        margin-left: 160px !important;
+        margin-top: 30px;
+        margin-bottom: 24px;
     }
 
     .title-pedido.sidebar-active {
         margin-top: 50px;
-        background-color: transparent;
+        margin-left: -30px !important;
+        padding-left: 90px;
+    }
+    .box-Pedido{
+        margin-left: 15px !important;
+        margin-top: 20px;
+    }
+    .box-Pedido.sidebar-active {
+        transition: margin-left 0.5s;
+        margin-left: -50px !important;
+    }
+    .card-mesa{
+        width: 12rem; 
+        cursor: pointer;
+    }
+    
+    .card-pedido{
+        width: 22rem;
+        margin: 0;
+        margin-top: 0px !important;
+        margin-bottom: 20px;
     }
 
+    .card-icon{
+        margin: 20px;
+        margin-bottom: 0;
+        height: 80px !important;
+        overflow: hidden;
+    }
+
+    .card-title{
+        font-size: 15px;
+    }
+    .card-text{
+        font-size: 15px;
+    }
+    .card-body-pedido{
+        font-size: 10px;
+    }
+    .card-img-top{
+        overflow: hidden;
+        height: 19vw;
+    }
+    .imgMenu{
+        object-fit: cover;
+    }
+    .titleMenu{
+        text-align: center;
+    }
+    #menuTabContent{
+        height: 300px; /* Altura fija para el contenedor del menú */
+        overflow-y: auto;
+    }
+    .tomaPedido{
+        margin-left: 5px;
+        width: 10rem;
+    }
+}
+
+@media (max-width: 500px) {
+    /* CONFIGURACION GLOBAL */
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+    }
+    .sticky-title {
+        position: sticky;
+        top: 0;
+        background-color: white !important;
+        z-index: 1000; /* Asegura que el título esté por encima de otros elementos */
+        padding-top: 29px;
+        margin-left: -40px !important;  /* Ajusta el padding según sea necesario */
+    }
+    .sticky-title2 {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 1000; /* Asegura que el título esté por encima de otros elementos */
+        padding-top: 50px;
+        margin-left: -40px !important; /* Ajusta el padding según sea necesario */
+    }
+    .btn-icon{
+        padding: 0 !important;
+    }
+    .iconos{
+        margin: 0;
+        margin-left: -20px;
+    }
+    hr{
+        width: 80%;
+    }
+    #sidebar {
+        top: 0;
+        left: -250px;
+        margin-left: -120px;
+        margin-top: -10px !important;
+        padding-top: 85px !important;
+        background-color: #ffffff;
+        border: 3px solid var(--success);
+        z-index: 1000;
+        transition: margin-left 0.5s; /* Añade transición para el ancho */
+    }
+    #sidebar.active {
+        top:0;
+        left:0;
+        width: 200px !important;
+        margin-left: -5px;
+        padding-right: 15px;
+        padding-top: 75px !important;
+        transition: left 0.5s;
+        background-color: #ffffff !important;
+        border: 3px solid var(--success);
+        z-index: 1000;
+    }
+    .navbar-toggler {
+        font-size: 15px;
+        position: fixed;
+        left: 10px;
+        top: 75px;
+        margin-top: -2px;
+        padding: 19px 40px 25px 20px;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        z-index: 1001;
+    }
+    .navbar-toggler.sidebar-active {
+        background-color: transparent !important;
+        margin-top: -2px;
+        left: 10px;
+        z-index: 1001;
+    }
+    .check-text {
+        color: white;
+        font-size: 24px;
+        line-height: 1;
+        font-weight: bold;
+    }
+    
+    .check-circle {
+        width: 60px;
+        height: 60px;
+        background-color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: -19px;
+        top: -10px;
+        z-index: 1;
+    }
+    
+    .check-circle i {
+        color: white;
+        font-size: 24px;
+    }
+
+    /*CONFIGURACION PANEL MESEROS*/
+    .content-meseros{
+        transition: margin-left 0.5s;
+        margin-top: 0px !important;
+        margin-left: -20px !important;
+    }
+    
+    .content-meseros.sidebar-active {
+        margin-left: 0px !important;
+    }
+
+    .inputBox {
+        margin-left: 0px;
+        margin-top: 20px;
+    }
+    .inputBox.sidebar-active {
+        transition: margin-left 0.5s;
+        margin-left: -30px;
+    }
+
+    .title-mesa{
+        margin-top: 50px !important;
+        font-size: 30px;
+        margin-left: 0px;
+        padding-left: 170px;
+        padding-top: 10px;
+        transition: padding-left 0.1s;
+    }
+
+    .title-mesa.sidebar-active {
+        margin-left: 0 !important;
+        background-color: #ffffff;
+        width: 100%;
+        padding-left: 70px;
+    }
+
+    .title-pedidos1{
+        margin-top: 2px !important;
+        font-size: 18px;
+        margin-left: 105px !important;
+    }
+    .title-pedidos2{
+        margin-top: -20px !important;
+        margin-bottom: -30px !important;
+        font-size: 18px;
+        margin-left: 105px !important;
+    }
+
+    .title-pedidos1.sidebar-active {
+        margin-left: -50px !important;
+        transition: margin-left 0.5s;
+
+    }
+    .title-pedidos2.sidebar-active {
+        margin-left: -50px !important;
+        transition: margin-left 0.5s;
+    }
+    .title-pedido{
+        padding-top: 5px !important;
+        background-color: #ffffff;
+        font-size: 30px;
+        margin-left: 160px !important;
+        margin-top: 30px;
+        margin-bottom: 24px;
+    }
+
+    .title-pedido.sidebar-active {
+        margin-top: 50px;
+        margin-left: -30px !important;
+        padding-left: 90px;
+    }
+    .box-Pedido{
+        margin-left: 15px !important;
+        margin-top: 20px;
+    }
+    .box-Pedido.sidebar-active {
+        transition: margin-left 0.5s;
+        margin-left: -50px !important;
+    }
     .card-mesa{
         width: 10rem; 
         cursor: pointer;
@@ -383,8 +540,8 @@
     .card-pedido{
         width: 22rem;
         margin: 0;
-        margin-left: 0;
-        margin-top: 10px !important;
+        margin-top: 0px !important;
+        margin-bottom: 20px;
     }
 
     .card-icon{
@@ -393,11 +550,7 @@
         height: 50px;
         overflow: hidden;
     }
-    .card-icon.img{
-        width: 50px;
-        object-fit: contain; 
-        object-position: center;
-    }
+
     .card-title{
         font-size: 15px;
     }

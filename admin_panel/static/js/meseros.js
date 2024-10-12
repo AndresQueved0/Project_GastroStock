@@ -326,13 +326,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById("sidebar");
     const content = document.querySelector(".content-meseros");
     const toggleBtn = document.querySelector('.navbar-toggler');
-    const titleMesa = document.querySelector('.title-mesa');
-    const titlePedidos = document.querySelector('.title-pedidos');
     const titlePedido = document.querySelector('.title-pedido');
+    const titleMesa = document.querySelector('.title-mesa');
+    const titlePedidos1 = document.querySelector('.title-pedidos1');
+    const titlePedidos2 = document.querySelector('.title-pedidos2');
+    const boxPedidos = document.querySelector('.box-Pedido'); 
     const inputBox = document.querySelector('.inputBox');
 
     function toggleSidebar() {
-        if (!sidebar || !content || !toggleBtn || !titleMesa || !titlePedidos || !titlePedido || !inputBox) {
+        if (!sidebar || !content || !toggleBtn || !titlePedido || !titleMesa || !titlePedidos1 || !titlePedidos2 || !boxPedidos || !inputBox) {
             console.error("No se encontraron los elementos necesarios en el DOM.");
             return;
         }
@@ -341,8 +343,10 @@ document.addEventListener('DOMContentLoaded', function() {
         content.classList.toggle("sidebar-active");
         toggleBtn.classList.toggle("sidebar-active");
         titleMesa.classList.toggle("sidebar-active");
-        titlePedidos.classList.toggle("sidebar-active");
+        titlePedidos1.classList.toggle("sidebar-active");
+        titlePedidos2.classList.toggle("sidebar-active");
         titlePedido.classList.toggle("sidebar-active");
+        boxPedidos.classList.toggle("sidebar-active");
         inputBox.classList.toggle("sidebar-active");
 
         if (sidebar.classList.contains("active")) {
@@ -376,14 +380,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth > 768) {
             sidebar.classList.remove("active");
             content.classList.remove("sidebar-active");
-            toggleBtn.classList.remove("sidebar-active");
+            toggleBtn.classList.toggle("sidebar-active");
             titleMesa.classList.remove("sidebar-active");
-            titlePedidos.classList.remove("sidebar-active");
+            titlePedidos1.classList.remove("sidebar-active");
+            titlePedidos2.classList.remove("sidebar-active");
             titlePedido.classList.remove("sidebar-active");
+            boxPedidos.classList.remove("sidebar-active");
             inputBox.classList.remove("active");  // Asegúrate de ocultar el inputBox
             content.style.marginLeft = ""; // Ajustar el margen del contenido en pantallas grandes
         } else {
-            content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "20";
+            content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "0";
         }
     });
 });

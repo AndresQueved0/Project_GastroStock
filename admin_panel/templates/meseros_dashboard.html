@@ -102,7 +102,7 @@
                         </div>
                     </div>
                     {% empty %}
-                    <div class="col-12 boxPedido">
+                    <div class="col-12">
                         <p>No hay mesas registradas para esta ubicación.</p>
                     </div>
                     {% endfor %}
@@ -117,7 +117,7 @@
                     
 
                     <div class="d-flex">
-                        <h2 class="title-pedidos">Pedidos preparados</h2>
+                        <h2 class="title-pedidos1">Pedidos preparados</h2>
                     </div>
                     {% for pedido in pedidos_preparados %}
                     <div class="col-md-6 col-lg-3">
@@ -146,16 +146,18 @@
                         </div>
                     </div>
                     {% empty %}
-                    <div class="boxPedido col-12">
+                    <div class="col-11 col-sm-12 box-Pedido">
                         <p>No hay pedidos registrados en este momento.</p>
                     </div>
                     {% endfor %}
                 </div>
 
                 <div class="row g-4 mt-3" id="pedidosRealizadosContainer">
+
                     <div class="d-flex">
-                        <h2 class="title-pedidos">Pedidos realizados</h2>
+                        <h2 class="title-pedidos2">Pedidos realizados</h2>
                     </div>
+
                     {% for pedido in pedidos_realizados %}
                     <div class="col-md-6 col-lg-4">
                         <div class="card-pedido position-relative">
@@ -181,7 +183,7 @@
                         </div>
                     </div>
                     {% empty %}
-                    <div class="boxPedido col-12">
+                    <div class="col-12">
                         <p>No hay pedidos registrados en este momento.</p>
                     </div>
                     {% endfor %}
