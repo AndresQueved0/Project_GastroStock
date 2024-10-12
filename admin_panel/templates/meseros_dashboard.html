@@ -102,7 +102,7 @@
                         </div>
                     </div>
                     {% empty %}
-                    <div class="col-12">
+                    <div class="col-12 boxPedido">
                         <p>No hay mesas registradas para esta ubicación.</p>
                     </div>
                     {% endfor %}
@@ -111,13 +111,13 @@
 
             <section id="pedidos">
                 <div class="d-flex mt-3 sticky-title2">
-                        <h2 class="title-pedido mb-3">Pedidos</h2>
+                        <h2 class="title-pedido">Pedidos</h2>
                     </div>
                 <div class="row g-4 mt-1" id="pedidosPreparadosContainer">
                     
 
-                    <div class="d-flex mt-3">
-                        <h2 class="title-pedidos mb-3">Pedidos preparados</h2>
+                    <div class="d-flex">
+                        <h2 class="title-pedidos">Pedidos preparados</h2>
                     </div>
                     {% for pedido in pedidos_preparados %}
                     <div class="col-md-6 col-lg-3">
@@ -146,15 +146,15 @@
                         </div>
                     </div>
                     {% empty %}
-                    <div class="col-12 boxPedido">
+                    <div class="boxPedido col-12">
                         <p>No hay pedidos registrados en este momento.</p>
                     </div>
                     {% endfor %}
                 </div>
 
-                <div class="row g-4 mt-5 mb-5" id="pedidosRealizadosContainer">
-                    <div class="d-flex mt-3">
-                        <h2 class="title-pedidos mb-3">Pedidos realizados</h2>
+                <div class="row g-4 mt-3" id="pedidosRealizadosContainer">
+                    <div class="d-flex">
+                        <h2 class="title-pedidos">Pedidos realizados</h2>
                     </div>
                     {% for pedido in pedidos_realizados %}
                     <div class="col-md-6 col-lg-4">
@@ -181,7 +181,7 @@
                         </div>
                     </div>
                     {% empty %}
-                    <div class="col-12">
+                    <div class="boxPedido col-12">
                         <p>No hay pedidos registrados en este momento.</p>
                     </div>
                     {% endfor %}

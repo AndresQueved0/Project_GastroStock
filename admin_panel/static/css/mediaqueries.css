@@ -219,7 +219,7 @@
     }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 450px) {
     /* CONFIGURACION GLOBAL */
     body, html {
         margin: 0;
@@ -233,7 +233,8 @@
         top: 0;
         background-color: white !important;
         z-index: 1000; /* Asegura que el título esté por encima de otros elementos */
-        padding-top: 50px; /* Ajusta el padding según sea necesario */
+        padding-top: 29px;
+        margin-left: -40px !important;  /* Ajusta el padding según sea necesario */
     }
     .sticky-title2 {
         position: sticky;
@@ -271,23 +272,27 @@
         transition: left 0.5s;
         background-color: #ffffff !important;
         border: 3px solid var(--success);
+        z-index: 1000;
     }
     .navbar-toggler {
-        background-color: #ffffff;
+       background-color: #ffffff;
         font-size: 15px;
         position: fixed;
         left: 10px;
         top: 75px;
-        padding: 12px 40px 25px 20px;
+        margin-top: -2px;
+        padding: 19px 40px 25px 20px;
         border: none;
         cursor: pointer;
         outline: none;
-        transition: left 1s;
         z-index: 1001;
+        transition: background-color 0.5s;
     }
     .navbar-toggler.sidebar-active {
-        left: 10px;
+        margin-top: -2px;
         background-color: transparent !important;
+        left: 10px;
+        z-index: 1001;
     }
     .check-text {
         color: white;
@@ -316,40 +321,41 @@
 
     /*CONFIGURACION PANEL MESEROS*/
     .content-meseros{
-        transition: margin-left 0.5s;
+        transition: padding-left 0.5s;
         margin-top: 0px !important;
-        margin-left: 0;
-        padding-left: 35px;
+        padding-left: 0px !important;
     }
     
     .content-meseros.sidebar-active {
-        padding-left: 55px;
+        margin-left: 200px !important;
     }
 
     .inputBox {
-        margin-left: 20px;
+        margin-left: 35px;
         margin-top: 20px;
     }
     .inputBox.sidebar-active {
         transition: margin-left 0.5s;
-        margin-left: -25px;;
+        margin-left: -30px;
     }
 
     .title-mesa{
-        margin-top: 45px !important;
+        margin-top: 50px !important;
         font-size: 30px;
         margin-left: 130px;
+        padding-top: 10px;
     }
 
     .title-mesa.sidebar-active {
-        margin-left: 10px !important;
+        margin-left: -30px !important;
         background-color: #ffffff;
-        padding: 10px 20px 20px 20px;
+        width: 100%;
+        padding-left: 110px;
     }
 
     .title-pedidos{
         margin-top: 2px !important;
-        font-size: 20px;
+        font-size: 18px;
         margin-left: 90px !important;
     }
 
@@ -365,19 +371,12 @@
     }
 
     .title-pedido.sidebar-active {
-        margin-left: -40px !important;
+        margin-top: 50px;
+        background-color: transparent;
     }
 
-    .boxPedido{
-        margin-left: 5px;
-    }
-
-    .boxPedido.sidebar-active{
-        margin-left: -40px;
-    }
     .card-mesa{
         width: 10rem; 
-        margin-left: 0px;
         cursor: pointer;
     }
     

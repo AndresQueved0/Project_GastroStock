@@ -329,12 +329,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const titleMesa = document.querySelector('.title-mesa');
     const titlePedidos = document.querySelector('.title-pedidos');
     const titlePedido = document.querySelector('.title-pedido');
-    const boxPedido = document.querySelector('.boxPedido');
     const inputBox = document.querySelector('.inputBox');
 
     function toggleSidebar() {
-        if (!sidebar || !content || !titleMesa || !inputBox) {
-            console.error("No se encontraron los elementos #sidebar, .content-meseros, .title-mesa o #inputBox en el DOM.");
+        if (!sidebar || !content || !toggleBtn || !titleMesa || !titlePedidos || !titlePedido || !inputBox) {
+            console.error("No se encontraron los elementos necesarios en el DOM.");
             return;
         }
 
@@ -344,12 +343,11 @@ document.addEventListener('DOMContentLoaded', function() {
         titleMesa.classList.toggle("sidebar-active");
         titlePedidos.classList.toggle("sidebar-active");
         titlePedido.classList.toggle("sidebar-active");
-        boxPedido.classList.toggle("sidebar-active");
         inputBox.classList.toggle("sidebar-active");
 
         if (sidebar.classList.contains("active")) {
             toggleBtn.innerHTML = "✕";
-            toggleBtn.style.fontSize = "25px"; // Aquí ajustas el tamaño de la "✕"
+            toggleBtn.style.fontSize = "25px"; // Ajustas el tamaño de la "✕"
             content.style.marginLeft = sidebar.offsetWidth + "px";
         } else {
             toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
@@ -382,11 +380,10 @@ document.addEventListener('DOMContentLoaded', function() {
             titleMesa.classList.remove("sidebar-active");
             titlePedidos.classList.remove("sidebar-active");
             titlePedido.classList.remove("sidebar-active");
-            boxPedido.classList.remove("sidebar-active");
-            inputBox.classList.remove("active");  // Asegurarse de ocultar el inputBox
-            content.style.marginLeft = "0"; // Ajustar el margen del contenido en pantallas grandes
+            inputBox.classList.remove("active");  // Asegúrate de ocultar el inputBox
+            content.style.marginLeft = ""; // Ajustar el margen del contenido en pantallas grandes
         } else {
-            content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "0";
+            content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "20";
         }
     });
 });
