@@ -348,7 +348,7 @@ function toggleSidebar() {
     const content = document.querySelector(".content-meseros");
     const toggleBtn = document.querySelector('.navbar-toggler');
     const titlePedido = document.querySelector('.title-pedido');
-    const titleMesa = document.querySelector('.title-mesa');
+    const titleMesa = document.querySelector ('.title-mesa');
     const titlePedidos1 = document.querySelector('.title-pedidos1');
     const titlePedidos2 = document.querySelector('.title-pedidos2');
     const inputBox = document.querySelector('.inputBox');

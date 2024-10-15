@@ -61,7 +61,7 @@ document.querySelectorAll('.cambiar-estado-btn').forEach(button => {
                 const pedidoCard = document.querySelector(`.pedido-card[data-pedido-id="${pedidoId}"]`);
                 pedidoCard.style.order = '1';
 
-                this.textContent = `${data.nuevo_estado} - En mesa`;
+                this.textContent = `${data.nuevo_estado} - Listo para entregar`;
                 this.classList.remove('btn-success');
                 this.classList.add('btn-secondary');
                 this.disabled = true;
@@ -69,7 +69,6 @@ document.querySelectorAll('.cambiar-estado-btn').forEach(button => {
         })
         .catch(error => console.error('Error:', error));
     });
-
 
 // Función para obtener el token CSRF
 function getCookie(name) {
@@ -86,32 +85,63 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
+function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
-    const content = document.querySelector(".content");
+    const content = document.querySelector(".content-meseros");
     const toggleBtn = document.querySelector('.navbar-toggler');
+    const titlePedido = document.querySelector('.title-pedido');
+    const titlePedidos1 = document.querySelector('.title-pedidos1');
+    const cardPedidos = document.querySelectorAll('.card-pedido');
+    const cardPedidos1 = document.querySelectorAll('.card-pedido1');
+    const boxPedidos = document.querySelectorAll('.boxPedido');
+    const boxPedidos1 = document.querySelectorAll('.boxPedido1');
 
-    function toggleSidebar() {
-        if (!sidebar || !content) {
-            console.error("No se encontraron los elementos #sidebar o .content en el DOM.");
-            return;
-        }
+    // Comprobar cada elemento individualmente
+    if (!sidebar) console.error("No se encontró el elemento #sidebar");
+    if (!content) console.error("No se encontró el elemento .content-meseros");
+    if (!toggleBtn) console.error("No se encontró el elemento .navbar-toggler");
+    if (!titlePedido) console.error("No se encontró el elemento .title-pedido");
+    if (!titlePedidos1) console.error("No se encontró el elemento .title-pedidos1");
 
-        sidebar.classList.toggle("active");
-        content.classList.toggle("sidebar-active");
 
-        if (sidebar.classList.contains("active")) {
-            toggleBtn.innerHTML = "✕";
-            content.style.marginLeft = sidebar.offsetWidth + "px";
-        } else {
-            toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
-            content.style.marginLeft = "0";
-        }
+    if (!sidebar || !content || !toggleBtn || !titlePedido ||  !titlePedidos1 ) {
+        console.error("No se encontraron todos los elementos necesarios en el DOM.");
+        return;
     }
 
+    sidebar.classList.toggle("active");
+    content.classList.toggle("sidebar-active");
+    toggleBtn.classList.toggle("sidebar-active");
+    titlePedidos1.classList.toggle("sidebar-active");
+    titlePedido.classList.toggle("sidebar-active");
+
+    // Solo aplicar la clase si existen elementos con estas clases
+    if (cardPedidos.length > 0) {
+        cardPedidos.forEach(card => card.classList.toggle("sidebar-active"));
+    }
+    if (cardPedidos1.length > 0) {
+        cardPedidos1.forEach(card => card.classList.toggle("sidebar-active"));
+    }
+    if (boxPedidos.length > 0) {
+        boxPedidos.forEach(box => box.classList.toggle("sidebar-active"));
+    }
+    if (boxPedidos1.length > 0) {
+        boxPedidos1.forEach(box => box.classList.toggle("sidebar-active"));
+    }
+
+    if (sidebar.classList.contains("active")) {
+        toggleBtn.innerHTML = "✕";
+        toggleBtn.style.fontSize = "25px";
+        content.style.marginLeft = sidebar.offsetWidth + "px";
+    } else {
+        toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
+        toggleBtn.style.fontSize = "";
+        content.style.marginLeft = "0";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtn = document.querySelector('.navbar-toggler');
     if (toggleBtn) {
         toggleBtn.addEventListener('click', toggleSidebar);
     } else {
@@ -129,13 +159,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Ajustar el sidebar y el contenido al cambiar el tamaño de la ventana
     window.addEventListener('resize', function() {
+        const sidebar = document.getElementById("sidebar");
+        const content = document.querySelector(".content-meseros");
+        const toggleBtn = document.querySelector('.navbar-toggler');
+        const titlePedidos1 = document.querySelector('.title-pedidos1');
+        const titlePedido = document.querySelector('.title-pedido');
+        const cardPedidos = document.querySelectorAll('.card-pedido');
+        const cardPedidos1 = document.querySelectorAll('.card-pedido1');
+        const boxPedidos = document.querySelectorAll('.boxPedido');
+        const boxPedidos1 = document.querySelectorAll('.boxPedido1');
+
         if (window.innerWidth > 768) {
             sidebar.classList.remove("active");
             content.classList.remove("sidebar-active");
-            content.style.marginLeft = "0"; // Ajustar el margen del contenido en pantallas grandes
+            toggleBtn.classList.remove("sidebar-active");
+            titlePedidos1.classList.remove("sidebar-active");
+            titlePedido.classList.remove("sidebar-active");
+            if (cardPedidos.length > 0) {
+                cardPedidos.forEach(card => card.classList.remove("sidebar-active"));
+            }
+            if (cardPedidos1.length > 0) {
+                cardPedidos1.forEach(card => card.classList.remove("sidebar-active"));
+            }
+            if (boxPedidos.length > 0) {
+                boxPedidos.forEach(box => box.classList.remove("sidebar-active"));
+            }
+            if (boxPedidos1.length > 0) {
+                boxPedidos1.forEach(box => box.classList.remove("sidebar-active"));
+            }
+            content.style.marginLeft = "0px";
         } else {
             content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "0";
         }
     });
 });
 });
+

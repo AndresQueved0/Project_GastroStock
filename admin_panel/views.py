@@ -185,8 +185,8 @@ def meseros_dashboard(request):
     mesas = Mesa.objects.all()
     ubicaciones = Ubicacion.objects.all()
     categorias_menu = CategoriaMenu.objects.prefetch_related('items').all()
-    pedidos_preparados = Pedido.objects.filter(estado='Preparado').order_by('fecha_pedido')
-    pedidos_realizados = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
+    listo_para_entregar = Pedido.objects.filter(estado='Listo para entregar').order_by('fecha_pedido')
+    pedido_realizado = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
 
     # Filtrar mesas por ubicación si se proporciona
     ubicacion_id = request.GET.get('ubicacion', 'todas')  # Establecer 'todas' como valor predeterminado
@@ -202,8 +202,8 @@ def meseros_dashboard(request):
         'mesas': mesas,
         'ubicaciones': ubicaciones,
         'categorias_menu': categorias_menu,
-        'pedidos_preparados': pedidos_preparados,
-        'pedidos_realizados': pedidos_realizados,
+        'listo_para_entregar': listo_para_entregar,
+        'pedido_realizado': pedido_realizado,
         'time': datetime.now().timestamp()
     }
 
@@ -216,7 +216,7 @@ def verificar_mesas_disponibles():
     # Verificar si hay pedidos activos para cada mesa
     for mesa in mesas:
         pedidos_realizados = Pedido.objects.filter(mesa=mesa).filter(
-            Q(estado='Preparado') | Q(estado='Pedido realizado')
+            Q(estado='Listo para entregar') | Q(estado='Pedido realizado')
         )
 
         # Si no hay pedidos activos, cambiar el estado de la mesa a "disponible"
@@ -225,11 +225,11 @@ def verificar_mesas_disponibles():
             mesa.save()
 
 def obtener_pedidos(request):
-    pedidos_preparados = Pedido.objects.filter(estado='Preparado').order_by('fecha_pedido')
-    pedidos_realizados = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
+    listo_para_entregar= Pedido.objects.filter(estado='Listo para entregar').order_by('fecha_pedido')
+    pedido_realizado = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
     return render(request, 'meseros_dashboard.html', {
-        'pedidos_preparados': pedidos_preparados,
-        'pedidos_realizados': pedidos_realizados
+        'listo_para_entregar': listo_para_entregar,
+        'pedido_realizado': pedido_realizado
     })
 
 def obtener_estado_mesa(request, mesa_id):
@@ -354,11 +354,11 @@ def cambiar_estado_pedido(request, pedido_id):
 @login_required
 def cocina_dashboard(request):
     productos = Inventario.objects.all()
-    pedidos = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
+    pedido_realizado = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
 
     context = {
         'productos': productos,
-        'pedidos': pedidos,
+        'pedido_realizado': pedido_realizado,
     }
     return render(request, 'cocina_dashboard.html', context)
 
@@ -367,10 +367,10 @@ def cocina_dashboard(request):
 @login_required
 def caja_dashboard(request):
     productos = Inventario.objects.all()
-    pedidos_en_mesa = Pedido.objects.filter(estado='En mesa').order_by('fecha_pedido')
+    pedido_en_mesa = Pedido.objects.filter(estado='Pedido en mesa').order_by('fecha_pedido')
 
     context = {
         'productos': productos,
-        'pedidos_en_mesa': pedidos_en_mesa,
+        'pedido_en_mesa': pedido_en_mesa,
     }
     return render(request, 'caja_dashboard.html', context)

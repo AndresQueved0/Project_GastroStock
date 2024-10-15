@@ -119,7 +119,7 @@
                     <div class="d-flex mt-3">
                         <h2 class="title-pedidos1 mb-3">Pedidos preparados</h2>
                     </div>
-                    {% for pedido in pedidos_preparados %}
+                    {% for pedido in listo_para_entregar %}
                     <div class="col-md-6 col-lg-4">
                         <div class="card-pedido position-relative">
                             <div class="check-circle position-absolute">
@@ -138,8 +138,8 @@
                                     <p class="mb-0 ms-4"><strong>Pedido realizado:</strong> {{ pedido.fecha_pedido|date:"H:i" }}</p>
                                 </div>
                                 <div class="card-footer bg-white text-center">
-                                    <button class="btn btn-success btn-sm w-100 cambiar-estado-btn fw-bold" data-pedido-id="{{ pedido.id }}" data-nuevo-estado="En mesa">
-                                        {{ pedido.estado }} - Marcar en mesa
+                                    <button class="btn btn-success btn-sm w-100 cambiar-estado-btn fw-bold" data-pedido-id="{{ pedido.id }}" data-nuevo-estado="Pedido en mesa">
+                                        Pedido en mesa
                                     </button>
                                 </div>
                             </div>
@@ -156,7 +156,7 @@
                     <div class="d-flex mt-3">
                         <h2 class="title-pedidos2 mb-3">Pedidos realizados</h2>
                     </div>
-                    {% for pedido in pedidos_realizados %}
+                    {% for pedido in pedido_realizado %}
                     <div class="col-md-6 col-lg-4">
                         <div class="card-pedido1 position-relative">
                             <div class="check-circle1 position-absolute">

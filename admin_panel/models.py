@@ -137,15 +137,15 @@ class MenuItem(models.Model):
 class Pedido(models.Model):
     ESTADO_CHOICES = [
         ('Pedido realizado', 'Pedido realizado'),
-        ('Preparado', 'Preparado'),
-        ('En mesa', 'En mesa'),
+        ('Listo para entregar', 'Listo para entregar'),
+        ('Pedido en mesa', 'Pedido en mesa'),
         ('Pagado', 'Pagado'),
     ]
     
     id = models.AutoField(primary_key=True)
     mesa = models.ForeignKey('Mesa', on_delete=models.CASCADE)
     fecha_pedido = models.DateTimeField(default=timezone.now)
-    estado = models.CharField(max_length=16, choices=ESTADO_CHOICES, default='Pedido realizado')
+    estado = models.CharField(max_length=50, choices=ESTADO_CHOICES, default='Pedido realizado')
 
     @property
     def precio_total(self):
