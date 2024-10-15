@@ -42,7 +42,7 @@
         </button>
         </div>
 
-        <div class="col-md-1 mt-5" id="sidebar">
+        <div class="col-md-1 col-lg-2 mt-5" id="sidebar">
             <div class="d-flex align-items-center hv">
                 <a data-content="mesas" id="myLink" class="btn border-0 d-flex flex-column align-items-center mb-2 ms-3">
                     <img src="{% static 'img/mesa-de-comedor.png' %}" alt="" class="responsive-img">
@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div class="col-md-12 mt-5 content-meseros">
+        <div class="col-md-12 col-lg-10 mt-5 content-meseros">
             <section id="mesas">
                 <div class="d-flex mt-3 sticky-title">
                     <h2 class="title-mesa mb-3">Mesas</h2>
@@ -85,7 +85,7 @@
                 {% endif %}
 
                 <div id="alertPlaceholderMesa"></div>
-                <div class="row" id="mesasContainer">
+                <div class="row rowMesa" id="mesasContainer">
                     {% for mesa in mesas %}
                     <div class="col-4 col-md-3 col-lg-2 mb-4 mt-3 me-5 ">
                         <div class="card card-mesa{% if mesa.estado == 'ocupada' %} border-danger {% endif %}" data-mesa-id="{{ mesa.id }}" data-bs-toggle="modal" data-bs-target="#pedidoModal" data-mesa-nombre="{{ mesa.nombre }}" data-mesa-ubicacion="{{ mesa.ubicacion }}" onclick="actualizarInfoMesa('{{ mesa.id }}', '{{ mesa.nombre }}', '{{ mesa.ubicacion }}'); actualizarEstadoMesa('{{ mesa.id }}');">
@@ -120,16 +120,16 @@
                         <h2 class="title-pedidos1 mb-3">Pedidos preparados</h2>
                     </div>
                     {% for pedido in pedidos_preparados %}
-                    <div class="col-md-6 col-lg-3">
+                    <div class="col-md-6 col-lg-4">
                         <div class="card-pedido position-relative">
                             <div class="check-circle position-absolute">
                                 <span class="check-text">{{pedido.id}}</span>
                             </div>
-                            <div class="card border-success ms-4">
+                            <div class="card cardBox border-success ms-4">
                                 <div class="card-header">
                                     <h5 class="card-title text-center m-2"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body cardBody">
                                     <ul class="list-unstyled ms-4">
                                         {% for item in pedido.items.all %}
                                         <li> <strong> {{ item.cantidad }} </strong> {{ item.item_menu.nombre }}</li>
@@ -162,11 +162,11 @@
                             <div class="check-circle1 position-absolute">
                                 <span class="check-text1">{{pedido.id}}</span>
                             </div>
-                            <div class="card border-success">
+                            <div class="card cardBox1 border-success">
                                 <div class="card-header">
                                     <h5 class="card-title text-center m-0"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body cardBody1">
                                     <ul class="list-unstyled ms-4">
                                         {% for item in pedido.items.all %}
                                         <li> <strong> {{ item.cantidad }} </strong> {{ item.item_menu.nombre }}</li>
