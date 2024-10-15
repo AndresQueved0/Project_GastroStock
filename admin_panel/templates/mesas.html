@@ -8,9 +8,10 @@
             </div>
             <div class="card-body">
                 <h5 class="card-title text-center m-0">{{ mesa.nombre }} - <span class="mesa-ubicacion">{{ mesa.ubicacion }}</span></h5>
+
             </div>
             <div class="card-footer text-center m-0 {% if mesa.estado == 'disponible' %}bg-success{% else %}bg-danger{% endif %}">
-                <p class="card-text text-white"><strong>{{ mesa.get_estado_display }}</strong></p>
+                <p class="card-text text-white"><strong> {{ mesa.get_estado_display }} </strong> </p>
             </div>
         </div>
     </div>

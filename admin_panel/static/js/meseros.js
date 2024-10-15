@@ -1,3 +1,6 @@
+
+
+
 const urlObtenerPedidos = 'obtener-pedidos/';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -40,23 +43,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Manejo del selector de ubicación
 
-const ubicacionSelect = document.getElementById('ubicacion-select');
+    const ubicacionSelect = document.getElementById('ubicacion-select');
 ubicacionSelect.addEventListener('change', function() {
     const selectedUbicacion = this.value;
-    const baseUrl = window.location.pathname; // Obtiene la URL actual sin parámetros
+    const baseUrl = window.location.pathname;
 
     fetch(`${baseUrl}?ubicacion=${selectedUbicacion}`, {
         method: 'GET',
         headers: {
-            'X-Requested-With': 'XMLHttpRequest'  // Indica que es una petición AJAX
+            'X-Requested-With': 'XMLHttpRequest'
         }
     })
-        .then(response => response.text())
-        .then(data => {
-            // Actualiza el contenedor de mesas con la nueva data
-            document.getElementById('mesasContainer').innerHTML = data;
-        })
-        .catch(error => console.error('Error al cargar mesas:', error));
+    .then(response => response.text())
+    .then(data => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = data;
+
+        // Find the mesasContainer in the fetched content
+        const newMesasContainer = tempDiv.querySelector('#mesasContainer');
+
+        if (newMesasContainer) {
+            // Replace only the inner content of the existing mesasContainer
+            const existingMesasContainer = document.getElementById('mesasContainer');
+            existingMesasContainer.innerHTML = newMesasContainer.innerHTML;
+
+            // Re-apply any necessary classes or styles
+            existingMesasContainer.className = newMesasContainer.className;
+        } else {
+            console.error('Could not find #mesasContainer in the fetched content');
+        }
+    })
+    .catch(error => console.error('Error al cargar mesas:', error));
 });
 
 
@@ -64,141 +81,145 @@ ubicacionSelect.addEventListener('change', function() {
 
     // Manejo de pedidos en la vista del mesero
     let pedidoActual = [];
-    let totalPedido = 0;
-    let mesaSeleccionada = null;
-    
-    const listaPedidos = document.getElementById('lista-pedidos');
-    const totalPagarSpan = document.getElementById('total-pagar');
-    const generarTicketBtn = document.getElementById('generar-ticket');
-    const mesaNumeroSpan = document.getElementById('mesa-numero');
-    const mesaUbicacionSpan = document.getElementById('mesa-ubicacion');
-    const urlRegistrarPedido = generarTicketBtn.getAttribute('data-url-registrar-pedido');
-    
-    window.actualizarInfoMesa = function(id, nombre, ubicacion) {
-        mesaSeleccionada = { id, nombre, ubicacion };
-        mesaNumeroSpan.textContent = nombre;
-        mesaUbicacionSpan.textContent = ubicacion;
-    };
-    
-    document.querySelectorAll('.agregar-item').forEach(card => {
-        card.addEventListener('click', function() {
-            const id = this.dataset.id;
-            const nombre = this.dataset.nombre;
-            const precio = parseFloat(this.dataset.precio);
-    
-            let itemExistente = pedidoActual.find(item => item.id === id);
-            if (itemExistente) {
-                itemExistente.cantidad += 1;
-            } else {
-                pedidoActual.push({ id, nombre, precio, cantidad: 1 });
-            }
-    
-            actualizarPedidoUI();
-        });
+let totalPedido = 0;
+let mesaSeleccionada = null;
+
+const listaPedidos = document.getElementById('lista-pedidos');
+const totalPagarSpan = document.getElementById('total-pagar');
+const generarTicketBtn = document.getElementById('generar-ticket');
+const mesaNumeroSpan = document.getElementById('mesa-numero');
+const mesaUbicacionSpan = document.getElementById('mesa-ubicacion');
+const urlRegistrarPedido = generarTicketBtn.getAttribute('data-url-registrar-pedido');
+
+function formatearPrecio(precio) {
+    const precioEntero = Math.floor(precio);
+    return `${precioEntero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+}
+
+window.actualizarInfoMesa = function(id, nombre, ubicacion) {
+    mesaSeleccionada = { id, nombre, ubicacion };
+    mesaNumeroSpan.textContent = nombre;
+    mesaUbicacionSpan.textContent = ubicacion;
+};
+
+document.querySelectorAll('.agregar-item').forEach(card => {
+    card.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const nombre = this.dataset.nombre;
+        const precio = parseFloat(this.dataset.precio);
+
+        let itemExistente = pedidoActual.find(item => item.id === id);
+        if (itemExistente) {
+            itemExistente.cantidad += 1;
+        } else {
+            pedidoActual.push({ id, nombre, precio, cantidad: 1 });
+        }
+
+        actualizarPedidoUI();
+    });
+});
+
+function actualizarPedidoUI() {
+    listaPedidos.innerHTML = '';
+    totalPedido = 0;
+
+    pedidoActual.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.classList.add('mb-2');
+        li.style.listStyleType = 'disc';
+        li.style.paddingLeft = '0';
+
+        const itemContent = document.createElement('div');
+        itemContent.classList.add('d-flex', 'justify-content-between', 'align-items-center');
+        
+        const precioTotalItem = item.precio * item.cantidad;
+        itemContent.innerHTML = `
+            <span>${item.nombre} x${item.cantidad} - ${formatearPrecio(precioTotalItem)}</span>
+            <button class="btn btn-danger border-danger btn-sm eliminar-item" data-index="${index}">X</button>
+        `;
+
+        li.appendChild(itemContent);
+        listaPedidos.appendChild(li);
+
+        totalPedido += precioTotalItem;
     });
     
-    function actualizarPedidoUI() {
-        listaPedidos.innerHTML = ''; // Limpiar la lista antes de actualizarla
-        totalPedido = 0;
-    
-        pedidoActual.forEach((item, index) => {
-            // Crear un elemento de lista para cada producto
-            const li = document.createElement('li');
-            li.classList.add('mb-2');
-            li.style.listStyleType = 'disc'; // Asegurar que los símbolos de lista se muestren
-            li.style.paddingLeft = '0'; // Para alinear el texto después del símbolo de lista
-    
-            // Crear un contenedor para el contenido del flexbox
-            const itemContent = document.createElement('div');
-            itemContent.classList.add('d-flex', 'justify-content-between', 'align-items-center');
-            itemContent.innerHTML = `
-                <span>${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}</span>
-                <button class="btn btn-danger border-danger btn-sm eliminar-item" data-index="${index}">X</button>
-            `;
-    
-            li.appendChild(itemContent); // Añadir el contenido flexbox dentro del <li>
-            listaPedidos.appendChild(li); // Añadir el <li> a la lista
-    
-            // Calcular el total
-            totalPedido += item.precio * item.cantidad;
+    // Actualizar el total a pagar
+    totalPagarSpan.textContent = formatearPrecio(totalPedido);
+
+    // Agregar evento a los botones "X" para eliminar productos
+    document.querySelectorAll('.eliminar-item').forEach(button => {
+        button.addEventListener('click', function() {
+            const index = this.dataset.index;
+            eliminarItemDelPedido(index);
         });
-    
-        // Actualizar el total a pagar
-        totalPagarSpan.textContent = totalPedido.toFixed(2);
-    
-        // Agregar evento a los botones "X" para eliminar productos
-        document.querySelectorAll('.eliminar-item').forEach(button => {
-            button.addEventListener('click', function() {
-                const index = this.dataset.index;
-                eliminarItemDelPedido(index);
+    });
+}
+
+function eliminarItemDelPedido(index) {
+    // Eliminar el producto de la lista del pedido
+    pedidoActual.splice(index, 1);
+    actualizarPedidoUI();  // Volver a actualizar la interfaz
+}
+
+generarTicketBtn.addEventListener('click', function() {
+    if (pedidoActual.length === 0) {
+        alert('Por favor, agregue items al pedido antes de generar el ticket.');
+        return;
+    }
+
+    if (!mesaSeleccionada) {
+        alert('Error: No se ha seleccionado una mesa.');
+        return;
+    }
+
+    const datosPedido = {
+        mesa_id: mesaSeleccionada.id,
+        items_pedido: JSON.stringify(pedidoActual)
+    };
+
+    fetch(urlRegistrarPedido, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(datosPedido)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Pedido registrado',
+                text: 'El pedido se registró correctamente',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(() => {
+                // Llamar a las funciones para actualizar la UI después de que la alerta se cierre
+                actualizarEstadoMesa(datosPedido.mesa_id);
+                actualizarListaPedidos();
             });
-        });
-    }
-    
-    function eliminarItemDelPedido(index) {
-        // Eliminar el producto de la lista del pedido
-        pedidoActual.splice(index, 1);
-        actualizarPedidoUI();  // Volver a actualizar la interfaz
-    }
-    
-    generarTicketBtn.addEventListener('click', function() {
-        if (pedidoActual.length === 0) {
-            alert('Por favor, agregue items al pedido antes de generar el ticket.');
-            return;
-        }
-    
-        if (!mesaSeleccionada) {
-            alert('Error: No se ha seleccionado una mesa.');
-            return;
-        }
-    
-        const datosPedido = {
-            mesa_id: mesaSeleccionada.id,
-            items_pedido: JSON.stringify(pedidoActual)
-        };
-    
-        fetch(urlRegistrarPedido, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify(datosPedido)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Pedido registrado',
-                    text: 'El pedido se registró correctamente',
-                    showConfirmButton: false,
-                    timer: 2000
-                }).then(() => {
-                    // Llamar a las funciones para actualizar la UI después de que la alerta se cierre
-                    actualizarEstadoMesa(datosPedido.mesa_id); // Cambiar de mesaId a mesa_id
-                    actualizarListaPedidos();
-                });
-                pedidoActual = [];
-                actualizarPedidoUI();
-                $('#pedidoModal').modal('hide');
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error al registrar el pedido: ' + data.message,
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error al registrar el pedido:', error);
+            pedidoActual = [];
+            actualizarPedidoUI();
+            $('#pedidoModal').modal('hide');
+        } else {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Error en la conexión al servidor.',
+                text: 'Error al registrar el pedido: ' + data.message,
             });
+        }
+    })
+    .catch(error => {
+        console.error('Error al registrar el pedido:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error en la conexión al servidor.',
         });
     });
+});
     
 
     window.actualizarEstadoMesa = function(mesaId) {
@@ -322,7 +343,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
     const content = document.querySelector(".content-meseros");
     const toggleBtn = document.querySelector('.navbar-toggler');
@@ -330,36 +351,52 @@ document.addEventListener('DOMContentLoaded', function() {
     const titleMesa = document.querySelector('.title-mesa');
     const titlePedidos1 = document.querySelector('.title-pedidos1');
     const titlePedidos2 = document.querySelector('.title-pedidos2');
-    const boxPedidos = document.querySelector('.box-Pedido'); 
     const inputBox = document.querySelector('.inputBox');
+    const cardPedidos = document.querySelectorAll('.card-pedido');
+    const cardPedidos1 = document.querySelectorAll('.card-pedido1');
 
-    function toggleSidebar() {
-        if (!sidebar || !content || !toggleBtn || !titlePedido || !titleMesa || !titlePedidos1 || !titlePedidos2 || !boxPedidos || !inputBox) {
-            console.error("No se encontraron los elementos necesarios en el DOM.");
-            return;
-        }
+    // Comprobar cada elemento individualmente
+    if (!sidebar) console.error("No se encontró el elemento #sidebar");
+    if (!content) console.error("No se encontró el elemento .content-meseros");
+    if (!toggleBtn) console.error("No se encontró el elemento .navbar-toggler");
+    if (!titlePedido) console.error("No se encontró el elemento .title-pedido");
+    if (!titleMesa) console.error("No se encontró el elemento .title-mesa");
+    if (!titlePedidos1) console.error("No se encontró el elemento .title-pedidos1");
+    if (!titlePedidos2) console.error("No se encontró el elemento .title-pedidos2");
+    if (!inputBox) console.error("No se encontró el elemento .inputBox");
+    if (cardPedidos.length === 0) console.error("No se encontraron elementos .card-pedido");
+    if (cardPedidos1.length === 0) console.error("No se encontraron elementos .card-pedido1");
 
-        sidebar.classList.toggle("active");
-        content.classList.toggle("sidebar-active");
-        toggleBtn.classList.toggle("sidebar-active");
-        titleMesa.classList.toggle("sidebar-active");
-        titlePedidos1.classList.toggle("sidebar-active");
-        titlePedidos2.classList.toggle("sidebar-active");
-        titlePedido.classList.toggle("sidebar-active");
-        boxPedidos.classList.toggle("sidebar-active");
-        inputBox.classList.toggle("sidebar-active");
-
-        if (sidebar.classList.contains("active")) {
-            toggleBtn.innerHTML = "✕";
-            toggleBtn.style.fontSize = "25px"; // Ajustas el tamaño de la "✕"
-            content.style.marginLeft = sidebar.offsetWidth + "px";
-        } else {
-            toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
-            toggleBtn.style.fontSize = "";  // Restablece el tamaño al valor por defecto
-            content.style.marginLeft = "0";
-        }
+    if (!sidebar || !content || !toggleBtn || !titlePedido || !titleMesa || !titlePedidos1 || !titlePedidos2 || !inputBox || cardPedidos.length === 0 || cardPedidos1.length === 0) {
+        console.error("No se encontraron todos los elementos necesarios en el DOM.");
+        return;
     }
 
+    sidebar.classList.toggle("active");
+    content.classList.toggle("sidebar-active");
+    toggleBtn.classList.toggle("sidebar-active");
+    titleMesa.classList.toggle("sidebar-active");
+    titlePedidos1.classList.toggle("sidebar-active");
+    titlePedidos2.classList.toggle("sidebar-active");
+    titlePedido.classList.toggle("sidebar-active");
+    inputBox.classList.toggle("sidebar-active");
+
+    cardPedidos.forEach(card => card.classList.toggle("sidebar-active"));
+    cardPedidos1.forEach(card => card.classList.toggle("sidebar-active"));
+
+    if (sidebar.classList.contains("active")) {
+        toggleBtn.innerHTML = "✕";
+        toggleBtn.style.fontSize = "25px";
+        content.style.marginLeft = sidebar.offsetWidth + "px";
+    } else {
+        toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
+        toggleBtn.style.fontSize = "";
+        content.style.marginLeft = "0";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtn = document.querySelector('.navbar-toggler');
     if (toggleBtn) {
         toggleBtn.addEventListener('click', toggleSidebar);
     } else {
@@ -377,19 +414,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Ajustar el sidebar y el contenido al cambiar el tamaño de la ventana
     window.addEventListener('resize', function() {
+        const sidebar = document.getElementById("sidebar");
+        const content = document.querySelector(".content-meseros");
+        const toggleBtn = document.querySelector('.navbar-toggler');
+        const titleMesa = document.querySelector('.title-mesa');
+        const titlePedidos1 = document.querySelector('.title-pedidos1');
+        const titlePedidos2 = document.querySelector('.title-pedidos2');
+        const titlePedido = document.querySelector('.title-pedido');
+        const inputBox = document.querySelector('.inputBox');
+        const cardPedidos = document.querySelectorAll('.card-pedido');
+        const cardPedidos1 = document.querySelectorAll('.card-pedido1');
+
         if (window.innerWidth > 768) {
             sidebar.classList.remove("active");
             content.classList.remove("sidebar-active");
-            toggleBtn.classList.toggle("sidebar-active");
+            toggleBtn.classList.remove("sidebar-active");
             titleMesa.classList.remove("sidebar-active");
             titlePedidos1.classList.remove("sidebar-active");
             titlePedidos2.classList.remove("sidebar-active");
             titlePedido.classList.remove("sidebar-active");
-            boxPedidos.classList.remove("sidebar-active");
-            inputBox.classList.remove("active");  // Asegúrate de ocultar el inputBox
-            content.style.marginLeft = ""; // Ajustar el margen del contenido en pantallas grandes
+            inputBox.classList.remove("sidebar-active");
+            cardPedidos.forEach(card => card.classList.remove("sidebar-active"));
+            cardPedidos1.forEach(card => card.classList.remove("sidebar-active"));
+            content.style.marginLeft = "0px";
         } else {
             content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "0";
         }
     });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const categoriaSelect = document.getElementById('categoriaSelect');
+    const menuTabContent = document.getElementById('menuTabContent');
+
+    categoriaSelect.addEventListener('change', function() {
+        const selectedCategoryId = this.value;
+        const categoryPanes = menuTabContent.getElementsByClassName('tab-pane');
+
+        for (let pane of categoryPanes) {
+            if (pane.id === selectedCategoryId) {
+                pane.classList.add('show', 'active');
+            } else {
+                pane.classList.remove('show', 'active');
+            }
+        }
+    });
+
+    // Trigger change event on page load to show the initially selected category
+    categoriaSelect.dispatchEvent(new Event('change'));
 });

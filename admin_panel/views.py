@@ -290,16 +290,17 @@ def registrar_pedido(request):
     data = json.loads(request.body)
     mesa_id = data.get('mesa_id')
     items_pedido = json.loads(data.get('items_pedido'))
-
+    
     try:
         mesa = Mesa.objects.get(id=mesa_id)
         
         mesa.estado = 'ocupada'
         mesa.save()
-
+        
         pedido = Pedido.objects.create(mesa=mesa)
-
+        
         items_detalle = []
+        total_pedido = 0
         for item in items_pedido:
             menu_item = MenuItem.objects.get(id=item['id'])
             pedido_item = PedidoItem.objects.create(
@@ -308,13 +309,15 @@ def registrar_pedido(request):
                 cantidad=item['cantidad'],
                 precio_unitario=menu_item.precio
             )
+            subtotal = pedido_item.precio_total
+            total_pedido += subtotal
             items_detalle.append({
                 'nombre': menu_item.nombre,
                 'cantidad': item['cantidad'],
-                'precio_unitario': pedido_item.precio_unitario_formateado(),
-                'precio_total': pedido_item.precio_total_formateado()
+                'precio_unitario': menu_item.precio_formateado(),
+                'precio_total': Pedido.formatear_precio(subtotal)
             })
-
+        
         return JsonResponse({
             'status': 'success',
             'message': 'Pedido registrado correctamente',
@@ -323,7 +326,7 @@ def registrar_pedido(request):
             'fecha_pedido': pedido.fecha_pedido.strftime("%d/%m/%Y %H:%M:%S"),
             'estado': pedido.get_estado_display(),
             'items': items_detalle,
-            'total_pedido': pedido.precio_total_formateado()
+            'total_pedido': Pedido.formatear_precio(total_pedido)
         })
     except Exception as e:
         return JsonResponse({
@@ -331,8 +334,6 @@ def registrar_pedido(request):
             'message': str(e)
         }, status=400)
 
-@login_required
-@require_POST
 @login_required
 @require_POST
 def cambiar_estado_pedido(request, pedido_id):
@@ -343,7 +344,6 @@ def cambiar_estado_pedido(request, pedido_id):
         pedido.estado = nuevo_estado
         pedido.save()
 
-        # Verificar mesas sin pedidos activos y marcarlas como disponibles
         verificar_mesas_disponibles()
 
         return JsonResponse({'status': 'success', 'nuevo_estado': nuevo_estado})
