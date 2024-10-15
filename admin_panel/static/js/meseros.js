@@ -354,6 +354,8 @@ function toggleSidebar() {
     const inputBox = document.querySelector('.inputBox');
     const cardPedidos = document.querySelectorAll('.card-pedido');
     const cardPedidos1 = document.querySelectorAll('.card-pedido1');
+    const boxPedidos = document.querySelectorAll('.boxPedido');
+    const boxPedidos1 = document.querySelectorAll('.boxPedido1');
 
     // Comprobar cada elemento individualmente
     if (!sidebar) console.error("No se encontró el elemento #sidebar");
@@ -364,10 +366,8 @@ function toggleSidebar() {
     if (!titlePedidos1) console.error("No se encontró el elemento .title-pedidos1");
     if (!titlePedidos2) console.error("No se encontró el elemento .title-pedidos2");
     if (!inputBox) console.error("No se encontró el elemento .inputBox");
-    if (cardPedidos.length === 0) console.error("No se encontraron elementos .card-pedido");
-    if (cardPedidos1.length === 0) console.error("No se encontraron elementos .card-pedido1");
 
-    if (!sidebar || !content || !toggleBtn || !titlePedido || !titleMesa || !titlePedidos1 || !titlePedidos2 || !inputBox || cardPedidos.length === 0 || cardPedidos1.length === 0) {
+    if (!sidebar || !content || !toggleBtn || !titlePedido || !titleMesa || !titlePedidos1 || !titlePedidos2 || !inputBox) {
         console.error("No se encontraron todos los elementos necesarios en el DOM.");
         return;
     }
@@ -381,8 +381,19 @@ function toggleSidebar() {
     titlePedido.classList.toggle("sidebar-active");
     inputBox.classList.toggle("sidebar-active");
 
-    cardPedidos.forEach(card => card.classList.toggle("sidebar-active"));
-    cardPedidos1.forEach(card => card.classList.toggle("sidebar-active"));
+    // Solo aplicar la clase si existen elementos con estas clases
+    if (cardPedidos.length > 0) {
+        cardPedidos.forEach(card => card.classList.toggle("sidebar-active"));
+    }
+    if (cardPedidos1.length > 0) {
+        cardPedidos1.forEach(card => card.classList.toggle("sidebar-active"));
+    }
+    if (boxPedidos.length > 0) {
+        boxPedidos.forEach(box => box.classList.toggle("sidebar-active"));
+    }
+    if (boxPedidos1.length > 0) {
+        boxPedidos1.forEach(box => box.classList.toggle("sidebar-active"));
+    }
 
     if (sidebar.classList.contains("active")) {
         toggleBtn.innerHTML = "✕";
@@ -424,6 +435,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const inputBox = document.querySelector('.inputBox');
         const cardPedidos = document.querySelectorAll('.card-pedido');
         const cardPedidos1 = document.querySelectorAll('.card-pedido1');
+        const boxPedidos = document.querySelectorAll('.boxPedido');
+        const boxPedidos1 = document.querySelectorAll('.boxPedido1');
 
         if (window.innerWidth > 768) {
             sidebar.classList.remove("active");
@@ -434,14 +447,25 @@ document.addEventListener('DOMContentLoaded', function() {
             titlePedidos2.classList.remove("sidebar-active");
             titlePedido.classList.remove("sidebar-active");
             inputBox.classList.remove("sidebar-active");
-            cardPedidos.forEach(card => card.classList.remove("sidebar-active"));
-            cardPedidos1.forEach(card => card.classList.remove("sidebar-active"));
+            if (cardPedidos.length > 0) {
+                cardPedidos.forEach(card => card.classList.remove("sidebar-active"));
+            }
+            if (cardPedidos1.length > 0) {
+                cardPedidos1.forEach(card => card.classList.remove("sidebar-active"));
+            }
+            if (boxPedidos.length > 0) {
+                boxPedidos.forEach(box => box.classList.remove("sidebar-active"));
+            }
+            if (boxPedidos1.length > 0) {
+                boxPedidos1.forEach(box => box.classList.remove("sidebar-active"));
+            }
             content.style.marginLeft = "0px";
         } else {
             content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "0";
         }
     });
 });
+
 document.addEventListener('DOMContentLoaded', function() {
     const categoriaSelect = document.getElementById('categoriaSelect');
     const menuTabContent = document.getElementById('menuTabContent');

@@ -336,4 +336,16 @@
         margin-left: 5px;
         width: 10rem;
     }
+    .boxPedido{
+        margin-left: 20px;
+    }
+    .boxPedido1{
+        margin-left: 20px;
+    }
+    .boxPedido.sidebar-active {
+        margin-left: -20px;
+    }
+    .boxPedido1.sidebar-active {
+        margin-left: -20px;
+    }
 }
