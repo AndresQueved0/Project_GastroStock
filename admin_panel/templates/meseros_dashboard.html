@@ -42,7 +42,7 @@
         </button>
         </div>
 
-        <div class="col-md-1 col-lg-2 mt-5" id="sidebar">
+        <div class="col-md-2 col-lg-2 mt-5" id="sidebar">
             <div class="d-flex align-items-center hv">
                 <a data-content="mesas" id="myLink" class="btn border-0 d-flex flex-column align-items-center mb-2 ms-3">
                     <img src="{% static 'img/mesa-de-comedor.png' %}" alt="" class="responsive-img">
@@ -85,9 +85,9 @@
                 {% endif %}
 
                 <div id="alertPlaceholderMesa"></div>
-                <div class="row rowMesa" id="mesasContainer">
+                <div class="row rowMesa mesasContainer" id="mesasContainer">
                     {% for mesa in mesas %}
-                    <div class="col-4 col-md-3 col-lg-2 mb-4 mt-3 me-5 ">
+                    <div class="col-4 col-md-3 col-lg-2 container-fluid mb-4 mt-3 me-5 ">
                         <div class="card card-mesa{% if mesa.estado == 'ocupada' %} border-danger {% endif %}" data-mesa-id="{{ mesa.id }}" data-bs-toggle="modal" data-bs-target="#pedidoModal" data-mesa-nombre="{{ mesa.nombre }}" data-mesa-ubicacion="{{ mesa.ubicacion }}" onclick="actualizarInfoMesa('{{ mesa.id }}', '{{ mesa.nombre }}', '{{ mesa.ubicacion }}'); actualizarEstadoMesa('{{ mesa.id }}');">
                             <div class="card-icon d-flex justify-content-center align-items-center">
                                 <img src="{% static 'img/mesa-de-comedor.png' %}" class="img-fluid" alt="Foto por defecto">
@@ -120,7 +120,7 @@
                         <h2 class="title-pedidos1 mb-3">Pedidos preparados</h2>
                     </div>
                     {% for pedido in listo_para_entregar %}
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-md-6 col-lg-2 container-fluid">
                         <div class="card-pedido position-relative">
                             <div class="check-circle position-absolute">
                                 <span class="check-text">{{pedido.id}}</span>
@@ -157,7 +157,7 @@
                         <h2 class="title-pedidos2 mb-3">Pedidos realizados</h2>
                     </div>
                     {% for pedido in pedido_realizado %}
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-md-6 col-lg-2 container-fluid">
                         <div class="card-pedido1 position-relative">
                             <div class="check-circle1 position-absolute">
                                 <span class="check-text1">{{pedido.id}}</span>
@@ -194,15 +194,15 @@
 
     <!-- Modal para toma de pedidos -->
     <div class="modal fade" id="pedidoModal" tabindex="-1" aria-labelledby="pedidoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl mt-5">
-            <div class="modal-content">
+        <div class="modal-dialog modal-xl  mt-5">
+            <div class="modal-content container-fluid">
                 <div class="modal-header">
                     <h5 id="pedidoModalLabel">Tomar Pedido</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-8 col-xxl-10">
                             <h3 class="titleMenu">Menú</h3>
                             <!-- Select para las categorías -->
                             <select class="form-select" id="categoriaSelect" aria-label="Seleccionar categoría">
@@ -217,11 +217,11 @@
                             <div class="tab-content mt-3" id="menuTabContent">
                                 {% for categoria in categorias_menu %}
                                 <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="categoria-{{ categoria.id }}" role="tabpanel">
-                                    <div class="row">
+                                    <div class="row container-fluid">
                                         {% for item in categoria.items.all %}
-                                        <div class="col-6 col-md-4 col-lg-4 mb-3">
+                                        <div class="col-6 col-md-4 col-lg-4 col-xxl-3 mb-3">
                                             <div class="card tomaPedido border-dark agregar-item" data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}">
-                                                <div class="card-img-top d-flex align-items-center justify-content-center">
+                                                <div class="card-img-top pedidoImg d-flex align-items-center justify-content-center">
                                                     {% if item.imagen %}
                                                     <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" class="imgMenu" style="width: 100%; height: 100%; object-fit: cover;">
                                                     {% endif %}
@@ -240,7 +240,7 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-xxl-2">
                             <h3 class="titleMenu">Pedido actual</h3>
                             <div id="pedido-actual">
                                 <p> <strong> <span id="mesa-numero"></span> - <span id="mesa-ubicacion"></span></strong></p>

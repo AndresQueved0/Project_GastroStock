@@ -356,6 +356,7 @@ function toggleSidebar() {
     const cardPedidos1 = document.querySelectorAll('.card-pedido1');
     const boxPedidos = document.querySelectorAll('.boxPedido');
     const boxPedidos1 = document.querySelectorAll('.boxPedido1');
+    const mesasContainer = document.querySelector(".mesasContainer")
 
     // Comprobar cada elemento individualmente
     if (!sidebar) console.error("No se encontró el elemento #sidebar");
@@ -366,8 +367,9 @@ function toggleSidebar() {
     if (!titlePedidos1) console.error("No se encontró el elemento .title-pedidos1");
     if (!titlePedidos2) console.error("No se encontró el elemento .title-pedidos2");
     if (!inputBox) console.error("No se encontró el elemento .inputBox");
+    if (!mesasContainer) console.error("No se encontró el elemento .mesasContainer");
 
-    if (!sidebar || !content || !toggleBtn || !titlePedido || !titleMesa || !titlePedidos1 || !titlePedidos2 || !inputBox) {
+    if (!sidebar || !content || !toggleBtn || !titlePedido || !titleMesa || !titlePedidos1 || !titlePedidos2 || !inputBox || !mesasContainer) {
         console.error("No se encontraron todos los elementos necesarios en el DOM.");
         return;
     }
@@ -380,6 +382,7 @@ function toggleSidebar() {
     titlePedidos2.classList.toggle("sidebar-active");
     titlePedido.classList.toggle("sidebar-active");
     inputBox.classList.toggle("sidebar-active");
+    mesasContainer.classList.toggle("sidebar-active")
 
     // Solo aplicar la clase si existen elementos con estas clases
     if (cardPedidos.length > 0) {
@@ -437,6 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const cardPedidos1 = document.querySelectorAll('.card-pedido1');
         const boxPedidos = document.querySelectorAll('.boxPedido');
         const boxPedidos1 = document.querySelectorAll('.boxPedido1');
+        const mesasContainer = document.querySelector(".mesasContainer")
 
         if (window.innerWidth > 768) {
             sidebar.classList.remove("active");
@@ -447,6 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
             titlePedidos2.classList.remove("sidebar-active");
             titlePedido.classList.remove("sidebar-active");
             inputBox.classList.remove("sidebar-active");
+            mesasContainer.classList.toggle("sidebar-active")
             if (cardPedidos.length > 0) {
                 cardPedidos.forEach(card => card.classList.remove("sidebar-active"));
             }
