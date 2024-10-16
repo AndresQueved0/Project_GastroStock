@@ -21,6 +21,4 @@ urlpatterns = [
     path('meseros/cambiar-estado-pedido/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
     path('meseros/obtener-pedidos/', views.obtener_pedidos, name='obtener_pedidos'),
     path('meseros/obtener-estado-mesa/<int:mesa_id>/', views.obtener_estado_mesa, name='obtener_estado_mesa'),
-
-    
 ]

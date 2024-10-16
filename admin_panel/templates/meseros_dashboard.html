@@ -87,7 +87,7 @@
                 <div id="alertPlaceholderMesa"></div>
                 <div class="row rowMesa mesasContainer" id="mesasContainer">
                     {% for mesa in mesas %}
-                    <div class="col-4 col-md-3 col-lg-2 container-fluid mb-4 mt-3 me-5 ">
+                    <div class="col-6 col-md-3 col-lg-2 container-fluid mb-4 mt-3 ">
                         <div class="card card-mesa{% if mesa.estado == 'ocupada' %} border-danger {% endif %}" data-mesa-id="{{ mesa.id }}" data-bs-toggle="modal" data-bs-target="#pedidoModal" data-mesa-nombre="{{ mesa.nombre }}" data-mesa-ubicacion="{{ mesa.ubicacion }}" onclick="actualizarInfoMesa('{{ mesa.id }}', '{{ mesa.nombre }}', '{{ mesa.ubicacion }}'); actualizarEstadoMesa('{{ mesa.id }}');">
                             <div class="card-icon d-flex justify-content-center align-items-center">
                                 <img src="{% static 'img/mesa-de-comedor.png' %}" class="img-fluid" alt="Foto por defecto">
@@ -202,7 +202,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-8 col-xxl-10">
+                        <div class="col-12 col-md-8 col-xxl-10">
                             <h3 class="titleMenu">Menú</h3>
                             <!-- Select para las categorías -->
                             <select class="form-select" id="categoriaSelect" aria-label="Seleccionar categoría">
@@ -217,13 +217,13 @@
                             <div class="tab-content mt-3" id="menuTabContent">
                                 {% for categoria in categorias_menu %}
                                 <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="categoria-{{ categoria.id }}" role="tabpanel">
-                                    <div class="row container-fluid">
+                                    <div class="row container-fluid menuContent">
                                         {% for item in categoria.items.all %}
-                                        <div class="col-6 col-md-4 col-lg-4 col-xxl-3 mb-3">
+                                        <div class="col-6 col-md-6 col-lg-4 col-xxl-3 mb-3">
                                             <div class="card tomaPedido border-dark agregar-item" data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}">
                                                 <div class="card-img-top pedidoImg d-flex align-items-center justify-content-center">
                                                     {% if item.imagen %}
-                                                    <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" class="imgMenu" style="width: 100%; height: 100%; object-fit: cover;">
+                                                    <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" class="imgMenu">
                                                     {% endif %}
                                                 </div>
                                                 <div class="card-body">
@@ -240,7 +240,7 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div class="col-md-4 col-xxl-2">
+                        <div class="col-12 col-md-4 col-xxl-2">
                             <h3 class="titleMenu">Pedido actual</h3>
                             <div id="pedido-actual">
                                 <p> <strong> <span id="mesa-numero"></span> - <span id="mesa-ubicacion"></span></strong></p>
