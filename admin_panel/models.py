@@ -143,21 +143,23 @@ class Pedido(models.Model):
     ]
     
     id = models.AutoField(primary_key=True)
-    mesa = models.ForeignKey('Mesa', on_delete=models.CASCADE)
+    mesa = models.ForeignKey(Mesa, on_delete=models.CASCADE)
     fecha_pedido = models.DateTimeField(default=timezone.now)
     estado = models.CharField(max_length=50, choices=ESTADO_CHOICES, default='Pedido realizado')
+    precio_total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    metodo_pago = models.CharField(max_length=50, blank=True, null=True)  # Campo para el método de pago
 
-    @property
-    def precio_total(self):
-        return sum(item.precio_total for item in self.items.all())
+    def actualizar_precio_total(self):
+        self.precio_total = sum(item.precio_unitario * item.cantidad for item in self.items.all())
+        self.save()
 
     def precio_total_formateado(self):
         return self.formatear_precio(self.precio_total)
 
     @staticmethod
     def formatear_precio(precio):
-        precio_entero = int(precio)  # Convierte el precio a entero, eliminando los decimales
-        precio_str = f"{precio_entero:,}".replace(",", ".")  # Formatea con puntos como separadores de miles
+        precio_entero = int(precio)
+        precio_str = f"{precio_entero:,}".replace(",", ".")
         return f"${precio_str}"
 
     def __str__(self):
@@ -165,7 +167,6 @@ class Pedido(models.Model):
 
     class Meta:
         ordering = ['-fecha_pedido']
-
 class PedidoItem(models.Model):
     pedido = models.ForeignKey(Pedido, related_name='items', on_delete=models.CASCADE)
     item_menu = models.ForeignKey('MenuItem', on_delete=models.CASCADE)
@@ -182,6 +183,9 @@ class PedidoItem(models.Model):
     def precio_total_formateado(self):
         return Pedido.formatear_precio(self.precio_total)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.pedido.actualizar_precio_total()
+
     def __str__(self):
         return f"{self.cantidad} x {self.item_menu.nombre}"
-    

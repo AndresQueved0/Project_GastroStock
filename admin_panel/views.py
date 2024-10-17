@@ -13,6 +13,7 @@ import json
 from datetime import datetime
 from django.db import transaction
 from django.db.models import Q
+from decimal import Decimal
 
 
 #Listar datos de base de datos - Admin dashboard
@@ -209,6 +210,29 @@ def meseros_dashboard(request):
 
     return render(request, 'meseros_dashboard.html', context)
 
+
+def obtener_detalles_pedido(request, pedido_id):
+    try:
+        pedido = Pedido.objects.get(id=pedido_id)
+        items = pedido.items.all()
+        items_data = [{
+            'nombre': item.item_menu.nombre,
+            'cantidad': item.cantidad,
+            'precio': Pedido.formatear_precio(item.precio_unitario)  # Formatear el precio
+        } for item in items]
+        
+        data = {
+            'mesa': {
+                'nombre': pedido.mesa.nombre,
+                'ubicacion': str(pedido.mesa.ubicacion)  # Asegúrate de que la ubicación sea una cadena
+            },
+            'items': items_data,
+            'precio_total': pedido.precio_total_formateado()
+        }
+        return JsonResponse(data)
+    except Pedido.DoesNotExist:
+        return JsonResponse({'error': 'Pedido no encontrado'}, status=404)
+
 def verificar_mesas_disponibles():
     # Obtener todas las mesas
     mesas = Mesa.objects.all()
@@ -225,12 +249,16 @@ def verificar_mesas_disponibles():
             mesa.save()
 
 def obtener_pedidos(request):
+    pedidos_preparados = Pedido.objects.filter(estado='Listo para entregar').order_by('fecha_pedido')
     listo_para_entregar= Pedido.objects.filter(estado='Listo para entregar').order_by('fecha_pedido')
     pedido_realizado = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
-    return render(request, 'meseros_dashboard.html', {
+    context = {
+        'pedidos_preparados': pedidos_preparados,
         'listo_para_entregar': listo_para_entregar,
-        'pedido_realizado': pedido_realizado
-    })
+        'pedido_realizado': pedido_realizado,
+    }
+
+    return render(request, 'admin_panel/pedidos_list.html', context)
 
 def obtener_estado_mesa(request, mesa_id):
     try:
@@ -290,33 +318,34 @@ def registrar_pedido(request):
     data = json.loads(request.body)
     mesa_id = data.get('mesa_id')
     items_pedido = json.loads(data.get('items_pedido'))
+    precio_total_pedido = Decimal(data.get('precio_total', '0'))  # Convertir a Decimal
     
     try:
         mesa = Mesa.objects.get(id=mesa_id)
         
+        # Cambiar el estado de la mesa a "ocupada"
         mesa.estado = 'ocupada'
         mesa.save()
         
-        pedido = Pedido.objects.create(mesa=mesa)
+        pedido = Pedido.objects.create(
+            mesa=mesa,
+            precio_total=precio_total_pedido  # Usar el precio total proporcionado por el cliente
+        )
         
-        items_detalle = []
-        total_pedido = 0
         for item in items_pedido:
             menu_item = MenuItem.objects.get(id=item['id'])
-            pedido_item = PedidoItem.objects.create(
+            PedidoItem.objects.create(
                 pedido=pedido,
                 item_menu=menu_item,
                 cantidad=item['cantidad'],
                 precio_unitario=menu_item.precio
             )
-            subtotal = pedido_item.precio_total
-            total_pedido += subtotal
-            items_detalle.append({
-                'nombre': menu_item.nombre,
-                'cantidad': item['cantidad'],
-                'precio_unitario': menu_item.precio_formateado(),
-                'precio_total': Pedido.formatear_precio(subtotal)
-            })
+        
+        # Verificar si el precio total calculado en el servidor coincide con el del cliente
+        pedido.actualizar_precio_total()
+        if abs(pedido.precio_total - precio_total_pedido) > Decimal('0.01'):  # Permitir una pequeña diferencia por redondeo
+            # Loguear la discrepancia pero mantener el precio del cliente
+            print(f"Discrepancia en precio total para pedido {pedido.id}: Cliente {precio_total_pedido}, Servidor {pedido.precio_total}")
         
         return JsonResponse({
             'status': 'success',
@@ -325,8 +354,7 @@ def registrar_pedido(request):
             'mesa': pedido.mesa.nombre,
             'fecha_pedido': pedido.fecha_pedido.strftime("%d/%m/%Y %H:%M:%S"),
             'estado': pedido.get_estado_display(),
-            'items': items_detalle,
-            'total_pedido': Pedido.formatear_precio(total_pedido)
+            'precio_total': pedido.precio_total_formateado()
         })
     except Exception as e:
         return JsonResponse({
@@ -353,6 +381,7 @@ def cambiar_estado_pedido(request, pedido_id):
     
 @login_required
 def cocina_dashboard(request):
+    obtener_pedidos(request)
     productos = Inventario.objects.all()
     pedido_realizado = Pedido.objects.filter(estado='Pedido realizado').order_by('fecha_pedido')
 
@@ -366,11 +395,30 @@ def cocina_dashboard(request):
 
 @login_required
 def caja_dashboard(request):
-    productos = Inventario.objects.all()
     pedido_en_mesa = Pedido.objects.filter(estado='Pedido en mesa').order_by('fecha_pedido')
 
     context = {
-        'productos': productos,
         'pedido_en_mesa': pedido_en_mesa,
     }
     return render(request, 'caja_dashboard.html', context)
+
+@login_required
+def procesar_pago(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            pedido_id = data.get('pedido_id')
+            metodo_pago = data.get('metodo_pago')
+
+            pedido = Pedido.objects.get(id=pedido_id)
+            pedido.estado = 'Pagado'
+            pedido.metodo_pago = metodo_pago  # Asumiendo que tienes un campo para el método de pago
+            pedido.save()
+
+            return JsonResponse({'success': True, 'message': 'Pago procesado correctamente'})
+        except Pedido.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Pedido no encontrado'}, status=404)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=400)
+    else:
+        return JsonResponse({'success': False, 'message': 'Método no permitido'}, status=405)

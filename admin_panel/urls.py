@@ -16,9 +16,13 @@ urlpatterns = [
     path('registro-mesas/', views.registro_mesas, name='registro_mesas'),
     path('registrar-producto-menu/', views.registrar_producto_menu, name='registrar_producto_menu'),
     path('borrar-menuitem/<int:menuitem_id>/', views.borrar_menuitem, name='borrar_menuitem'),
-    path('registrar-pedido/', views.registrar_pedido, name='registrar_pedido'),
+    path('meseros/registrar-pedido/', views.registrar_pedido, name='registrar_pedido'),
     path('cocina/cambiar-estado-pedido/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
     path('meseros/cambiar-estado-pedido/<int:pedido_id>/', views.cambiar_estado_pedido, name='cambiar_estado_pedido'),
     path('meseros/obtener-pedidos/', views.obtener_pedidos, name='obtener_pedidos'),
     path('meseros/obtener-estado-mesa/<int:mesa_id>/', views.obtener_estado_mesa, name='obtener_estado_mesa'),
+    path('caja/obtener-detalles-pedido/<int:pedido_id>/', views.obtener_detalles_pedido, name='obtener_detalles_pedido'),
+    path('caja/procesar-pago/', views.procesar_pago, name='procesar_pago'),  # Añadir esta línea
+    path('caja/obtener-pedidos/', views.obtener_pedidos, name='obtener_pedidos'),  # Añadir esta línea
+    path('cocina/obtener-pedidos/', views.obtener_pedidos, name='obtener_pedidos'),
 ]

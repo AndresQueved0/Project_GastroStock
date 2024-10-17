@@ -7,7 +7,7 @@
         padding-left: 35px;
     }
     .card-mesa{
-        width: 18rem;
+        width: 15rem;
         max-height: 200px !important;
     }
     .card-icon{
@@ -25,11 +25,22 @@
         max-width: 70%; /* Ajuste predeterminado */
     }
     .tomaPedido{
-        width: 20rem;
-        max-height: 200px;
+        width: 18rem;
+        max-height: 250px;
+        min-height: 250px;
     }
     .pedidoImg{
-        max-height: 50px;
+        height: 160px;
+        object-fit: cover;
+        padding-bottom: 10px;
+    }
+    .imgMenu{
+        height: 160px;
+        width: 100%;
+        object-fit: cover;
+    }   
+    #pedidosRealizadosContainer{
+        column-gap: 20px;
     }
 }
 @media (min-width: 1024px) and (max-width: 1440px) {
@@ -112,8 +123,8 @@
         border-left: none;
         min-height: 100vh;
     }
-    #myLink{
-        margin-left: 16px ;
+    .hv{
+        margin-left: 10px;
     }
     .card-mesa{
         width: 12rem;
@@ -180,7 +191,7 @@
         margin-left: 20px;
     }
     .title-pedidos2{
-        margin-left: 30px;
+        margin-left: 0px;
     }
     .boxPedido{
         margin-left: 20px;
@@ -192,11 +203,29 @@
         margin-left: -10px !important;
     }
     #pedidosRealizadosContainer{
-        margin-left: -20px !important;
+        margin-left: 10px !important;
     }
     .mesasContainer{
-        margin-left: 10px;
-        margin-right: -90px;
+        margin-left: -30px;
+        margin-right: 10px;
+    }
+    .tomaPedido{
+        width: 12rem;
+        column-gap: 10px;
+        max-height: 200px;
+        min-height: 200px;
+    }
+    .pedidoImg{
+        height: 120px;
+        object-fit: cover;
+    }
+    .imgMenu{
+        height: 120px;
+        width: 100%;
+        object-fit: cover;
+    }
+    .card-title{
+        font-size: 15px;
     }
 }
 @media (min-width: 426px) and (max-width: 769px) {
@@ -204,7 +233,7 @@
         position: fixed;
         top: 0;
         left: -250px;
-        width: 140px;
+        width: 120px;
         height: 100vh;
         padding-top: 70px !important;
         background-color: #ffffff;
@@ -216,15 +245,11 @@
     #sidebar.active {
         left: 0;
         width: 130px;
-        padding-top: 30px !important;
+        padding-top: 70px !important;
         padding-right: 10px;
         background-color: #ffffff !important;
         border-right: 3px solid var(--success);
         z-index: 1001;
-    }
-    #sidebar{
-        margin-top: 80px !important;
-        width: 13%;
     }
     .navbar-toggler {
         font-size: 15px;
@@ -246,11 +271,13 @@
     .content-meseros{
         padding-left: 20px;
         padding-top: 30px;
+        transition: all 0.3s;
     }
     .content-meseros.sidebar-active{
         margin-left: 90px !important;
-        opacity: 0.2;
+        opacity: 0.5;
         transition: opacity 0.5s;
+        transition: all 0.5s;
     }
     .check-text1 {
         color: white;
@@ -310,13 +337,30 @@
     .card-title{
         font-size: 15px;
     }
+    .card-pedido{
+        width: 20rem;
+    }
+    .card-pedido.sidebar-active {
+        margin-left: 20px;
+    }
     .card-pedido1{
         width: 20rem;
         margin-top: 30px;
-        margin-left: 15px;
+        margin-left: 20px;
+    }
+    .card-pedido1.sidebar-active {
+        margin-left: 40px;
     }
     .mesasContainer {
+        padding-left: 10px;
+        padding-right: 40px;
         column-gap: 0;
+        transition: all 0.5ms;
+    }
+    .mesasContainer.sidebar-active {
+        margin-left: 20px;
+        margin-right: 40px;
+        column-gap: 50px;
         transition: all 0.5ms;
     }
     .inputBox {
@@ -395,16 +439,19 @@
         position: fixed;
         top: 0;
         left: -250px;
-        width: 140px;
+        width: 130px;
         height: 100vh;
+        padding-right: 10px;
         padding-top: 70px !important;
         background-color: #ffffff;
         z-index: 1000;
         transition: left 0.5s;
         overflow-y: auto;
+        z-index: 1001;
     }
     
     #sidebar.active {
+        transition: all 0.2s;
         left: 0;
         width: 130px;
         padding-top: 70px !important;
@@ -478,12 +525,13 @@
 
     /*CONFIGURACION PANEL MESEROS*/
     .content-meseros{
-        transition: padding-left 0.5s;
+        transition: all 0.3s;
         margin-top: 0px !important;
         opacity: 1;
     }
 
     .content-meseros.sidebar-active {
+        transition: all 0.3s;
         opacity: 0.2;
         transition: opacity 0.5s;
         margin-left: 200px !important;
@@ -502,7 +550,7 @@
     .title-mesa{
         margin-top: 40px !important;
         font-size: 30px;
-        margin-left: 140px;
+        margin-left: 160px;
         padding-left: 50px;
         transition: margin-left 0.5s;
     }
@@ -515,7 +563,7 @@
     .title-pedidos2{
         margin-top: 2px !important;
         font-size: 23px;
-        margin-left: 90px !important;
+        margin-left: 80px !important;
         letter-spacing: 0.2rem;
     }
 
@@ -526,7 +574,7 @@
     .title-pedidos1{
         margin-top: 2px !important;
         font-size: 23px;
-        margin-left: 90px !important;
+        margin-left: 80px !important;
         letter-spacing: 0.2rem;
     }
 
@@ -554,9 +602,9 @@
     }
 
     .card-pedido{
-        width: 18rem;
+        width: 20rem;
         margin: 0;
-        margin-left: 60px;
+        margin-left: 40px;
         margin-top: 10px !important;
     }
     .card-pedido.sidebar-active {
@@ -567,9 +615,9 @@
     }
 
     .card-pedido1{
-        width: 17rem;
+        width: 19rem;
         margin: 0;
-        margin-left: 80px;
+        margin-left: 60px;
         margin-top: 50px !important;
     }
     .card-pedido1.sidebar-active {
@@ -633,10 +681,13 @@
     }
     .mesasContainer{
         margin-left: -20px;
+        padding-left: 30px;
+        padding-right: 60px;
+        transition: all 0.5ms;
     }
     .mesasContainer.sidebar-active{
-        margin-left: -130px;
-        padding-left: -50px;
+        margin-left: -40px;
+        padding-left: 0px;
         column-gap: 90px;
         transition: all 0.5ms;
     }

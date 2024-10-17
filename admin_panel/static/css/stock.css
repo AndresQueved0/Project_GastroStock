@@ -167,4 +167,24 @@ hr {
     border-right: 1px solid var(--success);
     letter-spacing: 0.2em;
 }
+.btn-custom {
+    background-color: #39A900; /* Color personalizado */
+    color: white;
+    border: none; /* Eliminar el borde */
+    padding: 0.7rem 2rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    outline: none; /* Eliminar el borde de enfoque */
+    box-shadow: none; /* Eliminar cualquier sombra */
+}
+
+.btn-custom:hover {
+    background-color: #2e8b00; /* Color más oscuro para el hover */
+    box-shadow: none; /* Eliminar cualquier sombra */
+}
+
+.btn-custom:focus {
+    outline: none; /* Eliminar el borde de enfoque */
+    box-shadow: none; /* Eliminar cualquier sombra */
+}
 

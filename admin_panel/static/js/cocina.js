@@ -1,74 +1,124 @@
+function getURLParameter(name) {
+    return new URLSearchParams(window.location.search).get(name);
+}
+
+// Función para mostrar una sección específica
+function showSection(sectionId) {
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        if (section.id === sectionId) {
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
+        }
+    });
+    localStorage.setItem('currentSection', sectionId);
+}
+
+// Mostrar siempre la sección "pedidos" al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
-    const links = document.querySelectorAll('#myLink');
-    const sections = document.querySelectorAll('section');
-    // Función para obtener el valor del parámetro de la URL
-    function getURLParameter(name) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(name);
-    }
-    // Función para mostrar una sección específica
-    function showSection(sectionId) {
-        sections.forEach(section => {
-            if (section.id === sectionId) {
-                section.style.display = 'block';
-            } else {
-                section.style.display = 'none';
-            }
-        });
-        localStorage.setItem('currentSection', sectionId);
-    }
-    // Obtener la sección desde la URL o desde el localStorage
-    const sectionFromURL = getURLParameter('section');
-    const initialSection = sectionFromURL || localStorage.getItem('currentSection');
-    // Si hay una sección inicial, mostrarla
-    if (initialSection) {
-        showSection(initialSection);
-    } else {
-        // Si no hay sección inicial, no mostrar ninguna sección
-        sections.forEach(section => section.style.display = 'none');
-    }
-    // Actualizar el campo oculto en los formularios
-    const currentSectionInputs = document.querySelectorAll('input[name="current_section"]');
-    currentSectionInputs.forEach(input => {
-        input.value = initialSection;
-    });
-    // Manejar la navegación por los enlaces
-    links.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const sectionToShow = this.getAttribute('data-content');
-            showSection(sectionToShow);
-        });
-    });
+    showSection('pedidos');
 });
 
-document.querySelectorAll('.cambiar-estado-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const pedidoId = this.getAttribute('data-pedido-id');
-        const nuevoEstado = this.getAttribute('data-nuevo-estado');
+document.addEventListener('DOMContentLoaded', function() {
+    function asignarEventosCambiarEstado() {
+        document.querySelectorAll('.cambiar-estado-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const pedidoId = this.getAttribute('data-pedido-id');
+                const nuevoEstado = this.getAttribute('data-nuevo-estado');
 
-        fetch(`cambiar-estado-pedido/${pedidoId}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: `nuevo_estado=${nuevoEstado}`
-        })
-        .then(response => response.text())
-        .then(data => {
-            if (data.status === 'success') {
-                const pedidoCard = document.querySelector(`.pedido-card[data-pedido-id="${pedidoId}"]`);
-                pedidoCard.style.order = '1';
+                fetch(`cambiar-estado-pedido/${pedidoId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: `nuevo_estado=${nuevoEstado}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Mostrar alerta de éxito con botón personalizado
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Estado cambiado',
+                            text: 'El estado del pedido se cambió correctamente',
+                            showConfirmButton: true,
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                confirmButton: 'btn btn-success'
+                            },
+                            buttonsStyling: false
+                        }).then(() => {
+                            // Actualizar la lista de pedidos sin recargar la página
+                            actualizarListaPedidos().then(() => {
+                                const pedidoCard = document.querySelector(`.card-pedido[data-pedido-id="${pedidoId}"]`);
+                                if (pedidoCard) {
+                                    pedidoCard.style.order = '1';
 
-                this.textContent = `${data.nuevo_estado} - Listo para entregar`;
-                this.classList.remove('btn-success');
-                this.classList.add('btn-secondary');
-                this.disabled = true;
+                                    this.textContent = `${data.nuevo_estado} - Listo para entregar`;
+                                    this.classList.remove('btn-success');
+                                    this.classList.add('btn-secondary');
+                                    this.disabled = true;
+                                } else {
+                                    console.error(`No se encontró el elemento con data-pedido-id="${pedidoId}"`);
+                                }
+                            });
+                        });
+                    } else {
+                        console.error('Error en la respuesta del servidor:', data);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    }
+
+    // Función para actualizar la lista de pedidos
+    function actualizarListaPedidos() {
+        return fetch('obtener-pedidos/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const nuevosPedidosRealizados = doc.getElementById('pedidosRealizadosContainer');
+
+                if (nuevosPedidosPreparados && nuevosPedidosRealizados) {
+                    document.getElementById('pedidosRealizadosContainer').innerHTML = nuevosPedidosRealizados.innerHTML;
+                    // Reasignar eventos a los nuevos botones
+                    asignarEventosCambiarEstado();
+                } else {
+                    console.error('No se encontraron los nuevos contenedores de pedidos.');
+                }
+            })
+            .catch(error => {
+                console.error('Hubo un problema con la solicitud Fetch:', error);
+            });
+    }
+
+    // Función para obtener el token CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
-        })
-        .catch(error => console.error('Error:', error));
+        }
+        return cookieValue;
+    }  
+    asignarEventosCambiarEstado();
     });
+
     function toggleSidebar() {
         const sidebar = document.getElementById("sidebar");
         const content = document.querySelector(".content-meseros");
@@ -167,5 +217,4 @@ document.querySelectorAll('.cambiar-estado-btn').forEach(button => {
             }
         });
     });
-});
 
