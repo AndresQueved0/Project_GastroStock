@@ -348,7 +348,7 @@ function toggleSidebar() {
     const content = document.querySelector(".content-meseros");
     const toggleBtn = document.querySelector('.navbar-toggler');
     const titlePedido = document.querySelector('.title-pedido');
-    const titleMesa = document.querySelector ('.title-mesa');
+    const titleMesa = document.querySelector('.title-mesa');
     const titlePedidos1 = document.querySelector('.title-pedidos1');
     const titlePedidos2 = document.querySelector('.title-pedidos2');
     const inputBox = document.querySelector('.inputBox');
@@ -356,7 +356,8 @@ function toggleSidebar() {
     const cardPedidos1 = document.querySelectorAll('.card-pedido1');
     const boxPedidos = document.querySelectorAll('.boxPedido');
     const boxPedidos1 = document.querySelectorAll('.boxPedido1');
-    const mesasContainer = document.querySelector(".mesasContainer")
+    const mesasContainer = document.getElementById("mesasContainer");
+    const noMesas = document.querySelectorAll('.no-mesas'); // Agregado
 
     // Comprobar cada elemento individualmente
     if (!sidebar) console.error("No se encontró el elemento #sidebar");
@@ -367,7 +368,7 @@ function toggleSidebar() {
     if (!titlePedidos1) console.error("No se encontró el elemento .title-pedidos1");
     if (!titlePedidos2) console.error("No se encontró el elemento .title-pedidos2");
     if (!inputBox) console.error("No se encontró el elemento .inputBox");
-    if (!mesasContainer) console.error("No se encontró el elemento .mesasContainer");
+    if (!mesasContainer) console.error("No se encontró el elemento #mesasContainer");
 
     if (!sidebar || !content || !toggleBtn || !titlePedido || !titleMesa || !titlePedidos1 || !titlePedidos2 || !inputBox || !mesasContainer) {
         console.error("No se encontraron todos los elementos necesarios en el DOM.");
@@ -382,7 +383,7 @@ function toggleSidebar() {
     titlePedidos2.classList.toggle("sidebar-active");
     titlePedido.classList.toggle("sidebar-active");
     inputBox.classList.toggle("sidebar-active");
-    mesasContainer.classList.toggle("sidebar-active")
+    mesasContainer.classList.toggle("sidebar-active");
 
     // Solo aplicar la clase si existen elementos con estas clases
     if (cardPedidos.length > 0) {
@@ -396,6 +397,9 @@ function toggleSidebar() {
     }
     if (boxPedidos1.length > 0) {
         boxPedidos1.forEach(box => box.classList.toggle("sidebar-active"));
+    }
+    if (noMesas.length > 0) {
+        noMesas.forEach(noMesa => noMesa.classList.toggle("sidebar-active"));
     }
 
     if (sidebar.classList.contains("active")) {
@@ -440,7 +444,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const cardPedidos1 = document.querySelectorAll('.card-pedido1');
         const boxPedidos = document.querySelectorAll('.boxPedido');
         const boxPedidos1 = document.querySelectorAll('.boxPedido1');
-        const mesasContainer = document.querySelector(".mesasContainer")
+        const mesasContainer = document.getElementById("mesasContainer");
+        const noMesas = document.querySelectorAll('.no-mesas'); // Agregado
 
         if (window.innerWidth > 768) {
             sidebar.classList.remove("active");
@@ -451,7 +456,9 @@ document.addEventListener('DOMContentLoaded', function() {
             titlePedidos2.classList.remove("sidebar-active");
             titlePedido.classList.remove("sidebar-active");
             inputBox.classList.remove("sidebar-active");
-            mesasContainer.classList.toggle("sidebar-active")
+            if (mesasContainer) {
+                mesasContainer.classList.remove("sidebar-active");
+            }
             if (cardPedidos.length > 0) {
                 cardPedidos.forEach(card => card.classList.remove("sidebar-active"));
             }
@@ -463,6 +470,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (boxPedidos1.length > 0) {
                 boxPedidos1.forEach(box => box.classList.remove("sidebar-active"));
+            }
+            if (noMesas.length > 0) {
+                noMesas.forEach(noMesa => noMesa.classList.remove("sidebar-active"));
             }
             content.style.marginLeft = "0px";
         } else {

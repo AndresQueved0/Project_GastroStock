@@ -69,129 +69,103 @@ document.querySelectorAll('.cambiar-estado-btn').forEach(button => {
         })
         .catch(error => console.error('Error:', error));
     });
-
-// Función para obtener el token CSRF
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    const content = document.querySelector(".content-meseros");
-    const toggleBtn = document.querySelector('.navbar-toggler');
-    const titlePedido = document.querySelector('.title-pedido');
-    const titlePedidos1 = document.querySelector('.title-pedidos1');
-    const cardPedidos = document.querySelectorAll('.card-pedido');
-    const cardPedidos1 = document.querySelectorAll('.card-pedido1');
-    const boxPedidos = document.querySelectorAll('.boxPedido');
-    const boxPedidos1 = document.querySelectorAll('.boxPedido1');
-
-    // Comprobar cada elemento individualmente
-    if (!sidebar) console.error("No se encontró el elemento #sidebar");
-    if (!content) console.error("No se encontró el elemento .content-meseros");
-    if (!toggleBtn) console.error("No se encontró el elemento .navbar-toggler");
-    if (!titlePedido) console.error("No se encontró el elemento .title-pedido");
-    if (!titlePedidos1) console.error("No se encontró el elemento .title-pedidos1");
-
-
-    if (!sidebar || !content || !toggleBtn || !titlePedido ||  !titlePedidos1 ) {
-        console.error("No se encontraron todos los elementos necesarios en el DOM.");
-        return;
-    }
-
-    sidebar.classList.toggle("active");
-    content.classList.toggle("sidebar-active");
-    toggleBtn.classList.toggle("sidebar-active");
-    titlePedidos1.classList.toggle("sidebar-active");
-    titlePedido.classList.toggle("sidebar-active");
-
-    // Solo aplicar la clase si existen elementos con estas clases
-    if (cardPedidos.length > 0) {
-        cardPedidos.forEach(card => card.classList.toggle("sidebar-active"));
-    }
-    if (cardPedidos1.length > 0) {
-        cardPedidos1.forEach(card => card.classList.toggle("sidebar-active"));
-    }
-    if (boxPedidos.length > 0) {
-        boxPedidos.forEach(box => box.classList.toggle("sidebar-active"));
-    }
-    if (boxPedidos1.length > 0) {
-        boxPedidos1.forEach(box => box.classList.toggle("sidebar-active"));
-    }
-
-    if (sidebar.classList.contains("active")) {
-        toggleBtn.innerHTML = "✕";
-        toggleBtn.style.fontSize = "25px";
-        content.style.marginLeft = sidebar.offsetWidth + "px";
-    } else {
-        toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
-        toggleBtn.style.fontSize = "";
-        content.style.marginLeft = "0";
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const toggleBtn = document.querySelector('.navbar-toggler');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', toggleSidebar);
-    } else {
-        console.error("No se encontró el botón de alternar con la clase .navbar-toggler en el DOM.");
-    }
-
-    // Cerrar el sidebar cuando se hace clic en un enlace (en móviles y tablets)
-    document.querySelectorAll('#sidebar a').forEach(link => {
-        link.addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
-                toggleSidebar();
-            }
-        });
-    });
-
-    // Ajustar el sidebar y el contenido al cambiar el tamaño de la ventana
-    window.addEventListener('resize', function() {
+    function toggleSidebar() {
         const sidebar = document.getElementById("sidebar");
         const content = document.querySelector(".content-meseros");
         const toggleBtn = document.querySelector('.navbar-toggler');
-        const titlePedidos1 = document.querySelector('.title-pedidos1');
         const titlePedido = document.querySelector('.title-pedido');
-        const cardPedidos = document.querySelectorAll('.card-pedido');
+        const titlePedidos1 = document.querySelector('.title-pedidos1');
         const cardPedidos1 = document.querySelectorAll('.card-pedido1');
-        const boxPedidos = document.querySelectorAll('.boxPedido');
         const boxPedidos1 = document.querySelectorAll('.boxPedido1');
+  // Agregado
+    
+        // Comprobar cada elemento individualmente
+        if (!sidebar) console.error("No se encontró el elemento #sidebar");
+        if (!content) console.error("No se encontró el elemento .content-meseros");
+        if (!toggleBtn) console.error("No se encontró el elemento .navbar-toggler");
+        if (!titlePedido) console.error("No se encontró el elemento .title-pedido");
+        if (!titlePedidos1) console.error("No se encontró el elemento .title-pedidos1");
+        if (!cardPedidos1) console.error("No se encontró el elemento .card-pedido1");
+        if (!boxPedidos1) console.error("No se encontró el elemento .boxPedido1");
 
-        if (window.innerWidth > 768) {
-            sidebar.classList.remove("active");
-            content.classList.remove("sidebar-active");
-            toggleBtn.classList.remove("sidebar-active");
-            titlePedidos1.classList.remove("sidebar-active");
-            titlePedido.classList.remove("sidebar-active");
-            if (cardPedidos.length > 0) {
-                cardPedidos.forEach(card => card.classList.remove("sidebar-active"));
-            }
-            if (cardPedidos1.length > 0) {
-                cardPedidos1.forEach(card => card.classList.remove("sidebar-active"));
-            }
-            if (boxPedidos.length > 0) {
-                boxPedidos.forEach(box => box.classList.remove("sidebar-active"));
-            }
-            if (boxPedidos1.length > 0) {
-                boxPedidos1.forEach(box => box.classList.remove("sidebar-active"));
-            }
-            content.style.marginLeft = "0px";
-        } else {
-            content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "0";
+
+    
+        if (!sidebar || !content || !toggleBtn || !titlePedido || !titlePedidos1 || !cardPedidos1 || !boxPedidos1) {
+            console.error("No se encontraron todos los elementos necesarios en el DOM.");
+            return;
         }
+    
+        sidebar.classList.toggle("active");
+        content.classList.toggle("sidebar-active");
+        toggleBtn.classList.toggle("sidebar-active");
+        titlePedidos1.classList.toggle("sidebar-active");
+        titlePedido.classList.toggle("sidebar-active");
+    
+        // Solo aplicar la clase si existen elementos con estas clases
+        if (cardPedidos1.length > 0) {
+            cardPedidos1.forEach(card => card.classList.toggle("sidebar-active"));
+        }
+
+        if (boxPedidos1.length > 0) {
+            boxPedidos1.forEach(box => box.classList.toggle("sidebar-active"));
+        }
+    
+        if (sidebar.classList.contains("active")) {
+            toggleBtn.innerHTML = "✕";
+            toggleBtn.style.fontSize = "25px";
+            content.style.marginLeft = sidebar.offsetWidth + "px";
+        } else {
+            toggleBtn.innerHTML = '<span class="navbar-toggler-icon"></span>';
+            toggleBtn.style.fontSize = "";
+            content.style.marginLeft = "0";
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.querySelector('.navbar-toggler');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', toggleSidebar);
+        } else {
+            console.error("No se encontró el botón de alternar con la clase .navbar-toggler en el DOM.");
+        }
+    
+        // Cerrar el sidebar cuando se hace clic en un enlace (en móviles y tablets)
+        document.querySelectorAll('#sidebar a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+    
+        // Ajustar el sidebar y el contenido al cambiar el tamaño de la ventana
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById("sidebar");
+            const content = document.querySelector(".content-meseros");
+            const toggleBtn = document.querySelector('.navbar-toggler');
+            const titlePedidos1 = document.querySelector('.title-pedidos1');
+            const titlePedido = document.querySelector('.title-pedido');
+            const cardPedidos1 = document.querySelectorAll('.card-pedido1');
+            const boxPedidos1 = document.querySelectorAll('.boxPedido1'); // Agregado
+    
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove("active");
+                content.classList.remove("sidebar-active");
+                toggleBtn.classList.remove("sidebar-active");
+                titlePedidos1.classList.remove("sidebar-active");
+                titlePedido.classList.remove("sidebar-active");
+
+                if (cardPedidos1.length > 0) {
+                    cardPedidos1.forEach(card => card.classList.remove("sidebar-active"));
+                }
+                if (boxPedidos1.length > 0) {
+                    boxPedidos1.forEach(box => box.classList.remove("sidebar-active"));
+                }
+                content.style.marginLeft = "0px";
+            } else {
+                content.style.marginLeft = sidebar.classList.contains("active") ? sidebar.offsetWidth + "px" : "0";
+            }
+        });
     });
-});
 });
 

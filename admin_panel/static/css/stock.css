@@ -55,10 +55,6 @@ hr {
     box-shadow: none; /* Elimina cualquier sombra de enfoque cuando el botón está enfocado */
 }
 
-.hv a:hover {
-    background-color: #39A900;
-    color: white;
-}
 
 .responsive-icon {
     width: 80%;

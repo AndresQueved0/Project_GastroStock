@@ -44,7 +44,7 @@
         display: none;
     }
     .content-meseros{
-        margin-left: 0 !important;
+        margin-left: 40px !important;
     }
     hr{
         width: 85%;
@@ -53,7 +53,7 @@
         margin-left: 17px;
     }
     .inputBox{
-        margin-left: 40px;
+        margin-left: 20px;
     }
     .check-text {
         color: white;
@@ -107,7 +107,7 @@
     }
     #sidebar{
         width: 13%;
-        border: 3px solid var(--success);
+
         border-top: none;
         border-left: none;
         min-height: 100vh;
@@ -134,11 +134,11 @@
         object-position: center;
     }
     .card-pedido{
-
+        margin-top: 20px;
         min-height: 220px;
     }
     .card-pedido1{
-
+        margin-top: 40px;
         min-height: 220px;
     }
     .cardBox {
@@ -168,6 +168,9 @@
         padding-left: 0;
     }
     .title-mesa{
+        margin-left: 25px;
+    }
+    .no-mesas{
         margin-left: 45px;
     }
     .title-pedido{
@@ -190,6 +193,10 @@
     }
     #pedidosRealizadosContainer{
         margin-left: -20px !important;
+    }
+    .mesasContainer{
+        margin-left: 10px;
+        margin-right: -90px;
     }
 }
 @media (min-width: 426px) and (max-width: 769px) {
@@ -232,7 +239,7 @@
         z-index: 1050;
     }
     .navbar-toggler.sidebar-active {
-        left: 1px;
+        left: 0px;
         background-color: transparent !important;
         z-index: 1050;
     }
@@ -483,12 +490,13 @@
     }
 
     .inputBox {
-        margin-left: 45px;
+        margin-left: 65px;
         margin-top: 20px;
     }
     .inputBox.sidebar-active {
+        width: 100%;
         transition: margin-left 0.5s;
-        margin-left: -25px;;
+        margin-left: -40px;
     }
 
     .title-mesa{
@@ -507,7 +515,7 @@
     .title-pedidos2{
         margin-top: 2px !important;
         font-size: 23px;
-        margin-left: 50px !important;
+        margin-left: 90px !important;
         letter-spacing: 0.2rem;
     }
 
@@ -518,7 +526,7 @@
     .title-pedidos1{
         margin-top: 2px !important;
         font-size: 23px;
-        margin-left: 50px !important;
+        margin-left: 90px !important;
         letter-spacing: 0.2rem;
     }
 
@@ -529,7 +537,7 @@
     .title-pedido{
         background-color: #ffffff;
         font-size: 30px;
-        margin-left: 190px !important;
+        margin-left: 230px !important;
         padding-left: -30px;
         margin-top: 45px;
     }
@@ -548,7 +556,7 @@
     .card-pedido{
         width: 18rem;
         margin: 0;
-        margin-left: 20px;
+        margin-left: 60px;
         margin-top: 10px !important;
     }
     .card-pedido.sidebar-active {
@@ -561,8 +569,8 @@
     .card-pedido1{
         width: 17rem;
         margin: 0;
-        margin-left: 40px;
-        margin-top: 10px !important;
+        margin-left: 80px;
+        margin-top: 50px !important;
     }
     .card-pedido1.sidebar-active {
         margin-left: -60px;
@@ -604,14 +612,18 @@
     }
     
     .no-mesas{
-        margin-left: 5px;
-        width: 10rem;
+        margin-left: 45px;
+        width: 25rem;
+    }
+    .no-mesas.sidebar-active{
+        margin-left: -50px;
+        width: 20rem;
     }
     .boxPedido{
-        margin-left: 20px;
+        margin-left: 50px;
     }
     .boxPedido1{
-        margin-left: 20px;
+        margin-left: 50px;
     }
     .boxPedido.sidebar-active {
         margin-left: -20px;

@@ -87,7 +87,7 @@
                 <div id="alertPlaceholderMesa"></div>
                 <div class="row rowMesa mesasContainer" id="mesasContainer">
                     {% for mesa in mesas %}
-                    <div class="col-6 col-md-3 col-lg-2 container-fluid mb-4 mt-3 ">
+                    <div class="col-6 col-md-3 col-lg-3 col-xxl-2 mb-4 mt-3 ">
                         <div class="card card-mesa{% if mesa.estado == 'ocupada' %} border-danger {% endif %}" data-mesa-id="{{ mesa.id }}" data-bs-toggle="modal" data-bs-target="#pedidoModal" data-mesa-nombre="{{ mesa.nombre }}" data-mesa-ubicacion="{{ mesa.ubicacion }}" onclick="actualizarInfoMesa('{{ mesa.id }}', '{{ mesa.nombre }}', '{{ mesa.ubicacion }}'); actualizarEstadoMesa('{{ mesa.id }}');">
                             <div class="card-icon d-flex justify-content-center align-items-center">
                                 <img src="{% static 'img/mesa-de-comedor.png' %}" class="img-fluid" alt="Foto por defecto">
@@ -120,7 +120,7 @@
                         <h2 class="title-pedidos1 mb-3">Pedidos preparados</h2>
                     </div>
                     {% for pedido in listo_para_entregar %}
-                    <div class="col-md-6 col-lg-2 container-fluid">
+                    <div class="col-md-6 col-lg-2  col-xxl-3 ">
                         <div class="card-pedido position-relative">
                             <div class="check-circle position-absolute">
                                 <span class="check-text">{{pedido.id}}</span>
@@ -157,7 +157,7 @@
                         <h2 class="title-pedidos2 mb-3">Pedidos realizados</h2>
                     </div>
                     {% for pedido in pedido_realizado %}
-                    <div class="col-md-6 col-lg-2 container-fluid">
+                    <div class="col-md-6 col-lg-4 col-xxl-3 ">
                         <div class="card-pedido1 position-relative">
                             <div class="check-circle1 position-absolute">
                                 <span class="check-text1">{{pedido.id}}</span>

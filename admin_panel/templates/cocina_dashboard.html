@@ -58,44 +58,43 @@
                 <div class="d-flex mt-3 sticky-title2">
                         <h2 class="title-pedido mb-3">Pedidos</h2>
                     </div>
-                <div class="row g-4 mt-1" id="pedidosPreparadosContainer">
-
-
-                    <div class="d-flex mt-3">
-                        <h2 class="title-pedidos1 mb-3">Pedidos en espera</h2>
-                    </div>
-                    {% for pedido in pedido_realizado %}
-                    <div class="col-md-6 col-lg-2 container-fluid">
-                        <div class="card-pedido position-relative">
-                            <div class="check-circle position-absolute">
-                                <span class="check-text">{{pedido.id}}</span>
-                            </div>
-                            <div class="card cardBox border-success ms-4">
-                                <div class="card-header">
-                                    <h5 class="card-title text-center m-2"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
+                    <div class="row g-4 mt-5 mb-5" id="pedidosRealizadosContainer">
+                        <div class="d-flex mt-3">
+                            <h2 class="title-pedidos1 mb-3">Pedidos realizados</h2>
+                        </div>
+                        {% for pedido in pedido_realizado %}
+                        <div class="col-md-6 col-lg-4 col-xxl-3 ">
+                            <div class="card-pedido1 position-relative">
+                                <div class="check-circle1 position-absolute">
+                                    <span class="check-text1">{{pedido.id}}</span>
                                 </div>
-                                <div class="card-body cardBody">
-                                    <ul class="list-unstyled ms-4">
-                                        {% for item in pedido.items.all %}
-                                        <li> <strong> {{ item.cantidad }} </strong> {{ item.item_menu.nombre }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                    <p class="mb-0 ms-4"><strong>Pedido realizado:</strong> {{ pedido.fecha_pedido|date:"H:i" }}</p>
-                                </div>
-                                <div class="card-footer bg-white text-center">
-                                    <button class="btn btn-success btn-sm w-100 cambiar-estado-btn fw-bold" data-pedido-id="{{ pedido.id }}" data-nuevo-estado="Listo para entregar">
-                                        Listo para Entregar 
-                                    </button>
+                                <div class="card cardBox1 border-success">
+                                    <div class="card-header">
+                                        <h5 class="card-title text-center m-0"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
+                                    </div>
+                                    <div class="card-body cardBody1">
+                                        <ul class="list-unstyled ms-4">
+                                            {% for item in pedido.items.all %}
+                                            <li> <strong> {{ item.cantidad }} </strong> {{ item.item_menu.nombre }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <p class="mb-0 ms-4"><strong>Pedido realizado:</strong> {{ pedido.fecha_pedido|date:"H:i" }}</p>
+                                    </div>
+                                    <div class="card-footer bg-light text-center">
+                                        <button class="btn btn-success btn-sm w-100 cambiar-estado-btn fw-bold" data-pedido-id="{{ pedido.id }}" data-nuevo-estado="Listo para entregar">
+                                            Listo para Entregar 
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        {% empty %}
+                        <div class="col-12 boxPedido1">
+                            <p>No hay pedidos registrados en este momento.</p>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% empty %}
-                    <div class="col-12 boxPedido">
-                        <p>No hay pedidos registrados en este momento.</p>
-                    </div>
-                    {% endfor %}
-                </div>
+            </section>
 
         </div>
     </div>
