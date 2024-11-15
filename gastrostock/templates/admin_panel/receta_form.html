@@ -1,0 +1,57 @@
+{% extends 'admin_panel/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if receta %}Editar{% else %}Nueva{% endif %} Receta</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Información de la Receta</h5>
+                {{ form.as_p }}
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Ingredientes</h5>
+                {{ formset.management_form }}
+                <div id="ingredientes-formset">
+                    {% for form in formset %}
+                    <div class="ingrediente-form mb-3">
+                        {{ form.as_p }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-secondary" id="add-ingrediente">
+                    Agregar Ingrediente
+                </button>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'receta_lista' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+document.getElementById('add-ingrediente').addEventListener('click', function() {
+    const formset = document.getElementById('ingredientes-formset');
+    const forms = formset.getElementsByClassName('ingrediente-form');
+    const totalForms = document.getElementById('id_ingredientes-TOTAL_FORMS');
+    
+    const newForm = forms[0].cloneNode(true);
+    const formNum = forms.length;
+    
+    newForm.innerHTML = newForm.innerHTML.replace(/-0-/g, `-${formNum}-`);
+    formset.appendChild(newForm);
+    
+    totalForms.value = formNum + 1;
+});
+</script>
+{% endblock %}
+{% endblock %}

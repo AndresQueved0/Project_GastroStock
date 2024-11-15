@@ -19,3 +19,4 @@ if path not in sys.path:
 
 application = get_wsgi_application()
 application = StaticFilesHandler(get_wsgi_application())
+

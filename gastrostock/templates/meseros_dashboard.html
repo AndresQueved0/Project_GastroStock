@@ -1,0 +1,269 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de meseros</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/stock.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mediaqueries.css' %} ? {% now "U" %}"">
+    <link rel="icon" href="{% static 'img/logo.png'%}">
+</head>
+<body>
+    <nav class="navbar bg-white fixed-top navbar-expand-lg bg-body-ligth">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <div class="ms-3">
+                    <img src="{% static 'img/logo.png' %}" alt="" class="responsive-icon">
+                    <span class="fw-bold">GastroMeseros</span>
+                </div>
+            </a>
+            <div class="dropdown iconos">
+                <a href="{% url 'help_view' %}" class="btn btn-icon border-0">
+                    <img src="{% static 'img/centro-de-ayuda.png' %}" alt="" class="responsive-icon">
+                </a>
+                <button class="btn btn-icon border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{% static 'img/usuario.png' %}" alt="" class="responsive-icon">
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{% url 'login' %}">Cerrar sesion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid d-flex p-0" style="margin-top: 30px;">
+        <div class="navbar">
+        <button class="navbar-toggler border-0">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        </div>
+
+        <div class="col-md-2 col-lg-2 col-xxl-1 mt-5" id="sidebar">
+            <div class="d-flex align-items-center hv">
+                <a data-content="mesas" id="myLink" class="btn border-0 d-flex flex-column align-items-center mb-2 ms-3">
+                    <img src="{% static 'img/mesa-de-comedor.png' %}" alt="" class="responsive-img">
+                    <span class="fw-bold fs-5">Mesas</span>
+                </a>
+            </div>
+            <hr>
+            <div class="d-flex align-items-center hv">
+                <a data-content="pedidos" id="myLink" class="btn border-0 d-flex flex-column align-items-center mb-2 ms-3">
+                    <img src="{% static 'img/pedido-en-linea.png' %}" alt="" class="responsive-img">
+                    <span class="fw-bold fs-5">Pedidos</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-12 col-lg-10 mt-5 content-meseros">
+            <section id="mesas">
+                <div class="d-flex mt-3 sticky-title">
+                    <h2 class="title-mesa mb-3">Mesas</h2>
+                </div>
+
+                <div class="mb-3 inputBox">
+                    <select id="ubicacion-select" class="form-select" required>
+                        <option value="todas">Todas las ubicaciones</option>
+                        {% for ubicacion in ubicaciones %}
+                            <option value="{{ ubicacion.id }}" {% if ubicacion.id|stringformat:"s" == ubicacion_seleccionada %}selected{% endif %}>
+                                {{ ubicacion.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <span class="placeholder">Selecciona la ubicación</span>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.extra_tags == 'mesa_success' %}
+                            <div class="alert alert-success">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <div id="alertPlaceholderMesa"></div>
+                <div class="row rowMesa mesasContainer" id="mesasContainer">
+                    {% for mesa in mesas %}
+                    <div class="col-6 col-md-3 col-lg-2 col-xxl-1 mb-4 mt-3 ">
+                        <div class="card card-mesa {% if mesa.estado == 'ocupada' %} border-danger {% endif %}" data-mesa-id="{{ mesa.id }}" data-mesa-nombre="{{ mesa.nombre }}" data-mesa-ubicacion="{{ mesa.ubicacion }}" onclick="actualizarInfoMesa('{{ mesa.id }}', '{{ mesa.nombre }}', '{{ mesa.ubicacion }}'); actualizarEstadoMesa('{{ mesa.id }}');">
+                            <div class="card-icon d-flex justify-content-center align-items-center">
+                                <img src="{% static 'img/mesa-de-comedor.png' %}" class="img-fluid" alt="Foto por defecto">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title text-center m-0">{{ mesa.nombre }} - <span class="mesa-ubicacion">{{ mesa.ubicacion }}</span></h5>
+
+                            </div>
+                            <div class="card-footer text-center m-0 {% if mesa.estado == 'disponible' %}bg-success{% else %}bg-danger{% endif %}">
+                                <p class="card-text text-white"><strong> {{ mesa.get_estado_display }} </strong> </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 no-mesas">
+                        <p>No hay mesas registradas para esta ubicación.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section id="pedidos">
+                <div class="d-flex mt-3 sticky-title2">
+                    <h2 class="title-pedido mb-3">Pedidos</h2>
+                </div>
+                <div class="row g-4 mt-1" id="pedidosPreparadosContainer">
+                    <div class="d-flex mt-3">
+                        <h2 class="title-pedidos1 mb-3">Pedidos preparados</h2>
+                    </div>
+                    {% for pedido in listo_para_entregar %}
+                    <div class="col-md-6 col-lg-4 col-xxl-3 ">
+                        <div class="card-pedido position-relative">
+                            <div class="check-circle position-absolute">
+                                <span class="check-text">{{pedido.id}}</span>
+                            </div>
+                            <div class="card cardBox border-success ms-4">
+                                <div class="card-header">
+                                    <h5 class="card-title text-center m-2"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
+                                </div>
+                                <div class="card-body cardBody">
+                                    <ul class="list-unstyled ms-4">
+                                        {% for item in pedido.items.all %}
+                                        <li> <strong> {{ item.cantidad }} </strong> {{ item.item_menu.nombre }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    <p class="mb-0 ms-4"><strong>Pedido realizado:</strong> {{ pedido.fecha_pedido|date:"H:i" }}</p>
+                                </div>
+                                <div class="card-footer bg-white text-center">
+                                    <button class="btn btn-success btn-sm w-100 cambiar-estado-btn fw-bold" data-pedido-id="{{ pedido.id }}" data-nuevo-estado="Pedido en mesa">
+                                        Pedido en mesa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 boxPedido">
+                        <p>No hay pedidos registrados en este momento.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="row g-4 mt-5 mb-5" id="pedidosRealizadosContainer">
+                    <div class="d-flex mt-3">
+                        <h2 class="title-pedidos2 mb-3">Pedidos realizados</h2>
+                    </div>
+                    {% for pedido in pedido_realizado %}
+                    <div class="col-md-6 col-lg-4 col-xxl-3 ">
+                        <div class="card-pedido1 position-relative">
+                            <div class="check-circle1 position-absolute">
+                                <span class="check-text1">{{pedido.id}}</span>
+                            </div>
+                            <div class="card cardBox1 border-success">
+                                <div class="card-header">
+                                    <h5 class="card-title text-center m-0"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
+                                </div>
+                                <div class="card-body cardBody1">
+                                    <ul class="list-unstyled ms-4">
+                                        {% for item in pedido.items.all %}
+                                        <li> <strong> {{ item.cantidad }} </strong> {{ item.item_menu.nombre }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    <p class="mb-0 ms-4"><strong>Pedido realizado:</strong> {{ pedido.fecha_pedido|date:"H:i" }}</p>
+                                </div>
+                                <div class="card-footer bg-light text-center">
+                                    <span class="btn btn-success btn-sm w-100"> {{pedido.estado}} </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 boxPedido1">
+                        <p>No hay pedidos registrados en este momento.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+
+    <!-- Modal para toma de pedidos -->
+    <div class="modal fade" id="pedidoModal" tabindex="-1" aria-labelledby="pedidoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-pedido mt-5">
+            <div class="modal-content container-fluid">
+                <div class="modal-header">
+                    <h5 id="pedidoModalLabel">Tomar Pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body modal-body-pedido">
+                    <div class="row">
+                        <div class="col-12 col-md-8 col-xxl-10">
+                            <h3 class="titleMenu">Menú</h3>
+                            <!-- Select para las categorías -->
+                            <select class="form-select" id="categoriaSelect" aria-label="Seleccionar categoría">
+                                {% for categoria in categorias_menu %}
+                                    <option value="categoria-{{ categoria.id }}" {% if forloop.first %}selected{% endif %}>
+                                        {{ categoria.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            <!-- Contenido de las categorías -->
+                            <div class="tab-content mt-3" id="menuTabContent">
+                                {% for categoria in categorias_menu %}
+                                <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="categoria-{{ categoria.id }}" role="tabpanel">
+                                    <div class="scroll-conatiner">
+                                    <div class="row container-fluid menuContent">
+                                        {% for item in categoria.items.all %}
+                                        <div class="col-6 col-md-6 col-lg-4 col-xxl-3 mb-3">
+                                            <div class="card tomaPedido border-dark agregar-item" data-id="{{ item.id }}" data-nombre="{{ item.nombre }}" data-precio="{{ item.precio }}">
+                                                <div class="card-img-top pedidoImg d-flex align-items-center justify-content-center">
+                                                    {% if item.imagen %}
+                                                    <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" class="imgMenu">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title m-0">{{ item.nombre }}</h5>
+                                                    <p class="card-text m-0"><strong>{{ item.precio_formateado }}</strong></p>
+                                                    <!-- El botón "Agregar" ha sido removido -->
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-xxl-2">
+                            <h3 class="titleMenu">Pedido actual</h3>
+                            <div id="pedido-actual">
+                                <p> <strong> <span id="mesa-numero"></span> - <span id="mesa-ubicacion"></span></strong></p>
+                                <ul id="lista-pedidos">
+                                    <!-- Aquí se agregarán los items del pedido -->
+                                </ul>
+                                <p> <strong> Total a pagar: $<span id="total-pagar">0</span></strong></p>
+                            </div>
+                            <button id="generar-ticket" class="btn btn-success" data-url-registrar-pedido="{% url 'registrar_pedido' %}">
+                                Generar ticket
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="{% static 'js/meseros.js' %} ?v={% now "U" %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script> const urlRegistrarPedido = "{% url 'registrar_pedido' %}"; </script>
+
+</body>
+</html>

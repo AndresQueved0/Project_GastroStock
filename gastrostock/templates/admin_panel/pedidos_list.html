@@ -1,0 +1,74 @@
+{% load static %}
+<div class="row g-4 mt-1" id="pedidosPreparadosContainer">
+    <div class="d-flex mt-3">
+        <h2 class="title-pedidos1 mb-3">Pedidos preparados</h2>
+    </div>
+    {% for pedido in listo_para_entregar %}
+    <div class="col-md-6 col-lg-3 col-xxl-3 ">
+        <div class="card-pedido position-relative" data-pedido-id="{{ pedido.id }}">
+            <div class="check-circle position-absolute">
+                <span class="check-text">{{pedido.id}}</span>
+            </div>
+            <div class="card cardBox border-success ms-4">
+                <div class="card-header">
+                    <h5 class="card-title text-center m-2"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
+                </div>
+                <div class="card-body cardBody">
+                    <ul class="list-unstyled ms-4">
+                        {% for item in pedido.items.all %}
+                        <li> <strong> {{ item.cantidad }} </strong> {{ item.item_menu.nombre }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p class="mb-0 ms-4"><strong>Pedido realizado:</strong> {{ pedido.fecha_pedido|date:"H:i" }}</p>
+                </div>
+                <div class="card-footer bg-white text-center">
+                    <button class="btn btn-success btn-sm w-100 cambiar-estado-btn fw-bold" data-pedido-id="{{ pedido.id }}" data-nuevo-estado="Pedido en mesa">
+                        Pedido en mesa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 boxPedido">
+        <p>No hay pedidos registrados en este momento.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row g-4 mt-1" id="pedidosRealizadosContainer">
+    <div class="d-flex mt-3">
+        <h2 class="title-pedidos1 mb-3">Pedidos realizados</h2>
+    </div>
+    {% for pedido in pedido_realizado %}
+    <div class="col-md-6 col-lg-3 col-xxl-3 ">
+        <div class="card-pedido position-relative" data-pedido-id="{{ pedido.id }}">
+            <div class="check-circle position-absolute">
+                <span class="check-text">{{pedido.id}}</span>
+            </div>
+            <div class="card cardBox border-success ms-4">
+                <div class="card-header">
+                    <h5 class="card-title text-center m-2"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
+                </div>
+                <div class="card-body cardBody">
+                    <ul class="list-unstyled ms-4">
+                        {% for item in pedido.items.all %}
+                        <li> <strong> {{ item.cantidad }} </strong> {{ item.item_menu.nombre }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p class="mb-0 ms-4"><strong>Pedido realizado:</strong> {{ pedido.fecha_pedido|date:"H:i" }}</p>
+                </div>
+                <div class="card-footer bg-white text-center">
+                    <button class="btn btn-success btn-sm w-100 cambiar-estado-btn fw-bold" data-pedido-id="{{ pedido.id }}" data-nuevo-estado="Pedido en mesa">
+                        Pedido en mesa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 boxPedido">
+        <p>No hay pedidos registrados en este momento.</p>
+    </div>
+    {% endfor %}
+</div>

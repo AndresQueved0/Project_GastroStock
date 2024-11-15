@@ -1,0 +1,693 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %} ? {% now "U" %}">
+    <link rel="stylesheet" href="{% static 'css/mediaqueries_admin.css' %} ? {% now "U" %}">
+    <link rel="icon" href="{% static 'img/logo.png'%}">
+</head>
+<body data-initial-section="{{ initial_section }}">
+
+    <nav class="navbar bg-white fixed-top navbar-expand-lg bg-body-ligth">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <div class="ms-3">
+                    <img src="{% static 'img/logo.png' %}" alt="" class="responsive-icon">
+                    <span class="fw-bold">AdminGastro</span>
+                </div>
+            </a>
+            <div class="dropdown iconos">
+                <button class="btn">
+                    <img src="{% static 'img/notificacion.png' %}" alt="" class="responsive-icon">
+                </button>
+                <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{% static 'img/usuario.png' %}" alt="" class="responsive-icon">
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">Perfil</a></li>
+                    <li><a class="dropdown-item" href="{% url 'login' %}">Cerrar sesion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid d-flex" style="margin-top: 30px;">
+
+            <div class="col-md-1 mt-5 me-2" id="sidebar">
+
+                    <div class="d-flex align-items-center">
+                        <a data-content="inventario" id="myLink" class="btn d-flex flex-column align-items-center mb-2 ms-3">
+                            <img src="{% static 'img/inventario.png' %}" alt="" class="responsive-img">
+                            <span class="fw-bold fs-5">Inventario</span>
+                        </a>
+                    </div>
+
+                <hr>
+
+                    <div class="d-flex align-items-center">
+                        <a data-content="empleados" id="myLink" class="btn d-flex flex-column align-items-center mb-2 ms-3">
+                            <img src="{% static 'img/empleados.png' %}" alt="" class="responsive-img">
+                            <span class="fw-bold fs-5">Empleados</span>
+                        </a>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex align-items-center">
+                        <a data-content="mesas" id="myLink" class="btn d-flex flex-column align-items-center mb-2 ms-3">
+                            <img src="{% static 'img/mesa-de-comedor.png' %}" alt="" class="" width="90px">
+                            <span class="fw-bold fs-5">Mesas</span>
+                        </a>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex align-items-center">
+                        <a data-content="menu" id="myLink" class="btn d-flex flex-column align-items-center mb-2 ms-3">
+                            <img src="{% static 'img/pedido-en-linea.png' %}" alt="" class="" width="90px">
+                            <span class="fw-bold fs-5">Menu</span>
+                        </a>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex align-items-center">
+                        <a data-content="receta" id="myLink" class="btn d-flex flex-column align-items-center mb-2 ms-3">
+                            <img src="{% static 'img/pedido-en-linea.png' %}" alt="" class="" width="90px">
+                            <span class="fw-bold fs-5">Receta</span>
+                        </a>
+                    </div>
+                </div>
+                
+        <div class="col-md-10 mt-5">
+
+            <section id="inventario">
+                <div class="d-flex">
+                    <h2 class="mt-3 mb-3 pl-in">Administracion de inventario</h2>
+                        <div class="mt-2 top-10">
+                            <button type="button" class="btn btn-success mb-3 mt-2" data-bs-toggle="modal" data-bs-target="#inventarioModal">
+                                Agregar producto
+                            </button>
+                        </div>
+                </div>
+                
+
+                {% if messages %}
+                <script>
+                    window.addEventListener('DOMContentLoaded', function() {
+                        {% for message in messages %}
+                            {% if message.extra_tags == 'product_success' %}
+                                showSuccessAlert('Producto registrado con éxito');
+                            {% endif %}
+                        {% endfor %}
+                    });
+                </script>
+                {% endif %}
+
+                <div id="alertPlaceholderProducto"></div>
+                    
+
+                <div class="table-responsive">
+                    <table id="productTable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>Unidad de Medida</th>
+                                <th>Precio Unitario</th>
+                                <th>Fecha de Expiración</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for producto in productos %}
+                            <tr data-product-id="{{ producto.id }}">
+                                <td>{{ producto.nombre_producto }}</td>
+                                <td>{{ producto.cantidad }}</td>
+                                <td>{{ producto.unidad_medida }}</td>
+                                <td>${{ producto.precio_unitario }}</td>
+                                <td>{{ producto.fecha_expiracion|date:"Y-m-d"|default:"-" }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-product" data-id="{{ producto.id }}">Eliminar</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal fade" id="inventarioModal" tabindex="-1" aria-labelledby="inventarioModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-inventario" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="inventarioModalLabel">Registrar Producto</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" action="{% url 'agregar_producto' %}" id="inventarioForm">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="form_type" value="inventario">
+                                    
+                                    <div class="row g-3">
+                                        <!-- Nombre y Categoría -->
+                                        <div class="col-md-6">
+                                            <label for="{{ inventario_form.nombre_producto.id_for_label }}" class="form-label">{{ inventario_form.nombre_producto.label }}</label>
+                                            {{ inventario_form.nombre_producto }}
+                                            <div class="invalid-feedback">
+                                                {{ inventario_form.nombre_producto.errors }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ inventario_form.categoria.id_for_label }}" class="form-label">{{ inventario_form.categoria.label }}</label>
+                                            {{ inventario_form.categoria }}
+                                            <div class="invalid-feedback">
+                                                {{ inventario_form.categoria.errors }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Cantidad y Unidad de Medida -->
+                                        <div class="col-md-6">
+                                            <label for="{{ inventario_form.cantidad.id_for_label }}" class="form-label">{{ inventario_form.cantidad.label }}</label>
+                                            {{ inventario_form.cantidad }}
+                                            <div class="invalid-feedback">
+                                                {{ inventario_form.cantidad.errors }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ inventario_form.unidad_medida.id_for_label }}" class="form-label">{{ inventario_form.unidad_medida.label }}</label>
+                                            {{ inventario_form.unidad_medida }}
+                                            <div class="invalid-feedback">
+                                                {{ inventario_form.unidad_medida.errors }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Precio Unitario -->
+                                        <div class="col-md-6">
+                                            <label for="{{ inventario_form.precio_unitario.id_for_label }}" class="form-label">{{ inventario_form.precio_unitario.label }}</label>
+                                            {{ inventario_form.precio_unitario }}
+                                            <div class="invalid-feedback">
+                                                {{ inventario_form.precio_unitario.errors }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Fechas -->
+                                        <div class="col-md-6">
+                                            <label for="{{ inventario_form.fecha_entrada.id_for_label }}" class="form-label">{{ inventario_form.fecha_entrada.label }}</label>
+                                            {{ inventario_form.fecha_entrada }}
+                                            <div class="invalid-feedback">
+                                                {{ inventario_form.fecha_entrada.errors }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ inventario_form.fecha_expiracion.id_for_label }}" class="form-label">{{ inventario_form.fecha_expiracion.label }}</label>
+                                            {{ inventario_form.fecha_expiracion }}
+                                            <div class="invalid-feedback">
+                                                {{ inventario_form.fecha_expiracion.errors }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Descripción (ancho completo) -->
+                                        <div class="col-12">
+                                            <label for="{{ inventario_form.descripcion.id_for_label }}" class="form-label">{{ inventario_form.descripcion.label }}</label>
+                                            {{ inventario_form.descripcion }}
+                                            <div class="invalid-feedback">
+                                                {{ inventario_form.descripcion.errors }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Botones del formulario -->
+                                    <div class="modal-footer border-0 px-0 pb-0 mt-3">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success">
+                                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true" style="display: none;"></span>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="deleteProductoConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirmar Eliminación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Estás seguro de que deseas eliminar este elemento?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-danger" id="confirmDeleteProducto">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="empleados">
+                <div class="d-flex mt-3 sticky-title">
+                    <h2 class="title-empleado mb-3 pl">Administración de Empleados</h2>
+                    <div class="mt-2 top-10">
+                        <button type="button" class="btn btn-success mb-3 mt-2 btn-crear" data-bs-toggle="modal" data-bs-target="#empleadoModal">
+                            Nuevo empleado
+                        </button>
+                    </div>
+                </div>
+
+                {% if messages %}
+                    <div id="message-container">
+                {% for message in messages %}
+                    {% if message.extra_tags == 'empleado_success' %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="row" id="empleadosContainer">
+                    {% for empleado in empleados %}
+                    <div class="col-md-6 col-lg-3 mt-4">
+                        <div class="card card-empleado" data-empleado-id="{{ empleado.id }}">
+                            <div class="d-flex justify-content-center align-items-center empleado-foto">
+                                {% if empleado.foto %}
+                                    <img src="{{ empleado.foto.url }}"  alt="{{ empleado.nombre }} {{ empleado.apellido }}" class="empleado-img">
+                                {% else %}
+                                    <img src="{% static 'img/default-profile.png' %}"  alt="Foto por defecto" class="empleado-img">
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title-empleado"><strong> {{ empleado.nombre }} {{ empleado.apellido }}</strong> </h5>
+                                <p class="card-text m-0"><strong>Puesto:</strong> {{ empleado.puesto }}</p>
+                                <p class="card-text m-0"><strong>Teléfono:</strong> {{ empleado.telefono }}</p>
+                                <p class="card-text m-0"><strong>Contratación:</strong> {{ empleado.fecha_contratacion|date:"d/m/Y" }}</p>
+                            </div>
+                            <div class="card-footer border-none text-end">
+                                <button class="btn btn-danger delete-empleado" data-id="{{ empleado.id }}">Eliminar</button>
+                                <button class="btn btn-success btn-editar" data-id="{{ empleado.id }}" data-bs-toggle="modal" data-bs-target="#empleadoModal">Editar</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-10">
+                        <p>No hay empleados registrados.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="modal fade" id="empleadoModal" tabindex="-1" aria-labelledby="empleadoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-empleado" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title modal-title-empleado" id="empleadoModalLabel">Registrar nuevo empleado</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" enctype="multipart/form-data" id="empleadoForm">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="form_type" value="empleado">
+                                    <input type="hidden" id="empleado-id" name="empleado_id" value="">
+                                    
+                                    <div class="row g-3">
+                                        <!-- Nombre y Apellido -->
+                                        <div class="col-md-6">
+                                            <label for="{{ empleado_form.nombre.id_for_label }}" class="form-label">{{ empleado_form.nombre.label }}</label>
+                                            {{ empleado_form.nombre }}
+                                            <div class="invalid-feedback">
+                                                {{ empleado_form.nombre.errors }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ empleado_form.apellido.id_for_label }}" class="form-label">{{ empleado_form.apellido.label }}</label>
+                                            {{ empleado_form.apellido }}
+                                            <div class="invalid-feedback">
+                                                {{ empleado_form.apellido.errors }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Puesto y Teléfono -->
+                                        <div class="col-md-6">
+                                            <label for="{{ empleado_form.puesto.id_for_label }}" class="form-label">{{ empleado_form.puesto.label }}</label>
+                                            {{ empleado_form.puesto }}
+                                            <div class="invalid-feedback">
+                                                {{ empleado_form.puesto.errors }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ empleado_form.telefono.id_for_label }}" class="form-label">{{ empleado_form.telefono.label }}</label>
+                                            {{ empleado_form.telefono }}
+                                            <div class="invalid-feedback">
+                                                {{ empleado_form.telefono.errors }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Fecha de Contratación -->
+                                        <div class="col-md-6">
+                                            <label for="{{ empleado_form.fecha_contratacion.id_for_label }}" class="form-label">{{ empleado_form.fecha_contratacion.label }}</label>
+                                            {{ empleado_form.fecha_contratacion }}
+                                            <div class="invalid-feedback">
+                                                {{ empleado_form.fecha_contratacion.errors }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Foto -->
+                                        <div class="col-md-6">
+                                            <label for="{{ empleado_form.foto.id_for_label }}" class="form-label">{{ empleado_form.foto.label }}</label>
+                                            {{ empleado_form.foto }}
+                                            <div class="invalid-feedback">
+                                                {{ empleado_form.foto.errors }}
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                    <!-- Previsualización de imagen -->
+                                    <div class="row mt-3" id="imagePreview" style="display: none;">
+                                        <div class="col-12">
+                                            <img src="" alt="Vista previa" class="img-thumbnail" style="max-height: 200px;">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Botones del formulario -->
+                                    <div class="modal-footer border-0 px-0 pb-0">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success">
+                                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true" style="display: none;"></span>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="deleteEmpleadoConfirmModal" tabindex="-1" aria-labelledby="deleteEmpleadoConfirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteEmpleadoConfirmModalLabel">Confirmar Eliminación de Empleado</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Estás seguro de que deseas eliminar este empleado? Esta acción no se puede deshacer.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-danger" id="confirmDeleteEmpleado">Eliminar Empleado</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="mesas">
+                <div class="d-flex mt-3 sticky-title">
+                    <h2 class="title-mesa mb-3">Mesas</h2>
+                    <div class="mt-2 top-10 ml">
+                        <button type="button" class="btn btn-success mb-3 mt-2" data-bs-toggle="modal" data-bs-target="#mesaModal">
+                            Registrar mesa
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Selector de ubicaciones -->
+                <div class="mb-3 inputBox">
+                    <select id="ubicacion-select" class="form-select" required>
+                        <option value="todas">Todas las ubicaciones</option>
+                        {% for ubicacion in ubicaciones %}
+                            <option value="{{ ubicacion.id }}" {% if ubicacion.id|stringformat:"s" == ubicacion_seleccionada %}selected{% endif %}>
+                                {{ ubicacion.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <span class="placeholder">Selecciona la ubicación</span>
+                </div>
+            
+                {% if messages %}
+                <script>
+                    window.addEventListener('DOMContentLoaded', function() {
+                        {% for message in messages %}
+                            {% if message.extra_tags == 'mesa_success' %}
+                                showSuccessAlert('Mesa registrada con éxito');
+                            {% endif %}
+                        {% endfor %}
+                    });
+                </script>
+                {% endif %}
+
+                
+                <div id="alertPlaceholderMesa"></div>
+                <div class="row rowMesa mesasContainer" id="mesasContainer">
+                    {% for mesa in mesas %}
+                    <div class="col-6 col-md-3 col-lg-2 col-xxl-1 mb-4 mt-3 ">
+                        <div class="card card-mesa {% if mesa.estado == 'ocupada' %} 
+                        border-danger 
+                    {% elif mesa.estado == 'disponible' %} 
+                        border-success 
+                    {% endif %}" data-mesa-id="{{ mesa.id }}" data-mesa-nombre="{{ mesa.nombre }}" data-mesa-ubicacion="{{ mesa.ubicacion }}" onclick="actualizarInfoMesa('{{ mesa.id }}', '{{ mesa.nombre }}', '{{ mesa.ubicacion }}'); actualizarEstadoMesa('{{ mesa.id }}');">
+                            <div class="card-icon d-flex justify-content-center align-items-center">
+                                <img src="{% static 'img/mesa-de-comedor.png' %}" class="img-fluid" alt="Foto por defecto">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title text-center m-0">{{ mesa.nombre }} - <span class="mesa-ubicacion">{{ mesa.ubicacion }}</span></h5>
+            
+                            </div>
+                            <div class="card-footer text-center m-0 {% if mesa.estado == 'disponible' %}bg-success{% else %}bg-danger{% endif %}">
+                                <p class="card-text text-white"><strong> {{ mesa.get_estado_display }} </strong> </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 no-mesas">
+                        <p>No hay mesas registradas para esta ubicación.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            
+                <!-- MODAL PARA REGISTRAR NUEVAS MESAS -->
+                <div class="modal fade" id="mesaModal" tabindex="-1" aria-labelledby="mesaModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-mesa" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title modal-title-mesa" id="mesaModalLabel">Registrar Mesa</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body modal-body-mesa">
+                                <form method="post" action="{% url 'registro_mesas' %}">
+                                    {% csrf_token %}
+                                    {{ mesa_form.as_p }}
+                                    <button type="submit" class="btn btn-success">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+
+            <section id="menu">
+                <div class="d-flex">
+                    <h2 class="mt-3 mb-3">Menú - Panel de Administración</h2>
+                    <div class="mt-2 top-10 il">
+                        <button type="button" class="btn btn-success mb-3 mt-2" data-bs-toggle="modal" data-bs-target="#menuItemModal">
+                            Registrar plato
+                        </button>
+                    </div>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.extra_tags == 'menu_success' %}
+                            <div class="alert alert-success">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <div id="alertPlaceholderMenu"></div>
+                <div class="row" id="menuItemsContainer">
+                    {% for item in menu_items %}
+                    <div class="col-md-4 mb-4 mt-3">
+                        <div class="card" style="width: 18rem;" data-id="{{ item.id }}">
+                            <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 200px; overflow: hidden;">
+                                {% if item.imagen %}
+                                <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% else %}
+                                <img src="{% static 'img/default-dish.png' %}" alt="Foto por defecto" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title text-center">{{ item.nombre }}</h5>
+                                <p class="card-text"><strong>Categoría:</strong> {{ item.categoria }}</p>
+                                <p class="card-text"><strong>Precio:</strong> {{ item.precio_formateado }}</p>
+                            </div>
+                            <div class="card-footer border-none text-end">
+                                <button class="btn btn-success">Editar</button>
+                                <button class="btn btn-danger delete-menuitem" data-id="{{ item.id }}">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <p>No hay productos registrados en el menú.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="modal fade" id="menuItemModal" tabindex="-1" aria-labelledby="menuItemModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="menuItemModalLabel">Registrar Producto del Menú</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" action="{% url 'registrar_producto_menu' %}" enctype="multipart/form-data" id="menuItemForm">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="form_type" value="menu_item">
+                                    
+                                    <div class="row g-3">
+                                        <!-- Nombre y Categoría -->
+                                        <div class="col-md-6">
+                                            <label for="{{ menu_item_form.nombre.id_for_label }}" class="form-label">{{ menu_item_form.nombre.label }}</label>
+                                            {{ menu_item_form.nombre }}
+                                            <div class="invalid-feedback">
+                                                {{ menu_item_form.nombre.errors }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ menu_item_form.categoria.id_for_label }}" class="form-label">{{ menu_item_form.categoria.label }}</label>
+                                            {{ menu_item_form.categoria }}
+                                            <div class="invalid-feedback">
+                                                {{ menu_item_form.categoria.errors }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Precio e Imagen -->
+                                        <div class="col-md-6">
+                                            <label for="{{ menu_item_form.precio.id_for_label }}" class="form-label">{{ menu_item_form.precio.label }}</label>
+                                            {{ menu_item_form.precio }}
+                                            <div class="invalid-feedback">
+                                                {{ menu_item_form.precio.errors }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="{{ menu_item_form.imagen.id_for_label }}" class="form-label">{{ menu_item_form.imagen.label }}</label>
+                                            {{ menu_item_form.imagen }}
+                                            <div class="invalid-feedback">
+                                                {{ menu_item_form.imagen.errors }}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Descripción (ancho completo) -->
+                                        <div class="col-12">
+                                            <label for="{{ menu_item_form.descripcion.id_for_label }}" class="form-label">{{ menu_item_form.descripcion.label }}</label>
+                                            {{ menu_item_form.descripcion }}
+                                            <div class="invalid-feedback">
+                                                {{ menu_item_form.descripcion.errors }}
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                    <!-- Previsualización de imagen -->
+                                    <div class="row mt-3" id="menuImagePreview" style="display: none;">
+                                        <div class="col-12">
+                                            <img src="" alt="Vista previa" class="img-thumbnail" style="max-height: 200px;">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Botones del formulario -->
+                                    <div class="modal-footer border-0 px-0 pb-0 mt-3">
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success">
+                                            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true" style="display: none;"></span>
+                                            Guardar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="deleteMenuitemConfirmModal" tabindex="-1" aria-labelledby="deleteMenuitemConfirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteMenuitemConfirmModalLabel">Confirmar Eliminación del plato</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Estás seguro de que deseas eliminar este plato? Esta acción no se puede deshacer.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-danger" id="confirmDeleteMenuitem">Eliminar plato</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </section>
+                <section id="receta">
+
+                                <div class="d-flex">
+                                    <h2 class="mt-3 mb-3">Gestion de recetas</h2>
+                                    <div class="mt-2 top-10 gr">
+                                        <a href="{% url 'receta_crear' %}" class="btn btn-success">Gestionar Recetas
+                                        </a>
+                                    </div>
+                                </div>
+
+                            <div class="container">
+                                <div class="row">
+                                    {% for receta in recetas %}
+                                        <div class="col-md-4 mb-4">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h2 class="receta-title">{{ receta.nombre }}</h2>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h6>Ingredientes:</h6>
+                                                    <ul class="list-group list-group-flush">
+                                                        {% for ingrediente in receta.ingredientes.all %}
+                                                            <li class="list-group-item">
+                                                                {{ ingrediente.cantidad }} gramos de {{ ingrediente.inventario_item.nombre_producto }}
+                                                            </li>
+                                                        {% empty %}
+                                                            <li class="list-group-item">No hay ingredientes para esta receta</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                    <div class="card-footer">
+                                                        <button class="btn btn-danger">Eliminar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% empty %}
+                                        <div class="col-12">
+                                            <p>No hay recetas registradas</p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </section>
+                </div>
+    </div>
+
+    <script src="{% static 'js/admin_dashboard.js' %}?v={% now "U" %}""></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</body>
+</html>

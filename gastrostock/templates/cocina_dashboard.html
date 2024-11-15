@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de cocina</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/stock.css' %}?{% now 'U' %}">
+    <link rel="stylesheet" href="{% static 'css/mediaqueries.css' %}?{% now 'U' %}">
+    <link rel="icon" href="{% static 'img/logo.png'%}">
+</head>
+<body>
+    <nav class="navbar bg-white fixed-top navbar-expand-lg bg-body-ligth">
+        <div class="container-fluid">
+            <a class="navbar-brand m-0" href="#">
+                <div>
+                    <img src="{% static 'img/logo.png' %}" alt="" class="responsive-icon p-0">
+                    <span class="fw-bold">GastroCocina</span>
+                </div>
+            </a>
+            <div class="dropdown iconos m-0">
+                <a href="{% url 'help_view' %}" class="btn btn-icon border-0">
+                    <img src="{% static 'img/centro-de-ayuda.png' %}" alt="" class="responsive-icon">
+                </a>
+                <button class="btn border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="{% static 'img/usuario.png' %}" alt="" class="responsive-icon">
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{% url 'login' %}">Cerrar sesion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid content-pedido d-flex p-0" style="margin-top: 30px;">
+
+        <div class="navbar">
+            <button class="navbar-toggler border-0">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            </div>
+
+            <div class="col-md-1 col-lg-2 mt-5" id="sidebar">
+                <div class="d-flex align-items-center hv">
+                    <a data-content="pedidos" id="myLink" class="btn border-0 d-flex flex-column align-items-center mb-2 ms-3">
+                        <img src="{% static 'img/pedido-en-linea.png' %}" alt="" class="responsive-img">
+                        <span class="fw-bold fs-5">Pedidos</span>
+                    </a>
+                </div>
+            </div>
+
+        <div class="col-md-12 col-lg-10 col-xxl-12 mt-5 content-meseros">
+
+            <section id="pedidos">
+                <div class="d-flex mt-3 sticky-title2">
+                        <h2 class="title-pedido mb-3">Pedidos</h2>
+                    </div>
+                    <div class="row g-4 mt-5 mb-5 RealizadosContainer" id="pedidosRealizadosContainer">
+                        <div class="d-flex mt-3">
+                            <h2 class="title-pedidos1 mb-3">Pedidos realizados</h2>
+                        </div>
+                        {% for pedido in pedido_realizado %}
+                        <div class="col-md-6 col-lg-4 col-xxl-2 ">
+                            <div class="card-pedido1 position-relative">
+                                <div class="check-circle1 position-absolute">
+                                    <span class="check-text1">{{pedido.id}}</span>
+                                </div>
+                                <div class="card cardBox1 border-success">
+                                    <div class="card-header">
+                                        <h5 class="card-title text-center m-0"> <strong> Pedido {{ pedido.mesa.nombre }} </strong></h5>
+                                    </div>
+                                    <div class="card-body cardBody1">
+                                        <ul class="list-unstyled ms-4">
+                                            {% for item in pedido.items.all %}
+                                            <li> <strong> {{ item.cantidad }} </strong> {{ item.item_menu.nombre }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <p class="mb-0 ms-4"><strong>Pedido realizado:</strong> {{ pedido.fecha_pedido|date:"H:i" }}</p>
+                                    </div>
+                                    <div class="card-footer bg-light text-center">
+                                        <button class="btn btn-success btn-sm w-100 cambiar-estado-btn fw-bold" data-pedido-id="{{ pedido.id }}" data-nuevo-estado="Listo para entregar">
+                                            Listo para Entregar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12 boxPedido1">
+                            <p>No hay pedidos registrados en este momento.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="{% static 'js/cocina.js' %}? {% now "U" %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</body>
+</html>
+

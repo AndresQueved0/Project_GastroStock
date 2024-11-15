@@ -1,0 +1,323 @@
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+:root {
+    --success: #39A900;
+}
+
+.colorg {
+    color: var(--success);
+}
+
+
+
+.navbar::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    border-bottom: #39A900 3px solid;
+}
+
+hr {
+    width: 100%;
+    margin-top: 0;
+    position: relative;
+    margin-left: 20px;
+    height: 3px; /* Ajusta este valor al grosor deseado */
+    background-color: var(--success); /* Asegúrate de que el color coincida con tu diseño */
+    border: none;
+    opacity: 1;
+}
+
+.btn{
+    border: none;
+}
+
+.sidebar {
+    width: 200px;
+    padding: 10px;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    margin-left: 5px;
+}
+
+.sidebar .btn img {
+    margin-bottom: 5px;
+}
+
+.hv a:hover {
+    background-color: #39A900;
+    color: white;
+}
+
+/* Estilo para el enlace con la clase 'hover' */
+.sidebar a.hover {
+    background-color: #39A900;
+    color: white;
+    opacity: 0.5; /* Ajusta este valor para hacer el hover más transparente */
+}
+
+.sidebar {
+    width: 250px; /* Ajusta el ancho del sidebar según tus necesidades */
+    padding: 10px; /* Espaciado interno opcional */
+}
+
+.responsive-icon {
+    width: 80%;
+    max-width: 50px;
+}
+
+.iconos{
+    margin-left: 17px;
+}
+
+.responsive-img{
+    width: 100%;
+    max-width: 100px;
+}
+
+.responsive-card{
+    width: 100%;
+    max-width: 500px;
+}
+
+
+.btn-success{
+    color: white;
+    background-color: var(--success);
+}
+
+
+.bg-white {
+    background-color: white;
+}
+
+.position-absolute.start-100 {
+    left: 88% !important;  /* Cambia el valor predeterminado */
+}
+
+.inputBox {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+}
+
+.inputBox select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--success);
+    border-radius: 5px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: white;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.inputBox select:focus {
+    border-color: #39A900;
+}
+
+.inputBox .placeholder {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    background: white;
+    transform: translateY(-50%);
+    font-size: 16px;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    padding: 0 5px;
+    opacity: 2;
+}
+
+.inputBox select:focus + .placeholder,
+.inputBox select:valid + .placeholder {
+    top: 0;
+    font-size: 12px;
+    color: #39A900;
+    background: rgb(255, 255, 255);
+    transform: translateX(1px) translateY(-8px);
+    border-left: 1px solid var(--success);
+    border-right: 1px solid var(--success);
+    letter-spacing: 0.2em;
+}
+
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+:root {
+    --success: #39A900;
+}
+
+.colorg {
+    color: var(--success);
+}
+
+.bg-success{
+    background-color: var(--success) !important;
+}
+
+#sidebar{
+    background-color: #ffffff;
+}
+
+.navbar::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    border-bottom: #39A900 3px solid;
+}
+
+hr {
+    width: 80%;
+    margin-top: 0;
+    position: relative;
+    margin-left: 20px;
+    height: 3px; /* Ajusta este valor al grosor deseado */
+    background-color: var(--success); /* Asegúrate de que el color coincida con tu diseño */
+    border: none;
+    opacity: 1;
+}
+
+.navbar-toggler {
+    font-size: 15px;
+    position: fixed;
+    left: 10px;
+    top: 75px;
+    padding: 12px 40px 25px 20px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+.navbar-toggler:focus {
+    outline: none; /* Elimina el borde de enfoque cuando el botón está enfocado */
+    box-shadow: none; /* Elimina cualquier sombra de enfoque cuando el botón está enfocado */
+}
+
+.bg-white {
+    background-color: white;
+}
+
+.start-100 {
+    left: 100% !important;  /* Cambia el valor predeterminado */
+}
+.ml{
+    padding-left: 810px;
+}
+
+.pl{
+    margin-right: 550px;
+}
+.il{
+    margin-left: 500px !important;
+}
+
+.gr{
+    padding-left: 750px !important;
+}
+
+
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    border-bottom: none;
+    background-color: white;
+}
+
+.card-body {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.card-footer {
+    border-top: none;
+    background-color: transparent;
+}
+
+.btn {
+    border-color: var(--success);
+}
+
+.btn-success {
+    background-color: var(--success);
+    border-color: var(--success);
+    color: white; /* Asegúrate de que el texto sea blanco por defecto */
+}
+
+.btn-success:hover {
+    background-color: white;
+    color: var(--success);
+    border-color: var(--success) !important;
+}
+
+.btn-success:focus,
+.btn-success:active,
+.btn-success:active:focus {
+    background-color: white;
+    color: var(--success);
+    border-color: var(--success) !important;
+    box-shadow: none; /* Eliminar el box-shadow predeterminado de Bootstrap */
+}
+
+.border-success {
+    border-color: var(--success) !important;
+}
+
+.btn-custom {
+    background-color: #39A900; /* Color personalizado */
+    color: white;
+    border: none; /* Eliminar el borde */
+    padding: 0.7rem 2rem;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    outline: none; /* Eliminar el borde de enfoque */
+    box-shadow: none; /* Eliminar cualquier sombra */
+}
+
+.btn-custom:hover {
+    background-color: #2e8b00; /* Color más oscuro para el hover */
+    box-shadow: none; /* Eliminar cualquier sombra */
+}
+
+.btn-custom:focus {
+    outline: none; /* Eliminar el borde de enfoque */
+    box-shadow: none; /* Eliminar cualquier sombra */
+}
+
+.custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    padding-right: 40px; /* Espacio para la flecha */
+    font-size: 16px;
+    line-height: 1.5;
+    width: 100%;
+    background-image: url('../img/flecha.png');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px 16px;
+    margin-right: 0; /* Asegúrate de que el margin-right no interfiera */
+}

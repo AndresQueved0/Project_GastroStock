@@ -1,0 +1,301 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GastroStock - Gestión Inteligente de Restaurantes</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --gastro-green: #39A900;
+        }
+        .text-success {
+            color: var(--gastro-green) !important;
+        }
+        .inicio {
+            background-color: var(--gastro-green);
+        }
+        .btn-success {
+            background-color: var(--gastro-green);
+        }
+        #help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--gastro-green);
+            color: white;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            cursor: pointer;
+        }
+        #help-button:hover {
+            background-color: #2d8000;
+        }
+        a {
+            color: var(--gastro-green);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #2d8000;
+            text-decoration: underline;
+        }
+        .navbar a, footer a {
+            color: inherit;
+        }
+        .navbar a:hover, footer a:hover {
+            color: var(--gastro-green);
+            text-decoration: none;
+        }
+        /* Estilos para los botones del modal */
+        .manual-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: var(--gastro-green);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-align: left;
+            transition: background-color 0.3s ease;
+        }
+        .manual-btn:hover {
+            background-color: #2d8000;
+            color: white;
+            text-decoration: none;
+        }
+        .manual-btn i {
+            margin-right: 10px;
+        }
+        .inicio {
+            background-color: #39A900;
+        }
+
+        #help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #39A900;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            cursor: pointer;
+        }
+        #help-button:hover {
+            background-color: #2d8000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <img src="{% static 'img/logo.png' %}"alt="" width="50px">
+            <a class="navbar-brand fw-bold" href="#">GastroStock</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#inicio">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#caracteristicas">Características</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contacto">Contacto</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="inicio text-white text-center py-5 mt-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="display-4 fw-bold mb-3">Revoluciona la gestión de tu restaurante</h1>
+                    <p class="lead mb-4">Optimiza inventario, pedidos y personal con nuestra solución integral</p>
+                </div>
+                <div class="col-md-6">
+                    <img src="{% static 'img/gastro.png' %}" alt="GastroStock Dashboard" class="img-fluid rounded shadow" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Características -->
+    <section id="caracteristicas" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Características Principales</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-boxes fa-3x text-success mb-3"></i>
+                            <h3 class="card-title h5">Gestión de Inventario</h3>
+                            <p class="card-text">Control en tiempo real de tu stock y alertas automáticas</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-utensils fa-3x text-success mb-3"></i>
+                            <h3 class="card-title h5">Gestión de Pedidos</h3>
+                            <p class="card-text">Sistema eficiente para manejar pedidos y mesas</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-bar fa-3x text-success mb-3"></i>
+                            <h3 class="card-title h5">Reportes y Análisis</h3>
+                            <p class="card-text">Datos y estadísticas para tomar mejores decisiones</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de Contacto -->
+    <section id="contacto" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mx-auto">
+                    <h2 class="text-center mb-4">Contáctanos</h2>
+                    <form id="contactForm" action="https://formspree.io/f/mwpkkldw" method="POST">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mensaje" class="form-label">Mensaje</label>
+                            <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Enviar Mensaje</button>
+                    </form>
+                    <div id="formStatus" class="mt-3" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>GastroStock</h5>
+                    <p>Solución integral para la gestión de restaurantes</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h5>Síguenos</h5>
+                    <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <hr>
+            <div class="text-center">
+                <small>&copy; 2024 GastroStock. Todos los derechos reservados.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón de ayuda -->
+    <div id="help-button" data-bs-toggle="modal" data-bs-target="#helpModal">
+        <i class="fas fa-question"></i>
+    </div>
+
+  <!-- Modal de ayuda -->
+  <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpModalLabel">Centro de Ayuda GastroStock</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Manuales de Usuario por Rol:</h6>
+                <div class="mt-3">
+                    <a href="{% static 'media/admin.pdf' %}" class="manual-btn">
+                        <i class="fas fa-user-cog"></i> Manual para Administradores
+                    </a>
+                    <a href="{% static 'media/empleados.pdf' %}" class="manual-btn">
+                        <i class="fas fa-concierge-bell"></i> Manual para Empleados
+                    </a>
+                </div>
+                <p class="mt-3">Seleccione el manual correspondiente a su rol para acceder a instrucciones detalladas sobre cómo utilizar GastroStock.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var form = event.target;
+            var formData = new FormData(form);
+            var status = document.getElementById('formStatus');
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    status.textContent = "¡Gracias por tu mensaje! Te contactaremos pronto.";
+                    status.style.color = "green";
+                    form.reset();
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwn(data, 'errors')) {
+                            status.textContent = data["errors"].map(error => error["message"]).join(", ");
+                        } else {
+                            status.textContent = "Oops! Hubo un problema al enviar tu formulario.";
+                        }
+                    })
+                }
+            }).catch(error => {
+                status.textContent = "Oops! Hubo un problema al enviar tu formulario.";
+            }).finally(() => {
+                status.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>

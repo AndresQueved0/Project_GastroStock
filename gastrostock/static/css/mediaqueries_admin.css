@@ -1,0 +1,779 @@
+@media (min-width: 2560px) {
+    #sidebar {
+        width: 3% !important;
+    }
+
+    .navbar-toggler{
+        display: none;
+    }
+
+    .content-meseros {
+        margin-left: 100px;
+        margin-right: 30px;
+    }
+    #myLink{
+        padding-left: 35px;
+    }
+    .card-mesa{
+        max-width: 22rem !important;
+        min-width: 22rem !important;
+        max-height: 200px !important;
+        min-height: 200px !important;
+    }
+    .card-icon{
+        max-width: 150px;
+        margin-top: -20px;
+        margin-bottom: -20px;
+        margin-left: 50px;
+        margin-right: 40px;
+    }
+    .navbar-toggler{
+        display: none !important;
+    }
+
+    .modal-dialog {
+        max-width: 70%; /* Ajuste predeterminado */
+    }
+    .tomaPedido{
+        width: 18rem;
+        max-height: 250px;
+        min-height: 250px;
+    }
+    .pedidoImg{
+        height: 160px;
+        object-fit: cover;
+        padding-bottom: 10px;
+    }
+    .imgMenu{
+        height: 160px;
+        width: 100%;
+        object-fit: cover;
+    }
+    #pedidosRealizadosContainer{
+        column-gap: 20px;
+    }
+}
+@media (min-width: 1024px) and (max-width: 1440px) {
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden; /* Evita el desbordamiento horizontal */
+    }
+    .pl{
+        margin-right: 520px;
+    }
+    .pl-in{
+        margin-right: 530px;
+    }
+    .receta-title{
+        font-size: 20px;
+    }
+    .navbar-toggler{
+        display: none;
+    }
+    .content-meseros{
+        margin-left: 40px !important;
+    }
+    hr{
+        width: 70%;
+    }
+    .iconos{
+        margin-left: 17px;
+    }
+    .inputBox{
+        margin-left: 20px;
+    }
+    .check-text {
+        color: white;
+        font-size: 24px;
+        line-height: 1;
+        font-weight: bold;
+    }
+
+    .check-circle {
+        width: 60px;
+        height: 60px;
+        background-color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        left: 0 !important;
+        top: -20px;
+        transform: translateX(-10px);
+        z-index: 1;
+    }
+
+    .check-circle i {
+        color: white;
+        font-size: 24px;
+    }
+    .check-text1 {
+        color: white;
+        font-size: 24px;
+        line-height: 1;
+        font-weight: bold;
+    }
+
+    .check-circle1 {
+        width: 60px;
+        height: 60px;
+        background-color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        left: 0 !important;
+        top: -20px;
+        transform: translateX(-20px);
+        z-index: 1;
+    }
+
+    .check-circle i {
+        color: white;
+        font-size: 24px;
+    }
+    #sidebar{
+        width: 13%;
+
+        border-top: none;
+        border-left: none;
+        min-height: 100vh;
+    }
+    .hv{
+        margin-left: 10px;
+    }
+    .card-mesa{
+        width: 12rem;
+        cursor: pointer;
+        margin-left: 20px;
+    }
+    .rowMesa {
+        column-gap: 30px;
+    }
+    .card-icon{
+        height: 100px;
+        overflow: hidden;
+        padding: 20px;
+    }
+    .card-icon.img{
+        width: 150px;
+        object-fit: contain;
+        object-position: center;
+    }
+    .card-pedido{
+        margin-top: 20px;
+        min-height: 220px;
+    }
+    .card-pedido1{
+        margin-top: 40px;
+        min-height: 220px;
+    }
+    .cardBox {
+        width: 15rem;
+        min-height: 220px;
+        margin: 0;
+        margin-top: 10px !important;
+    }
+    .cardBox1 {
+        width: 15rem;
+        min-height: 220px;
+        margin: 0;
+        margin-top: 10px !important;
+    }
+    .cardBody{
+        display: flex;
+        justify-content: center; /* Centra horizontalmente */
+        align-items: center; /* Centra verticalmente */
+        flex-direction: column;
+        padding-left: 0;
+    }
+    .cardBody1{
+        display: flex;
+        justify-content: center; /* Centra horizontalmente */
+        align-items: center; /* Centra verticalmente */
+        flex-direction: column;
+        padding-left: 0;
+    }
+    .card-empleado{
+        width: 15rem;
+        min-height: 220px;
+        margin-top: 10px !important;
+    }
+    .empleado-foto{
+        width: 100%;
+        height: 100%;
+        vertical-align: middle;
+    }
+    .empleado-img{
+        margin-top: 10px;
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+    .card-title-empleado{
+        font-size: 20px;
+    }
+    .title-mesa{
+        margin-left: 25px;
+    }
+    .no-mesas{
+        margin-left: 45px;
+    }
+    .title-pedido{
+        margin-left: 20px;
+    }
+    .title-pedidos1{
+        margin-left: 20px;
+    }
+    .title-pedidos2{
+        margin-left: 0px;
+    }
+    .boxPedido{
+        margin-left: 20px;
+    }
+    .boxPedido1{
+        margin-left: 20px;;
+    }
+    #pedidosRealizadosContainer{
+        margin-left: -10px !important;
+        margin-right: 30px;
+    }
+    .mesasContainer{
+        margin-left: -50px;
+        margin-right: 10px;
+    }
+    .modal-dialog {
+        max-width: 30% !important; /* Ajuste predeterminado */
+    }
+    .modal-dialog.modal-empleado{
+        max-width: 40% !important;
+    }
+    .modal-inventario{
+        max-width: 50% !important;
+    }
+    .modal-body-mesa{
+        padding-left: 60px;
+        padding-right: 60px;
+    }
+    .modal-title-mesa{
+        padding-left: 120px;
+    }
+    .modal-body-empleado{
+        padding-left: 60px;
+        padding-right: 60px;
+    }
+    .modal-title-empleado{
+        padding-left: 140px;
+    }
+    .tomaPedido{
+        width: 12rem;
+        column-gap: 10px;
+        max-height: 200px;
+        min-height: 200px;
+    }
+    .pedidoImg{
+        height: 120px;
+        object-fit: cover;
+    }
+    .imgMenu{
+        height: 120px;
+        width: 100%;
+        object-fit: cover;
+    }
+    .card-title{
+        font-size: 15px;
+    }
+    .PreparadosContainer {
+        margin-left: -20px;
+        margin-right: 30px;
+    }
+    .modal-mesa{
+        width: 50%;
+    }
+
+}
+@media (min-width: 426px) and (max-width: 769px) {
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 120px;
+        height: 100vh;
+        padding-top: 70px !important;
+        background-color: #ffffff;
+        z-index: 1000;
+        transition: left 0.5s;
+        overflow-y: auto;
+    }
+
+    #sidebar.active {
+        left: 0;
+        width: 130px;
+        padding-top: 70px !important;
+        padding-right: 10px;
+        background-color: #ffffff !important;
+        border-right: 3px solid var(--success);
+        z-index: 1001;
+    }
+    .navbar-toggler {
+        font-size: 15px;
+        position: fixed;
+        left: 10px;
+        top: 75px;
+        padding: 20px 40px 15px 20px;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        transition: left 1s;
+        z-index: 1050;
+    }
+    .navbar-toggler.sidebar-active {
+        left: 0px;
+        background-color: transparent !important;
+        z-index: 1050;
+    }
+    .content-meseros{
+        padding-left: 20px;
+        padding-top: 30px;
+        transition: all 0.3s;
+    }
+    .content-meseros.sidebar-active{
+        margin-left: 90px !important;
+        opacity: 0.5;
+        transition: opacity 0.5s;
+        transition: all 0.5s;
+    }
+    .check-text1 {
+        color: white;
+        font-size: 24px;
+        line-height: 1;
+        font-weight: bold;
+    }
+    .check-text {
+        color: white;
+        font-size: 24px;
+        line-height: 1;
+        font-weight: bold;
+    }
+
+    .check-circle1{
+        width: 50px;
+        height: 50px;
+        background-color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: -10px;
+        top: -10px;
+        z-index: 1;
+    }
+
+    .check-circle {
+        width: 50px;
+        height: 50px;
+        background-color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 10px;
+        top: -10px;
+        z-index: 1;
+    }
+
+    .check-circle i {
+        color: white;
+        font-size: 24px;
+    }
+    .card-mesa{
+        width: 11rem;
+        min-height: 100px;
+    }
+    .card-icon{
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-top: 10px;
+        margin-bottom: 0;
+        height: 90px;
+        overflow: hidden;
+    }
+    .card-title{
+        font-size: 15px;
+    }
+    .card-pedido{
+        width: 20rem;
+    }
+    .card-pedido.sidebar-active {
+        margin-left: 20px;
+    }
+    .card-pedido1{
+        width: 20rem;
+        margin-top: 30px;
+        margin-left: 20px;
+    }
+    .card-pedido1.sidebar-active {
+        margin-left: 40px;
+    }
+    .mesasContainer {
+        padding-left: 10px;
+        padding-right: 40px;
+        column-gap: 0;
+        transition: all 0.5ms;
+    }
+    .mesasContainer.sidebar-active {
+        margin-left: 20px;
+        margin-right: 40px;
+        column-gap: 50px;
+        transition: all 0.5ms;
+    }
+    .inputBox {
+        margin-left: 40px;
+    }
+    .title-mesa{
+        margin-left: 320px;
+        font-size: 40px;
+    }
+    .title-pedido.sidebar-active{
+        margin-left: 50px;
+    }
+    .title-pedidos1.sidebar-active{
+        margin-left: 50px;
+    }
+    .title-pedidos2.sidebar-active{
+        margin-left: 50px;
+    }
+    .modal-dialog {
+        max-width: 90%; /* Ajuste predeterminado */
+    }
+    .tomaPedido{
+        width: 12rem;
+        column-gap: 10px;
+        max-height: 200px;
+        min-height: 200px;
+    }
+    .pedidoImg{
+        height: 120px;
+        object-fit: cover;
+    }
+    .imgMenu{
+        height: 120px;
+        width: 100%;
+        object-fit: cover;
+    }
+}
+@media (min-width: 0px) and (max-width: 425px) {
+    /* CONFIGURACION GLOBAL */
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+    }
+    .sticky-title {
+        position: sticky;
+        margin-left: -40px !important;
+        width: 100;
+        top: 0;
+        background-color: white !important;
+        z-index: 1000; /* Asegura que el título esté por encima de otros elementos */
+        padding-top: 50px; /* Ajusta el padding según sea necesario */
+    }
+    .sticky-title2 {
+        position: sticky;
+        margin-left: -70px !important;
+        width: 100;
+        top: 0;
+        background-color: white;
+        z-index: 1000; /* Asegura que el título esté por encima de otros elementos */
+        padding-top: 50px; /* Ajusta el padding según sea necesario */
+    }
+    .btn-icon{
+        padding: 0 !important;
+    }
+    .iconos{
+        margin: 0;
+        margin-left: -20px;
+    }
+    hr{
+        width: 80%;
+    }
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -250px;
+        width: 130px;
+        height: 100vh;
+        padding-right: 10px;
+        padding-top: 70px !important;
+        background-color: #ffffff;
+        z-index: 1000;
+        transition: left 0.5s;
+        overflow-y: auto;
+        z-index: 1001;
+    }
+
+    #sidebar.active {
+        transition: all 0.2s;
+        left: 0;
+        width: 130px;
+        padding-top: 70px !important;
+        padding-right: 10px;
+        background-color: #ffffff !important;
+        border-right: 3px solid var(--success);
+        z-index: 1001;
+    }
+
+
+    .navbar-toggler {
+        font-size: 15px;
+        position: fixed;
+        left: 10px;
+        top: 75px;
+        padding: 20px 40px 15px 20px;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        transition: left 1s;
+        z-index: 1050;
+    }
+    .navbar-toggler.sidebar-active {
+        left: 1px;
+        background-color: transparent !important;
+        z-index: 1050;
+    }
+    .check-text1 {
+        color: white;
+        font-size: 24px;
+        line-height: 1;
+        font-weight: bold;
+    }
+    .check-text {
+        color: white;
+        font-size: 24px;
+        line-height: 1;
+        font-weight: bold;
+    }
+
+    .check-circle1{
+        width: 50px;
+        height: 50px;
+        background-color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: -10px;
+        top: -10px;
+        z-index: 1;
+    }
+
+    .check-circle {
+        width: 50px;
+        height: 50px;
+        background-color: var(--success);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 10px;
+        top: -10px;
+        z-index: 1;
+    }
+
+    .check-circle i {
+        color: white;
+        font-size: 24px;
+    }
+
+    /*CONFIGURACION PANEL MESEROS*/
+    .content-meseros{
+        transition: all 0.3s;
+        margin-top: 0px !important;
+        opacity: 1;
+    }
+
+    .content-meseros.sidebar-active {
+        transition: all 0.3s;
+        opacity: 0.2;
+        transition: opacity 0.5s;
+        margin-left: 200px !important;
+    }
+
+    .inputBox {
+        margin-left: 65px;
+        margin-top: 20px;
+    }
+    .inputBox.sidebar-active {
+        width: 100%;
+        transition: margin-left 0.5s;
+        margin-left: -40px;
+    }
+
+    .title-mesa{
+        margin-top: 40px !important;
+        font-size: 30px;
+        margin-left: 160px;
+        padding-left: 50px;
+        transition: margin-left 0.5s;
+    }
+
+    .title-mesa.sidebar-active {
+        margin-left: 30px;
+        background-color: #ffffff;
+    }
+
+    .title-pedidos2{
+        margin-top: 2px !important;
+        font-size: 23px;
+        margin-left: 80px !important;
+        letter-spacing: 0.2rem;
+    }
+
+    .title-pedidos2.sidebar-active {
+        margin-left: -55px !important;
+    }
+
+    .title-pedidos1{
+        margin-top: 2px !important;
+        font-size: 23px;
+        margin-left: 80px !important;
+        letter-spacing: 0.2rem;
+    }
+
+    .title-pedidos1.sidebar-active {
+        margin-left: -55px !important;
+    }
+
+    .title-pedido{
+        background-color: #ffffff;
+        font-size: 30px;
+        margin-left: 230px !important;
+        padding-left: -30px;
+        margin-top: 45px;
+    }
+
+    .title-pedido.sidebar-active {
+        margin-left: 90px !important;
+    }
+
+    .card-mesa{
+        width: 10rem;
+        height: 10rem;
+        margin-left: 20px;
+        cursor: pointer;
+    }
+
+    .card-pedido{
+        width: 20rem;
+        margin: 0;
+        margin-left: 40px;
+        margin-top: 10px !important;
+    }
+    .card-pedido.sidebar-active {
+        margin-left: -80px;
+    }
+    .card-body{
+        font-size: 13px;
+    }
+
+    .card-pedido1{
+        width: 19rem;
+        margin: 0;
+        margin-left: 60px;
+        margin-top: 50px !important;
+    }
+    .card-pedido1.sidebar-active {
+        margin-left: -60px;
+    }
+
+
+    .card-icon{
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 10px;
+        margin-bottom: 0;
+        height: 90px;
+        overflow: hidden;
+    }
+    .card-icon.img{
+        width: 50px;
+        object-fit: contain;
+        object-position: center;
+    }
+    .card-title{
+        font-size: 16px;
+        padding: 0;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .card-text{
+        font-size: 15px;
+    }
+    .card-body-pedido{
+        font-size: 10px;
+    }
+    .card-img-top{
+        overflow: hidden;
+        height: 19vw;
+    }
+    .titleMenu{
+        text-align: center;
+    }
+
+    .no-mesas{
+        margin-left: 45px;
+        width: 25rem;
+    }
+    .no-mesas.sidebar-active{
+        margin-left: -50px;
+        width: 20rem;
+    }
+    .boxPedido{
+        margin-left: 50px;
+    }
+    .boxPedido1{
+        margin-left: 50px;
+    }
+    .boxPedido.sidebar-active {
+        margin-left: -20px;
+    }
+    .boxPedido1.sidebar-active {
+        margin-left: -20px;
+    }
+    .mesasContainer{
+        margin-left: -20px;
+        padding-left: 30px;
+        padding-right: 60px;
+        transition: all 0.5ms;
+    }
+    .mesasContainer.sidebar-active{
+        margin-left: -40px;
+        padding-left: 0px;
+        column-gap: 90px;
+        transition: all 0.5ms;
+    }
+    .modal-body{
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .imgMenu{
+        height: 150px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .tomaPedido{
+        width: 10rem;
+        max-height: 200px;
+    }
+    .pedidoImg{
+        max-height: 150px;
+        object-fit: cover;
+    }
+}

@@ -1,14 +1,12 @@
-from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from admin_panel import views as admin_panel_views
+from gastrostock import views as admin_panel_views
 from django.views.generic import RedirectView
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/login/', permanent=True)),  # Redirección a login
-    path('admin/', admin.site.urls),
-    path('admin-panel/', include('admin_panel.urls')),
+    path('GastroStock/', include('gastrostock.urls')),
     path('login/', admin_panel_views.login_view, name='login'),
 ]
 

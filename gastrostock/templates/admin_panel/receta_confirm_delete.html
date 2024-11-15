@@ -1,0 +1,120 @@
+<!-- templates/recetas/receta_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Recetas</h2>
+    <a href="{% url 'receta_crear' %}" class="btn btn-primary mb-3">Nueva Receta</a>
+    
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Ítem del Menú</th>
+                    <th>Nombre de Receta</th>
+                    <th>Ingredientes</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receta in recetas %}
+                <tr>
+                    <td>{{ receta.menu_item.nombre }}</td>
+                    <td>{{ receta.nombre }}</td>
+                    <td>
+                        <ul>
+                            {% for ingrediente in receta.ingredientes.all %}
+                            <li>{{ ingrediente.cantidad }} {{ ingrediente.inventario_item.nombre_producto }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <a href="{% url 'receta_editar' receta.pk %}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{% url 'receta_eliminar' receta.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No hay recetas registradas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+<!-- templates/recetas/receta_form.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if receta %}Editar{% else %}Nueva{% endif %} Receta</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Información de la Receta</h5>
+                {{ form.as_p }}
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Ingredientes</h5>
+                {{ formset.management_form }}
+                <div id="ingredientes-formset">
+                    {% for form in formset %}
+                    <div class="ingrediente-form mb-3">
+                        {{ form.as_p }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-secondary" id="add-ingrediente">
+                    Agregar Ingrediente
+                </button>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'receta_lista' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+document.getElementById('add-ingrediente').addEventListener('click', function() {
+    const formset = document.getElementById('ingredientes-formset');
+    const forms = formset.getElementsByClassName('ingrediente-form');
+    const totalForms = document.getElementById('id_ingredientes-TOTAL_FORMS');
+    
+    const newForm = forms[0].cloneNode(true);
+    const formNum = forms.length;
+    
+    newForm.innerHTML = newForm.innerHTML.replace(/-0-/g, `-${formNum}-`);
+    formset.appendChild(newForm);
+    
+    totalForms.value = formNum + 1;
+});
+</script>
+{% endblock %}
+{% endblock %}
+
+<!-- templates/recetas/receta_confirm_delete.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Eliminar Receta</h2>
+    <p>¿Estás seguro que deseas eliminar la receta "{{ receta.nombre }}"?</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar Eliminación</button>
+        <a href="{% url 'receta_lista' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
